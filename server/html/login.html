@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <script src="../js/index.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reddit</title>
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Reddit</h1>
+      <nav>
+        <ul>
+          <li><a href="/server/html/home.html">Accueil</a></li>
+          <li><a href="/server/html/login.html">Connexion</a></li>
+          <li><a href="/server/html/register.html">Inscription</a></li>
+            <li><a href="/server/html/profils.html">Profils</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Connexion</h2>
+      <form id="login-form" method="POST" action="/login">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" id="username" name="username" required />
+        <br />
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required />
+        <br />
+        <button type="submit">Se connecter</button>
+      </form>
+
+      <p>Pas encore inscrit? <a href="/server/html/register.html">Inscrivez-vous ici</a></p>
+      <p>mots de passe oublié ?</p> <a href="/server/html/password.html">Réinitialiser le mot de passe</a></p>
+      <div id="error-message"></div>
+    </main>
+    <footer>
+      <p>&copy; 2024/2025 Reddit Clone Ynov Campus Nantes B1</p>
+    </footer>
+  </body>
+</html>
