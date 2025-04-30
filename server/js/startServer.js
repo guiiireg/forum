@@ -32,7 +32,7 @@ app.use(express.static(htmlDir));
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: "Données invalides" });
+    return res.status(400).json({ success: false, message: "Invalid data" });
   }
   const result = await registerUser(username, password);
   if (result.success) {
@@ -50,7 +50,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: "Données invalides" });
+    return res.status(400).json({ success: false, message: "Invalid data" }); 
   }
   const result = await loginUser(username, password);
   if (result.success) {

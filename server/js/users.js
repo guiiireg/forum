@@ -12,18 +12,18 @@ export async function registerUser(username, password) {
       username,
     ]);
     if (existUser) {
-      return { success: false, message: "Nom d'utilisateur déjà utilisé" };
+      return { success: false, message: "Username already exists" };
     }
     await db.run("INSERT INTO users (username, password) VALUES (?, ?)", [
       username,
       password,
     ]);
-    return { success: true, message: "Inscription réussie" };
+    return { success: true, message: "Registration successful" };
   } catch (error) {
-    console.error("Erreur lors de l'inscription:", error);
+    console.error("Error during registration:", error);
     return {
       success: false,
-      message: "Une erreur est survenue lors de l'inscription",
+      message: "An error occurred during registration",
     };
   }
 }
@@ -42,15 +42,15 @@ export async function loginUser(username, password) {
     if (!user || user.password !== password) {
       return {
         success: false,
-        message: "Nom d'utilisateur ou mot de passe incorrect",
+        message: "Username or password incorrect",
       };
     }
-    return { success: true, message: "Connexion réussie" };
+    return { success: true, message: "Login successful" };
   } catch (error) {
-    console.error("Erreur lors de la connexion:", error);
+    console.error("Error during login:", error);
     return {
       success: false,
-      message: "Une erreur est survenue lors de la connexion",
+      message: "An error occurred during login",
     };
   }
 }
