@@ -2,18 +2,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("login-form");
   const loginButton = document.getElementById("login-button");
   const logoutLink = document.getElementById("logout-link");
-  
-  // Vérifier si l'utilisateur est connecté
+
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
-  
+
   if (userId && username) {
-    // L'utilisateur est connecté, afficher le lien de déconnexion
     if (logoutLink) {
       logoutLink.style.display = "block";
     }
-    
-    // Ajouter un message de bienvenue si nous sommes sur la page de connexion
+
     const mainElement = document.querySelector("main");
     if (mainElement && document.getElementById("login-form")) {
       const welcomeMessage = document.createElement("div");
@@ -24,22 +21,18 @@ document.addEventListener("DOMContentLoaded", function () {
       mainElement.insertBefore(welcomeMessage, mainElement.firstChild);
     }
   }
-  
-  // Gérer l'événement de déconnexion
+
   if (logoutLink) {
-    logoutLink.addEventListener("click", function(e) {
+    logoutLink.addEventListener("click", function (e) {
       e.preventDefault();
-      
-      // Supprimer les données utilisateur du localStorage
+
       localStorage.removeItem("userId");
       localStorage.removeItem("username");
-      
-      // Rediriger vers la page de connexion
+
       window.location.href = "login.html";
     });
   }
 
-  // Ajout d'un event listener directement sur le bouton login
   if (loginButton) {
     loginButton.addEventListener("click", async function () {
       const username = document.getElementById("username").value;
@@ -71,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Logique de connexion existante pour la soumission du formulaire
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
