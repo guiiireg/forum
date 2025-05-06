@@ -4,7 +4,10 @@
  */
 export function displayLoginResult(data) {
   if (data.success) {
-    window.location.href = "/";
+    localStorage.setItem("userId", data.userId);
+    localStorage.setItem("username", data.username);
+
+    window.location.href = "home.html";
   } else {
     document.getElementById("error-message").textContent = data.message;
   }

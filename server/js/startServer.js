@@ -4,6 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { registerUser, loginUser } from "./users.js";
+import { createPost, getAllPosts, getPostsByUser } from "./posts.js";
+import db from "./database.js";
 
 dotenv.config();
 
@@ -23,6 +25,8 @@ const htmlDir = path.join(__dirname, "../html");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(htmlDir));
+app.use("/js", express.static(path.join(__dirname)));
+app.use("/css", express.static(path.join(__dirname, "../css")));
 
 /**
  * Register a user
@@ -54,7 +58,71 @@ app.post("/login", async (req, res) => {
   }
   const result = await loginUser(username, password);
   if (result.success) {
-    res.json({ success: true, message: result.message });
+    res.json({ 
+      success: true, 
+      message: result.message,
+      userId: result.userId,
+      username: result.username
+    });
+  } else {
+    res.status(400).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Create a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.post("/posts", async (req, res) => {
+  const { title, content, userId } = req.body;
+  if (!title || !content || !userId) {
+    return res.status(400).json({ success: false, message: "Données invalides" });
+  }
+  
+  // Vérifier que l'utilisateur existe avant de créer le post
+  try {
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Utilisateur non authentifié" });
+    }
+    
+    const result = await createPost(title, content, userId);
+    if (result.success) {
+      res.json({ success: true, message: result.message, postId: result.postId });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la vérification de l'utilisateur:", error);
+    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Get all posts
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/posts", async (req, res) => {
+  const result = await getAllPosts();
+  if (result.success) {
+    res.json({ success: true, posts: result.posts });
+  } else {
+    res.status(400).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Get posts by user
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/posts/user/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const result = await getPostsByUser(userId);
+  if (result.success) {
+    res.json({ success: true, posts: result.posts });
   } else {
     res.status(400).json({ success: false, message: result.message });
   }
