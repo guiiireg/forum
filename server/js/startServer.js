@@ -21,7 +21,6 @@ const port = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const htmlDir = path.join(__dirname, "../html");
-const htmlDir = path.join(__dirname, "../html");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -141,10 +140,7 @@ async function setupRoutes() {
         let route;
         if (file === "home.html") {
           route = "/";
-        if (file === "home.html") {
-          route = "/";
         } else {
-          route = `/${file.replace(".html", "")}`;
           route = `/${file.replace(".html", "")}`;
         }
         app.get(route, (req, res) => {
@@ -162,7 +158,6 @@ async function setupRoutes() {
  */
 setupRoutes().then(() => {
   app.listen(port, () => {
-    console.log("\x1b[36m%s\x1b[0m", `Server is running on port ${port}`);
     console.log("\x1b[36m%s\x1b[0m", `Server is running on port ${port}`);
   });
 });
