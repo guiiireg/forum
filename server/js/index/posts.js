@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
           postMessage.textContent = data.message;
           postMessage.style.color = "green";
           createPostForm.reset();
-          loadPosts(); // Recharger les posts
+          loadPosts();
         } else {
           postMessage.textContent = data.message;
           postMessage.style.color = "red";

@@ -36,7 +36,9 @@ app.use("/css", express.static(path.join(__dirname, "../css")));
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: "Données invalides" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
   }
   const result = await registerUser(username, password);
   if (result.success) {
@@ -54,15 +56,17 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ success: false, message: "Données invalides" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
   }
   const result = await loginUser(username, password);
   if (result.success) {
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: result.message,
       userId: result.userId,
-      username: result.username
+      username: result.username,
     });
   } else {
     res.status(400).json({ success: false, message: result.message });
@@ -77,25 +81,34 @@ app.post("/login", async (req, res) => {
 app.post("/posts", async (req, res) => {
   const { title, content, userId } = req.body;
   if (!title || !content || !userId) {
-    return res.status(400).json({ success: false, message: "Données invalides" });
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
   }
-  
-  // Vérifier que l'utilisateur existe avant de créer le post
+
   try {
     const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
     if (!user) {
-      return res.status(401).json({ success: false, message: "Utilisateur non authentifié" });
+      return res
+        .status(401)
+        .json({ success: false, message: "Utilisateur non authentifié" });
     }
-    
+
     const result = await createPost(title, content, userId);
     if (result.success) {
-      res.json({ success: true, message: result.message, postId: result.postId });
+      res.json({
+        success: true,
+        message: result.message,
+        postId: result.postId,
+      });
     } else {
       res.status(400).json({ success: false, message: result.message });
     }
   } catch (error) {
     console.error("Erreur lors de la vérification de l'utilisateur:", error);
-    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
   }
 });
 
