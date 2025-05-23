@@ -14,11 +14,16 @@ export async function registerUser(username, password) {
     if (existUser) {
       return { success: false, message: "Nom d'utilisateur déjà utilisé" };
     }
-    await db.run("INSERT INTO users (username, password) VALUES (?, ?)", [
+    const result = await db.run("INSERT INTO users (username, password) VALUES (?, ?)", [
       username,
       password,
     ]);
-    return { success: true, message: "Inscription réussie" };
+    return { 
+      success: true, 
+      message: "Inscription réussie",
+      userId: result.lastID,
+      username: username
+    };
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error);
     return {
