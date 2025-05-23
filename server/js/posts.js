@@ -13,10 +13,10 @@ export async function createPost(title, content, userId) {
       "INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)",
       [title, content, userId]
     );
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: "Post créé avec succès",
-      postId: result.lastID 
+      postId: result.lastID,
     };
   } catch (error) {
     console.error("Erreur lors de la création du post:", error);

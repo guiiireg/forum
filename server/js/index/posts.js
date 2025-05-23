@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
       createPostContainer.innerHTML =
         '<p>Vous devez être <a href="login.html">connecté</a> pour créer un post.</p>';
     }
-    
+
     if (createPostForm) {
       createPostForm.style.display = "none";
     }

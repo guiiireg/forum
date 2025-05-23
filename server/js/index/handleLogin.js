@@ -1,6 +1,6 @@
-import { submitLoginData } from './submitLoginData.js';
-import { displayLoginResult } from './displayLoginResult.js';
-import { handleLoginError } from './handleLoginError.js';
+import { submitLoginData } from "./submitLoginData.js";
+import { displayLoginResult } from "./displayLoginResult.js";
+import { handleLoginError } from "./handleLoginError.js";
 
 /**
  * Handle the login form submission

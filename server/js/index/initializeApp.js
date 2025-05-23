@@ -1,5 +1,5 @@
-import { handleRegistration } from './handleRegistration.js';
-import { handleLogin } from './handleLogin.js';
+import { handleRegistration } from "./handleRegistration.js";
+import { handleLogin } from "./handleLogin.js";
 
 /**
  * Initialize the app

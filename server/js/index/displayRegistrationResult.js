@@ -1,4 +1,4 @@
-import { redirectAfterDelay } from './redirectAfterDelay.js';
+import { redirectAfterDelay } from "./redirectAfterDelay.js";
 
 /**
  * Display the registration result
