@@ -16,7 +16,7 @@
           <li><a href="login.html">Connexion</a></li>
           <li><a href="register.html">Inscription</a></li>
           <li><a href="profils.html">Profils</a></li>
-          <li><a href="posts.html">Posts</a></li>
+          <li><a href="password.html">Mot de passe</a></li>
           <li>
             <a href="#" id="logout-link" style="display: none">Déconnexion</a>
           </li>
@@ -24,29 +24,22 @@
       </nav>
     </header>
     <main>
-            
-      <h3>top des 5 posts</h3>
-      <div id="posts-container">
-        <div class="post">
-          <h4>Post Title 1</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 2</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 3</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 4</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 5</h4>
-          <p>Post content goes here...</p>
-        </div>
+      <h2>Connexion</h2>
+      <form id="login-form" method="POST" action="/login">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" id="username" name="username" required />
+        <br />
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required />
+        <br />
+        <button type="submit">Se connecter</button>
+      </form>
+      <p>Pas encore inscrit? <a href="register.html">Inscrivez-vous ici</a></p>
+      <p>
+        mots de passe oublié ?
+        <a href="password.html">Réinitialiser le mot de passe</a>
+      </p>
+      <div id="error-message"></div>
     </main>
   </body>
 </html>
