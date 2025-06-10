@@ -15,38 +15,21 @@
           <li><a href="home.html">Accueil</a></li>
           <li><a href="login.html">Connexion</a></li>
           <li><a href="register.html">Inscription</a></li>
-          <li><a href="profils.html">Profils</a></li>
-          <li><a href="posts.html">Posts</a></li>
+          <li><a href="profils.html">Profil</a></li>
+          <li><a href="posts.html">Créer un post</a></li>
           <li>
-            <a href="#" id="logout-link" style="display: none">Déconnexion</a>
+            <a href="#" id="logout-link" style="display: none">Se déconnecter</a>
           </li>
         </ul>
       </nav>
     </header>
     <main>
-            
-      <h3>top des 5 posts</h3>
-      <div id="posts-container">
-        <div class="post">
-          <h4>Post Title 1</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 2</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 3</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 4</h4>
-          <p>Post content goes here...</p>
-        </div>
-        <div class="post">
-          <h4>Post Title 5</h4>
-          <p>Post content goes here...</p>
-        </div>
+      <div id="search-container">
+        <input type="text" id="search-input" placeholder="Search..." />
+        <button id="search-button">Search</button>
+      </div>
+      <p>Explorez les dernières nouvelles et discussions.</p>
+      <div id="posts-container"></div>
     </main>
   </body>
 </html>
