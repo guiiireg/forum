@@ -1,6 +1,6 @@
-import { submitRegistrationData } from './submitRegistrationData.js';
-import { displayRegistrationResult } from './displayRegistrationResult.js';
-import { handleRegistrationError } from './handleRegistrationError.js';
+import { submitRegistrationData } from "./submitRegistrationData.js";
+import { displayRegistrationResult } from "./displayRegistrationResult.js";
+import { handleRegistrationError } from "./handleRegistrationError.js";
 
 /**
  * Handle the registration form submission

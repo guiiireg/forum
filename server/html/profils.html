@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <script src="../js/index.js"></script>
+    <script src="../js/index/index.js" type="module"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Reddit</title>
@@ -18,13 +18,9 @@
         </ul>
       </nav>
     </header>
-    <main>
-      <div id="search-container">
-        <input type="text" id="search-input" placeholder="Search..." />
-        <button id="search-button">Search</button>
-      </div>
-      <p>Vos poste</p>
-      <div id="posts-container"></div>
+    <main>            
+      <h3>Liste des posts</h3>
+      <div href="posts.html" id="posts-container"></div>
     </main>
   </body>
 </html>

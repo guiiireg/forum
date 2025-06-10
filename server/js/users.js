@@ -45,7 +45,12 @@ export async function loginUser(username, password) {
         message: "Nom d'utilisateur ou mot de passe incorrect",
       };
     }
-    return { success: true, message: "Connexion réussie" };
+    return {
+      success: true,
+      message: "Connexion réussie",
+      userId: user.id,
+      username: user.username,
+    };
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
     return {
