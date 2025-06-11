@@ -1,5 +1,5 @@
-import { submitVote, fetchVotes } from './postApi.js';
-import { validateUserAuth } from './postValidation.js';
+import { submitVote, fetchVotes } from "./postApi.js";
+import { validateUserAuth } from "./postValidation.js";
 
 /**
  * Handles voting on a post
@@ -85,7 +85,7 @@ export async function loadVotes(postId, userId = null) {
         userVote: response.userVote,
       };
     }
-    
+
     return { totalVotes: 0, userVote: 0 };
   } catch (error) {
     console.error("Error loading votes:", error);
@@ -110,4 +110,4 @@ export function setupVoteListeners(postElement, postId, userId) {
   if (downvoteBtn) {
     downvoteBtn.addEventListener("click", () => handleVote(postId, userId, -1));
   }
-} 
+}

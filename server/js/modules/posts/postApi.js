@@ -130,4 +130,4 @@ export async function fetchVotes(postId, userId = null) {
     console.error("Error fetching votes:", error);
     throw error;
   }
-} 
+}

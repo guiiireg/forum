@@ -75,7 +75,8 @@ await db.exec(`
  * Add category_id column to existing posts table if it doesn't exist
  */
 const pragma = await db.get("PRAGMA table_info(posts)");
-const hasCategoryId = Array.isArray(pragma) && pragma.some(col => col.name === "category_id");
+const hasCategoryId =
+  Array.isArray(pragma) && pragma.some((col) => col.name === "category_id");
 if (!hasCategoryId) {
   try {
     await db.exec(

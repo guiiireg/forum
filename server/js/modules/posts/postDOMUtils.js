@@ -8,9 +8,9 @@ export function getPostFormData() {
   const contentInput = document.getElementById("content");
 
   return {
-    categoryId: categorySelect?.value || '',
-    title: titleInput?.value || '',
-    content: contentInput?.value || ''
+    categoryId: categorySelect?.value || "",
+    title: titleInput?.value || "",
+    content: contentInput?.value || "",
   };
 }
 
@@ -20,16 +20,16 @@ export function getPostFormData() {
  * @returns {Object} Form data containing title, content, categoryId
  */
 export function getEditFormData(postId = null) {
-  const suffix = postId ? `-${postId}` : '';
-  
+  const suffix = postId ? `-${postId}` : "";
+
   const titleInput = document.getElementById(`edit-title${suffix}`);
   const contentInput = document.getElementById(`edit-content${suffix}`);
   const categoryInput = document.getElementById(`edit-category${suffix}`);
 
   return {
-    title: titleInput?.value || '',
-    content: contentInput?.value || '',
-    categoryId: categoryInput?.value || ''
+    title: titleInput?.value || "",
+    content: contentInput?.value || "",
+    categoryId: categoryInput?.value || "",
   };
 }
 
@@ -77,12 +77,16 @@ export function toggleEditMode(postElement, isEditing) {
  * @param {Array} categories - Array of category objects
  * @param {string} defaultOption - Default option text
  */
-export function populateCategorySelect(selectId, categories, defaultOption = "Sélectionnez une catégorie") {
+export function populateCategorySelect(
+  selectId,
+  categories,
+  defaultOption = "Sélectionnez une catégorie"
+) {
   const selectElement = document.getElementById(selectId);
   if (!selectElement) return;
 
   selectElement.innerHTML = `<option value="">${defaultOption}</option>`;
-  
+
   categories.forEach((category) => {
     const option = document.createElement("option");
     option.value = category.id;
@@ -138,4 +142,4 @@ export function showError(message) {
 export function showSuccess(message) {
   // Using alert for now, can be replaced with a more sophisticated notification system
   alert(message);
-} 
+}

@@ -6,26 +6,26 @@
  */
 export function validatePostData(title, content) {
   const errors = [];
-  
+
   if (!title || title.trim().length === 0) {
     errors.push("Le titre est requis.");
   }
-  
+
   if (!content || content.trim().length === 0) {
     errors.push("Le contenu est requis.");
   }
-  
+
   if (title && title.trim().length > 255) {
     errors.push("Le titre ne peut pas dépasser 255 caractères.");
   }
-  
+
   if (content && content.trim().length > 10000) {
     errors.push("Le contenu ne peut pas dépasser 10000 caractères.");
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -38,13 +38,13 @@ export function validateCategory(categoryId) {
   if (!categoryId || categoryId === "") {
     return {
       isValid: false,
-      error: "Veuillez sélectionner une catégorie."
+      error: "Veuillez sélectionner une catégorie.",
     };
   }
-  
+
   return {
     isValid: true,
-    error: null
+    error: null,
   };
 }
 
@@ -57,13 +57,13 @@ export function validateUserAuth(userId) {
   if (!userId) {
     return {
       isValid: false,
-      error: "Vous devez être connecté pour effectuer cette action."
+      error: "Vous devez être connecté pour effectuer cette action.",
     };
   }
-  
+
   return {
     isValid: true,
-    error: null
+    error: null,
   };
 }
 
@@ -75,28 +75,28 @@ export function validateUserAuth(userId) {
  */
 export function validatePostForm(formData, userId) {
   const { title, content, categoryId } = formData;
-  
+
   const userValidation = validateUserAuth(userId);
   if (!userValidation.isValid) {
     return userValidation;
   }
-  
+
   const postValidation = validatePostData(title, content);
   if (!postValidation.isValid) {
     return {
       isValid: false,
-      error: postValidation.errors.join(" ")
+      error: postValidation.errors.join(" "),
     };
   }
-  
+
   const categoryValidation = validateCategory(categoryId);
   if (!categoryValidation.isValid) {
     return categoryValidation;
   }
-  
+
   return {
     isValid: true,
-    error: null
+    error: null,
   };
 }
 
@@ -106,8 +106,8 @@ export function validatePostForm(formData, userId) {
  * @returns {string} Sanitized text
  */
 export function sanitizeText(text) {
-  if (typeof text !== 'string') {
-    return '';
+  if (typeof text !== "string") {
+    return "";
   }
   return text.trim();
-} 
+}

@@ -1,7 +1,20 @@
-import { fetchCategories, createPost, updatePost, deletePost } from './postApi.js';
-import { validatePostForm, sanitizeText } from './postValidation.js';
-import { showError, showSuccess, getPostFormData, getEditFormData, clearPostForm, toggleEditMode, findPostElement } from './postDOMUtils.js';
-import { createEditForm } from './postsUI.js';
+import {
+  fetchCategories,
+  createPost,
+  updatePost,
+  deletePost,
+} from "./postApi.js";
+import { validatePostForm, sanitizeText } from "./postValidation.js";
+import {
+  showError,
+  showSuccess,
+  getPostFormData,
+  getEditFormData,
+  clearPostForm,
+  toggleEditMode,
+  findPostElement,
+} from "./postDOMUtils.js";
+import { createEditForm } from "./postsUI.js";
 
 /**
  * Handles the edit post action by showing the edit form
@@ -11,7 +24,7 @@ import { createEditForm } from './postsUI.js';
 export async function handleEditPost(postElement) {
   const titleElement = postElement.querySelector("h2, .post-title");
   const contentElement = postElement.querySelector("p, .post-content-text");
-  
+
   if (!titleElement || !contentElement) {
     showError("Impossible de trouver les éléments du post à modifier.");
     return;
@@ -22,26 +35,31 @@ export async function handleEditPost(postElement) {
 
   try {
     const categoriesData = await fetchCategories();
-    
+
     if (!categoriesData.success) {
       showError("Erreur lors du chargement des catégories.");
       return;
     }
 
-    let categoriesOptions = '<option value="">Sélectionnez une catégorie</option>';
+    let categoriesOptions =
+      '<option value="">Sélectionnez une catégorie</option>';
     categoriesData.categories.forEach((category) => {
       categoriesOptions += `<option value="${category.id}">${category.name}</option>`;
     });
 
-    const postId = postElement.id.replace('post-', '');
-    const editFormHTML = createEditForm(postId, currentTitle, currentContent, categoriesOptions);
-    
+    const postId = postElement.id.replace("post-", "");
+    const editFormHTML = createEditForm(
+      postId,
+      currentTitle,
+      currentContent,
+      categoriesOptions
+    );
+
     const editForm = document.createElement("div");
     editForm.innerHTML = editFormHTML;
-    
+
     toggleEditMode(postElement, true);
     postElement.appendChild(editForm);
-    
   } catch (error) {
     console.error("Error in handleEditPost:", error);
     showError("Une erreur est survenue lors de l'initialisation de l'édition.");
@@ -57,12 +75,12 @@ export async function handleEditPost(postElement) {
 export async function saveEditPost(postId, userId) {
   try {
     const formData = getEditFormData(postId);
-    
+
     // Sanitize input data
     const sanitizedData = {
       title: sanitizeText(formData.title),
       content: sanitizeText(formData.content),
-      categoryId: formData.categoryId
+      categoryId: formData.categoryId,
     };
 
     // Validate the form data
@@ -131,12 +149,12 @@ export async function handleDeletePost(postId, userId) {
 export async function handleCreatePost(userId) {
   try {
     const formData = getPostFormData();
-    
+
     // Sanitize input data
     const sanitizedData = {
       title: sanitizeText(formData.title),
       content: sanitizeText(formData.content),
-      categoryId: formData.categoryId
+      categoryId: formData.categoryId,
     };
 
     // Validate the form data
@@ -180,5 +198,3 @@ export function cancelEditPost(postId) {
     toggleEditMode(postElement, false);
   }
 }
-
-

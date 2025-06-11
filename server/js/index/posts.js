@@ -1,4 +1,4 @@
-import { initializeFilters } from '../modules/posts/postsActions.js';
+import { initializeFilters } from "../modules/posts/postsActions.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (!userId) {
-    window.location.href = '/login';
+    window.location.href = "/login";
     return;
   }
 

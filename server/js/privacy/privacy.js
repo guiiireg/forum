@@ -3,4 +3,4 @@ document.addEventListener("DOMContentLoaded", function () {
   if (lastUpdateElement) {
     lastUpdateElement.textContent = new Date().toLocaleDateString("fr-FR");
   }
-}); 
+});
