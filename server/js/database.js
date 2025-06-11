@@ -23,6 +23,39 @@ await db.exec(`
 `);
 
 /**
+ * Create the categories table if it doesn't exist
+ */
+await db.exec(`
+    CREATE TABLE IF NOT EXISTS categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        description TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+`);
+
+/**
+ * Insert default categories if they don't exist
+ */
+const categoriesCount = await db.get(
+  "SELECT COUNT(*) as count FROM categories"
+);
+if (categoriesCount.count === 0) {
+  await db.exec(`
+    INSERT INTO categories (name, description) VALUES 
+    ('Technologie', 'Discussions sur la technologie, programmation, gadgets'),
+    ('Politique', 'Débats et discussions politiques'),
+    ('Sport', 'Actualités et discussions sportives'),
+    ('Culture', 'Art, musique, littérature, cinéma'),
+    ('Sciences', 'Découvertes scientifiques et recherches'),
+    ('Jeux Vidéo', 'Gaming, actualités des jeux vidéo'),
+    ('Santé', 'Conseils santé et bien-être'),
+    ('Actualités', 'Actualités générales et informations'),
+    ('Autres', 'Sujets divers qui ne rentrent dans aucune autre catégorie');
+  `);
+}
+
+/**
  * Create the posts table if it doesn't exist
  */
 await db.exec(`
@@ -31,10 +64,35 @@ await db.exec(`
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         user_id INTEGER NOT NULL,
+        category_id INTEGER DEFAULT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (user_id) REFERENCES users (id)
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        FOREIGN KEY (category_id) REFERENCES categories (id)
     );
 `);
+
+/**
+ * Add category_id column to existing posts table if it doesn't exist
+ */
+try {
+  await db.exec(
+    `ALTER TABLE posts ADD COLUMN category_id INTEGER DEFAULT NULL`
+  );
+} catch (error) {
+  console.error("Error adding category_id column:", error);
+}
+
+/**
+ * Update posts without category to use "Autres" category
+ */
+const autresCategory = await db.get(
+  "SELECT id FROM categories WHERE name = 'Autres'"
+);
+if (autresCategory) {
+  await db.run("UPDATE posts SET category_id = ? WHERE category_id IS NULL", [
+    autresCategory.id,
+  ]);
+}
 
 /**
  * Create the replies table if it doesn't exist

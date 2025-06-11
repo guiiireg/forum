@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const postsContainer = document.getElementById("posts-container");
 
   if (!userId || !username) {
-    postsContainer.innerHTML = '<p>Vous devez être <a href="login.html">connecté</a> pour voir vos posts.</p>';
+    postsContainer.innerHTML =
+      '<p>Vous devez être <a href="login.html">connecté</a> pour voir vos posts.</p>';
     return;
   }
 
@@ -33,4 +34,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     postsContainer.innerHTML = "<p>Erreur lors du chargement de vos posts.</p>";
     console.error("Erreur:", error);
   }
-}); 
+});

@@ -4,9 +4,18 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { registerUser, loginUser } from "./users.js";
-import { createPost, getAllPosts, getPostsByUser, getPostById, updatePost, deletePost } from "./posts.js";
+import {
+  createPost,
+  getAllPosts,
+  getPostsByUser,
+  getPostById,
+  updatePost,
+  deletePost,
+  getPostsByCategory,
+} from "./posts.js";
 import { createReply, getRepliesByPost } from "./replies.js";
 import { votePost, getPostVotes, getUserVote } from "./votes.js";
+import { getAllCategories, getCategoryById } from "./categories.js";
 import db from "./database.js";
 
 dotenv.config();
@@ -81,7 +90,7 @@ app.post("/login", async (req, res) => {
  * @param {import("express").Response} res - The response object
  */
 app.post("/posts", async (req, res) => {
-  const { title, content, userId } = req.body;
+  const { title, content, userId, categoryId } = req.body;
   if (!title || !content || !userId) {
     return res
       .status(400)
@@ -96,7 +105,7 @@ app.post("/posts", async (req, res) => {
         .json({ success: false, message: "Utilisateur non authentifié" });
     }
 
-    const result = await createPost(title, content, userId);
+    const result = await createPost(title, content, userId, categoryId);
     if (result.success) {
       res.json({
         success: true,
@@ -174,7 +183,9 @@ app.post("/votes", async (req, res) => {
     }
   } catch (error) {
     console.error("Erreur lors du vote:", error);
-    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
   }
 });
 
@@ -189,7 +200,9 @@ app.get("/votes/:postId", async (req, res) => {
 
   try {
     const votes = await getPostVotes(postId);
-    const userVote = userId ? await getUserVote(postId, userId) : { voteType: 0 };
+    const userVote = userId
+      ? await getUserVote(postId, userId)
+      : { voteType: 0 };
 
     res.json({
       success: true,
@@ -198,7 +211,9 @@ app.get("/votes/:postId", async (req, res) => {
     });
   } catch (error) {
     console.error("Erreur lors de la récupération des votes:", error);
-    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
   }
 });
 
@@ -210,7 +225,7 @@ app.get("/votes/:postId", async (req, res) => {
 app.get("/api/posts/:postId", async (req, res) => {
   const postId = req.params.postId;
   const result = await getPostById(postId);
-  
+
   if (result.success) {
     res.json({ success: true, post: result.post });
   } else {
@@ -226,7 +241,7 @@ app.get("/api/posts/:postId", async (req, res) => {
 app.get("/api/replies/:postId", async (req, res) => {
   const postId = req.params.postId;
   const result = await getRepliesByPost(postId);
-  
+
   if (result.success) {
     res.json({ success: true, replies: result.replies });
   } else {
@@ -241,7 +256,7 @@ app.get("/api/replies/:postId", async (req, res) => {
  */
 app.post("/api/replies", async (req, res) => {
   const { content, postId, userId } = req.body;
-  
+
   if (!content || !postId || !userId) {
     return res
       .status(400)
@@ -281,7 +296,7 @@ app.post("/api/replies", async (req, res) => {
  */
 app.put("/posts/:postId", async (req, res) => {
   const postId = req.params.postId;
-  const { title, content, userId } = req.body;
+  const { title, content, userId, categoryId } = req.body;
 
   if (!title || !content || !userId) {
     return res
@@ -290,7 +305,6 @@ app.put("/posts/:postId", async (req, res) => {
   }
 
   try {
-    // Vérifier que l'utilisateur existe
     const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
     if (!user) {
       return res
@@ -298,7 +312,7 @@ app.put("/posts/:postId", async (req, res) => {
         .json({ success: false, message: "Utilisateur non authentifié" });
     }
 
-    const result = await updatePost(postId, title, content, userId);
+    const result = await updatePost(postId, title, content, userId, categoryId);
     if (result.success) {
       res.json({ success: true, message: result.message });
     } else {
@@ -328,7 +342,6 @@ app.delete("/posts/:postId", async (req, res) => {
   }
 
   try {
-    // Vérifier que l'utilisateur existe
     const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
     if (!user) {
       return res
@@ -347,6 +360,35 @@ app.delete("/posts/:postId", async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Get all categories
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/categories", async (req, res) => {
+  const result = await getAllCategories();
+  if (result.success) {
+    res.json({ success: true, categories: result.categories });
+  } else {
+    res.status(400).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Get posts by category
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/posts/category/:categoryId", async (req, res) => {
+  const categoryId = req.params.categoryId;
+  const result = await getPostsByCategory(categoryId);
+  if (result.success) {
+    res.json({ success: true, posts: result.posts });
+  } else {
+    res.status(400).json({ success: false, message: result.message });
   }
 });
 
