@@ -192,7 +192,7 @@ wsl --list --verbose
 5. Vérifier l'installation :
 ```powershell
 docker --version
-docker-compose --version
+docker compose version
 ```
 
 #### Sur Ubuntu (WSL)
@@ -368,6 +368,28 @@ docker compose ps
 
 4. Accéder au forum
 Ouvrir votre navigateur et aller à `http://localhost:3000`
+
+### Commandes Docker utiles
+
+- Voir les logs des conteneurs :
+```bash
+docker compose logs -f
+```
+
+- Arrêter les conteneurs :
+```bash
+docker compose down
+```
+
+- Reconstruire et redémarrer les conteneurs :
+```bash
+docker compose up -d --build
+```
+
+- Voir l'utilisation des ressources :
+```bash
+docker stats
+```
 
 ### Sans Docker
 
