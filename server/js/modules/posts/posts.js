@@ -1,161 +1,260 @@
-import {
-  createPostElement,
-  createPostForm,
-  createCategoryFilter,
-} from "./postsUI.js";
+import { createPostElement, createPostForm } from "./postsUI.js";
 import {
   handleEditPost,
   saveEditPost,
   handleDeletePost,
-  handleVote,
   handleCreatePost,
-} from "./postsActions.js";
+  cancelEditPost,
+} from "./postActions.js";
+import { handleVote, loadVotes, setupVoteListeners } from "./postVotes.js";
+import { fetchCategories, fetchPosts } from "./postApi.js";
+import {
+  populateCategorySelect,
+  createPostElement as createPostDOMElement,
+  showError,
+} from "./postDOMUtils.js";
 
+/**
+ * State management for posts
+ */
+const postsState = {
+  currentUserId: null,
+  currentUsername: null,
+  isAuthenticated: false,
+};
+
+/**
+ * Initializes the posts page with all necessary components
+ * @returns {Promise<void>}
+ */
 export async function initializePosts() {
-  const userId = localStorage.getItem("userId");
-  const username = localStorage.getItem("username");
+  initializeUserState();
+  await initializeUI();
+  await loadInitialData();
+  setupEventListeners();
+}
 
-  const postsContainer = document.getElementById("posts-container");
-  const createPostContainer = document.getElementById("create-post-container");
-  const categorySelect = document.getElementById("category");
-  const categoryFilterSelect = document.getElementById(
-    "category-filter-select"
+/**
+ * Initializes user state from localStorage
+ */
+function initializeUserState() {
+  postsState.currentUserId = localStorage.getItem("userId");
+  postsState.currentUsername = localStorage.getItem("username");
+  postsState.isAuthenticated = !!(
+    postsState.currentUserId && postsState.currentUsername
   );
+}
 
-  if (!userId || !username) {
+/**
+ * Initializes the UI components
+ * @returns {Promise<void>}
+ */
+async function initializeUI() {
+  const createPostContainer = document.getElementById("create-post-container");
+
+  if (!createPostContainer) return;
+
+  if (!postsState.isAuthenticated) {
     createPostContainer.innerHTML =
       '<p>Vous devez être <a href="login.html">connecté</a> pour créer un post.</p>';
   } else {
     createPostContainer.innerHTML = createPostForm();
   }
+}
 
-  async function loadCategories() {
-    try {
-      const response = await fetch("/categories");
-      const data = await response.json();
+/**
+ * Loads initial data (categories and posts)
+ * @returns {Promise<void>}
+ */
+async function loadInitialData() {
+  await Promise.all([loadCategories(), loadPosts()]);
+}
 
-      if (data.success) {
-        if (categorySelect) {
-          categorySelect.innerHTML =
-            '<option value="">Sélectionnez une catégorie</option>';
-          data.categories.forEach((category) => {
-            const option = document.createElement("option");
-            option.value = category.id;
-            option.textContent = category.name;
-            categorySelect.appendChild(option);
-          });
-        }
+/**
+ * Loads categories and populates select elements
+ * @returns {Promise<void>}
+ */
+async function loadCategories() {
+  try {
+    const response = await fetchCategories();
 
-        if (categoryFilterSelect) {
-          categoryFilterSelect.innerHTML =
-            '<option value="">Toutes les catégories</option>';
-          data.categories.forEach((category) => {
-            const option = document.createElement("option");
-            option.value = category.id;
-            option.textContent = category.name;
-            categoryFilterSelect.appendChild(option);
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement des catégories:", error);
-    }
-  }
+    if (response.success) {
+      // Populate create post category select
+      populateCategorySelect("category", response.categories);
 
-  async function loadPosts(categoryId = null) {
-    try {
-      const url = categoryId
-        ? `/api/posts/category/${categoryId}`
-        : "/api/posts";
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.success) {
-        postsContainer.innerHTML = "";
-        for (const post of data.posts) {
-          const votes = await loadVotes(post.id);
-          const isOwner = userId && parseInt(userId) === post.user_id;
-          const postElement = document.createElement("div");
-          postElement.innerHTML = createPostElement(post, isOwner, votes);
-          postsContainer.appendChild(postElement);
-
-          const upvoteBtn = postElement.querySelector(".upvote-button");
-          const downvoteBtn = postElement.querySelector(".downvote-button");
-          upvoteBtn.addEventListener("click", () =>
-            handleVote(post.id, userId, 1)
-          );
-          downvoteBtn.addEventListener("click", () =>
-            handleVote(post.id, userId, -1)
-          );
-        }
-
-        window.handleEditPost = (postId) =>
-          handleEditPost(postId, document.querySelector(`#post-${postId}`));
-        window.handleDeletePost = async (postId) => {
-          if (await handleDeletePost(postId, userId)) {
-            loadPosts(categoryFilterSelect ? categoryFilterSelect.value : null);
-          }
-        };
-        window.saveEditPost = async (postId) => {
-          if (await saveEditPost(postId, userId)) {
-            loadPosts(categoryFilterSelect ? categoryFilterSelect.value : null);
-          }
-        };
-        window.cancelEditPost = (postId) => {
-          const postElement = document.querySelector(`#post-${postId}`);
-          const editForm = postElement.querySelector(".edit-form");
-          if (editForm) {
-            editForm.remove();
-            const titleElement = postElement.querySelector(".post-title");
-            const contentElement =
-              postElement.querySelector(".post-content-text");
-            const actionsElement = postElement.querySelector(".post-actions");
-            titleElement.style.display = "";
-            contentElement.style.display = "";
-            actionsElement.style.display = "";
-          }
-        };
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement des posts:", error);
-      postsContainer.innerHTML = "<p>Erreur lors du chargement des posts.</p>";
-    }
-  }
-
-  async function loadVotes(postId) {
-    try {
-      const response = await fetch(
-        `/votes/${postId}${userId ? `?userId=${userId}` : ""}`
+      // Populate filter category select
+      populateCategorySelect(
+        "category-filter-select",
+        response.categories,
+        "Toutes les catégories"
       );
-      const data = await response.json();
-
-      if (data.success) {
-        return data.votes;
-      }
-      return { totalVotes: 0, userVote: 0 };
-    } catch (error) {
-      console.error("Erreur lors du chargement des votes:", error);
-      return { totalVotes: 0, userVote: 0 };
     }
+  } catch (error) {
+    console.error("Error loading categories:", error);
+    showError("Erreur lors du chargement des catégories.");
   }
+}
+
+/**
+ * Loads and displays posts
+ * @param {number|null} categoryId - Category filter (null for all posts)
+ * @returns {Promise<void>}
+ */
+async function loadPosts(categoryId = null) {
+  const postsContainer = document.getElementById("posts-container");
+  if (!postsContainer) return;
+
+  try {
+    const response = await fetchPosts(categoryId);
+
+    if (response.success) {
+      postsContainer.innerHTML = "";
+
+      // Process posts in parallel
+      const postElements = await Promise.all(
+        response.posts.map((post) => createPostWithVotes(post))
+      );
+
+      // Add all posts to container
+      postElements.forEach((postElement) => {
+        postsContainer.appendChild(postElement);
+      });
+
+      setupGlobalPostHandlers();
+    } else {
+      showError("Erreur lors du chargement des posts.");
+    }
+  } catch (error) {
+    console.error("Error loading posts:", error);
+    postsContainer.innerHTML = "<p>Erreur lors du chargement des posts.</p>";
+  }
+}
+
+/**
+ * Creates a post element with vote data
+ * @param {Object} post - Post data
+ * @returns {Promise<HTMLElement>} Post DOM element
+ */
+async function createPostWithVotes(post) {
+  const votes = await loadVotes(post.id, postsState.currentUserId);
+  const isOwner =
+    postsState.isAuthenticated &&
+    parseInt(postsState.currentUserId) === post.user_id;
+
+  const postHTML = createPostElement(post, isOwner, votes);
+  const postElement = createPostDOMElement(postHTML);
+
+  // Setup vote listeners if user is authenticated
+  if (postsState.isAuthenticated) {
+    setupVoteListeners(postElement, post.id, postsState.currentUserId);
+  }
+
+  return postElement;
+}
+
+/**
+ * Sets up global post action handlers
+ */
+function setupGlobalPostHandlers() {
+  // These functions need to be available globally for onclick handlers
+  window.handleEditPost = (postId) => {
+    const postElement = document.querySelector(`#post-${postId}`);
+    if (postElement) {
+      handleEditPost(postElement);
+    }
+  };
+
+  window.handleDeletePost = async (postId) => {
+    if (await handleDeletePost(postId, postsState.currentUserId)) {
+      const categoryFilterSelect = document.getElementById(
+        "category-filter-select"
+      );
+      const selectedCategoryId = categoryFilterSelect?.value || null;
+      await loadPosts(selectedCategoryId);
+    }
+  };
+
+  window.saveEditPost = async (postId) => {
+    if (await saveEditPost(postId, postsState.currentUserId)) {
+      const categoryFilterSelect = document.getElementById(
+        "category-filter-select"
+      );
+      const selectedCategoryId = categoryFilterSelect?.value || null;
+      await loadPosts(selectedCategoryId);
+    }
+  };
+
+  window.cancelEditPost = (postId) => {
+    cancelEditPost(postId);
+  };
+}
+
+/**
+ * Sets up event listeners for various UI components
+ */
+function setupEventListeners() {
+  setupCategoryFilterListener();
+  setupCreatePostFormListener();
+}
+
+/**
+ * Sets up category filter change listener
+ */
+function setupCategoryFilterListener() {
+  const categoryFilterSelect = document.getElementById(
+    "category-filter-select"
+  );
 
   if (categoryFilterSelect) {
     categoryFilterSelect.addEventListener("change", async () => {
-      const selectedCategoryId = categoryFilterSelect.value;
-      await loadPosts(selectedCategoryId || null);
+      const selectedCategoryId = categoryFilterSelect.value || null;
+      await loadPosts(selectedCategoryId);
     });
   }
+}
 
-  const createPostForm = document.getElementById("create-post-form");
-  if (createPostForm) {
-    createPostForm.addEventListener("submit", async (e) => {
+/**
+ * Sets up create post form submit listener
+ */
+function setupCreatePostFormListener() {
+  const createPostFormElement = document.getElementById("create-post-form");
+
+  if (createPostFormElement) {
+    createPostFormElement.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (await handleCreatePost(userId)) {
-        loadPosts(categoryFilterSelect ? categoryFilterSelect.value : null);
+
+      if (await handleCreatePost(postsState.currentUserId)) {
+        const categoryFilterSelect = document.getElementById(
+          "category-filter-select"
+        );
+        const selectedCategoryId = categoryFilterSelect?.value || null;
+        await loadPosts(selectedCategoryId);
       }
     });
   }
+}
 
-  await loadCategories();
-  await loadPosts();
+/**
+ * Refreshes posts list (useful for external calls)
+ * @param {number|null} categoryId - Category filter
+ * @returns {Promise<void>}
+ */
+export async function refreshPosts(categoryId = null) {
+  await loadPosts(categoryId);
+}
+
+/**
+ * Gets current user authentication status
+ * @returns {boolean} Whether user is authenticated
+ */
+export function isUserAuthenticated() {
+  return postsState.isAuthenticated;
+}
+
+/**
+ * Gets current user ID
+ * @returns {string|null} Current user ID
+ */
+export function getCurrentUserId() {
+  return postsState.currentUserId;
 }

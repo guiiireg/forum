@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("login-form");
-  const loginButton = document.getElementById("login-button");
   const logoutLink = document.getElementById("logout-link");
 
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
-  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>;
+
   if (userId && username) {
     if (logoutLink) {
       logoutLink.style.display = "block";
@@ -25,42 +24,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (logoutLink) {
     logoutLink.addEventListener("click", function (e) {
       e.preventDefault();
-
       localStorage.removeItem("userId");
       localStorage.removeItem("username");
-
       window.location.href = "login.html";
-    });
-  }
-
-  if (loginButton) {
-    loginButton.addEventListener("click", async function () {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      try {
-        const response = await fetch("/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          localStorage.setItem("userId", data.userId);
-          localStorage.setItem("username", data.username);
-          window.location.href = "home.html";
-        } else {
-          document.getElementById("error-message").textContent = data.message;
-        }
-      } catch (error) {
-        document.getElementById("error-message").textContent =
-          "Erreur de connexion";
-        console.error("Erreur:", error);
-      }
     });
   }
 

@@ -115,7 +115,14 @@ sequenceDiagram
 - Gestion des transactions
 - Indexation appropriée
 
-### 6. Système de Votes (0.5 point)
+### 6. Routing Erreur Web + RGPD (0.5 point)
+- Gestion globale des erreurs avec middleware Express
+- Page d'erreur 404 personnalisée
+- Politique de confidentialité conforme RGPD
+- Gestion des cookies et des données personnelles
+- Droits des utilisateurs (accès, rectification, effacement)
+
+### 7. Système de Votes (0.5 point)
 - Upvote/Downvote
 - Un vote par utilisateur
 - Mise à jour en temps réel
@@ -135,6 +142,7 @@ sequenceDiagram
 - Agrégations
 
 ### 9. Gestion des Versions (0.5 point)
+### 9. Gestion des Versions (0.5 point)
 - Utilisation de Git
 - Branches thématiques :
   - `main` : Version stable
@@ -147,11 +155,13 @@ sequenceDiagram
 - Commits atomiques et descriptifs
 
 ### 10. Qualité du Code (0.5 point)
+### 10. Qualité du Code (0.5 point)
 - Code modulaire
 - Documentation claire
 - Tests unitaires
 - Gestion des erreurs
 
+### 11. Nomenclature (0.75 point)
 ### 11. Nomenclature (0.75 point)
 - Conventions de nommage cohérentes
 - Variables descriptives
@@ -159,11 +169,13 @@ sequenceDiagram
 - Commentaires pertinents
 
 ### 12. Organisation des Fichiers (1 point)
+### 12. Organisation des Fichiers (1 point)
 - Structure modulaire
 - Séparation des responsabilités
 - Architecture MVC
 - Gestion des dépendances
 
+### 13. Docker (1.5 points - Bonus)
 ### 13. Docker (1.5 points - Bonus)
 - Containerisation complète
 - Multi-stage builds
@@ -199,6 +211,7 @@ wsl --list --verbose
 5. Vérifier l'installation :
 ```powershell
 docker --version
+docker compose version
 docker compose version
 ```
 
@@ -375,6 +388,28 @@ docker compose ps
 
 4. Accéder au forum
 Ouvrir votre navigateur et aller à `http://localhost:3000`
+
+### Commandes Docker utiles
+
+- Voir les logs des conteneurs :
+```bash
+docker compose logs -f
+```
+
+- Arrêter les conteneurs :
+```bash
+docker compose down
+```
+
+- Reconstruire et redémarrer les conteneurs :
+```bash
+docker compose up -d --build
+```
+
+- Voir l'utilisation des ressources :
+```bash
+docker stats
+```
 
 ### Commandes Docker utiles
 

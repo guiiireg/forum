@@ -1,125 +1,184 @@
+import { fetchCategories, createPost, updatePost, deletePost } from './postApi.js';
+import { validatePostForm, sanitizeText } from './postValidation.js';
+import { showError, showSuccess, getPostFormData, getEditFormData, clearPostForm, toggleEditMode, findPostElement } from './postDOMUtils.js';
+import { createEditForm } from './postsUI.js';
+
+/**
+ * Handles the edit post action by showing the edit form
+ * @param {HTMLElement} postElement - The post DOM element
+ * @returns {Promise<void>}
+ */
 export async function handleEditPost(postElement) {
-  const titleElement = postElement.querySelector("h2");
-  const contentElement = postElement.querySelector("p");
-  const actionsElement = postElement.querySelector(".post-actions");
+  const titleElement = postElement.querySelector("h2, .post-title");
+  const contentElement = postElement.querySelector("p, .post-content-text");
+  
+  if (!titleElement || !contentElement) {
+    showError("Impossible de trouver les éléments du post à modifier.");
+    return;
+  }
 
   const currentTitle = titleElement.textContent;
   const currentContent = contentElement.textContent;
 
-  const categoriesResponse = await fetch("/categories");
-  const categoriesData = await categoriesResponse.json();
+  try {
+    const categoriesData = await fetchCategories();
+    
+    if (!categoriesData.success) {
+      showError("Erreur lors du chargement des catégories.");
+      return;
+    }
 
-  let categoriesOptions =
-    '<option value="">Sélectionnez une catégorie</option>';
-  if (categoriesData.success) {
+    let categoriesOptions = '<option value="">Sélectionnez une catégorie</option>';
     categoriesData.categories.forEach((category) => {
       categoriesOptions += `<option value="${category.id}">${category.name}</option>`;
     });
+
+    const postId = postElement.id.replace('post-', '');
+    const editFormHTML = createEditForm(postId, currentTitle, currentContent, categoriesOptions);
+    
+    const editForm = document.createElement("div");
+    editForm.innerHTML = editFormHTML;
+    
+    toggleEditMode(postElement, true);
+    postElement.appendChild(editForm);
+    
+  } catch (error) {
+    console.error("Error in handleEditPost:", error);
+    showError("Une erreur est survenue lors de l'initialisation de l'édition.");
   }
-
-  const editForm = document.createElement("div");
-  editForm.className = "edit-form";
-  editForm.innerHTML = `
-    <div>
-      <label for="edit-category">Catégorie :</label>
-      <select id="edit-category">${categoriesOptions}</select>
-    </div>
-    <div>
-      <label for="edit-title">Titre :</label>
-      <input type="text" id="edit-title" value="${currentTitle}" required />
-    </div>
-    <div>
-      <label for="edit-content">Contenu :</label>
-      <textarea id="edit-content" rows="4" required>${currentContent}</textarea>
-    </div>
-    <div class="edit-buttons">
-      <button onclick="saveEditPost()">Sauvegarder</button>
-      <button onclick="cancelEditPost()">Annuler</button>
-    </div>
-  `;
-
-  titleElement.style.display = "none";
-  contentElement.style.display = "none";
-  if (actionsElement) actionsElement.style.display = "none";
-
-  postElement.appendChild(editForm);
 }
 
+/**
+ * Saves the edited post
+ * @param {number} postId - ID of the post to save
+ * @param {number} userId - ID of the user making the edit
+ * @returns {Promise<boolean>} Success status
+ */
 export async function saveEditPost(postId, userId) {
-  const titleInput = document.getElementById("edit-title");
-  const contentInput = document.getElementById("edit-content");
-  const categoryInput = document.getElementById("edit-category");
-
-  const newTitle = titleInput.value.trim();
-  const newContent = contentInput.value.trim();
-  const newCategoryId = categoryInput.value;
-
-  if (!newTitle || !newContent) {
-    alert("Le titre et le contenu sont requis.");
-    return;
-  }
-
-  if (!newCategoryId) {
-    alert("Veuillez sélectionner une catégorie.");
-    return;
-  }
-
   try {
-    const response = await fetch(`/posts/${postId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: newTitle,
-        content: newContent,
-        userId: parseInt(userId),
-        categoryId: parseInt(newCategoryId),
-      }),
-    });
+    const formData = getEditFormData(postId);
+    
+    // Sanitize input data
+    const sanitizedData = {
+      title: sanitizeText(formData.title),
+      content: sanitizeText(formData.content),
+      categoryId: formData.categoryId
+    };
 
-    const data = await response.json();
+    // Validate the form data
+    const validation = validatePostForm(sanitizedData, userId);
+    if (!validation.isValid) {
+      showError(validation.error);
+      return false;
+    }
 
-    if (data.success) {
-      alert(data.message);
+    const postData = {
+      title: sanitizedData.title,
+      content: sanitizedData.content,
+      userId: parseInt(userId),
+      categoryId: parseInt(sanitizedData.categoryId),
+    };
+
+    const response = await updatePost(postId, postData);
+
+    if (response.success) {
+      showSuccess(response.message);
       return true;
     } else {
-      alert(data.message);
+      showError(response.message);
       return false;
     }
   } catch (error) {
-    console.error("Erreur lors de la modification:", error);
-    alert("Une erreur est survenue lors de la modification.");
+    console.error("Error in saveEditPost:", error);
+    showError("Une erreur est survenue lors de la modification.");
     return false;
   }
 }
 
+/**
+ * Handles post deletion with confirmation
+ * @param {number} postId - ID of the post to delete
+ * @param {number} userId - ID of the user requesting deletion
+ * @returns {Promise<boolean>} Success status
+ */
 export async function handleDeletePost(postId, userId) {
   if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) {
     return false;
   }
 
   try {
-    const response = await fetch(`/posts/${postId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: parseInt(userId) }),
-    });
+    const response = await deletePost(postId, userId);
 
-    const data = await response.json();
-
-    if (data.success) {
-      alert(data.message);
+    if (response.success) {
+      showSuccess(response.message);
       return true;
     } else {
-      alert(data.message);
+      showError(response.message);
       return false;
     }
   } catch (error) {
-    console.error("Erreur lors de la suppression:", error);
-    alert("Une erreur est survenue lors de la suppression.");
+    console.error("Error in handleDeletePost:", error);
+    showError("Une erreur est survenue lors de la suppression.");
     return false;
   }
 }
+
+/**
+ * Handles post creation
+ * @param {number} userId - ID of the user creating the post
+ * @returns {Promise<boolean>} Success status
+ */
+export async function handleCreatePost(userId) {
+  try {
+    const formData = getPostFormData();
+    
+    // Sanitize input data
+    const sanitizedData = {
+      title: sanitizeText(formData.title),
+      content: sanitizeText(formData.content),
+      categoryId: formData.categoryId
+    };
+
+    // Validate the form data
+    const validation = validatePostForm(sanitizedData, userId);
+    if (!validation.isValid) {
+      showError(validation.error);
+      return false;
+    }
+
+    const postData = {
+      title: sanitizedData.title,
+      content: sanitizedData.content,
+      userId: parseInt(userId),
+      categoryId: parseInt(sanitizedData.categoryId),
+    };
+
+    const response = await createPost(postData);
+
+    if (response.success) {
+      showSuccess(response.message);
+      clearPostForm();
+      return true;
+    } else {
+      showError(response.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Error in handleCreatePost:", error);
+    showError("Une erreur est survenue lors de la création du post.");
+    return false;
+  }
+}
+
+/**
+ * Cancels post editing and returns to normal view
+ * @param {number} postId - ID of the post being edited
+ */
+export function cancelEditPost(postId) {
+  const postElement = findPostElement(postId);
+  if (postElement) {
+    toggleEditMode(postElement, false);
+  }
+}
+
+

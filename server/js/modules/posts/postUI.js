@@ -74,3 +74,4 @@ export function hideEditForm(postElement) {
   if (actionsElement) actionsElement.style.display = "";
   editForm.remove();
 }
+ 
