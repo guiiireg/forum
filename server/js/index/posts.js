@@ -64,26 +64,98 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  async function handleVote(postId, voteType) {
+    if (!userId) {
+      alert("Vous devez être connecté pour voter.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/votes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ postId, userId, voteType }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Mettre à jour l'affichage des votes
+        const voteContainer = document.querySelector(`#vote-container-${postId}`);
+        if (voteContainer) {
+          const voteCount = voteContainer.querySelector(".vote-count");
+          const upvoteButton = voteContainer.querySelector(".upvote-button");
+          const downvoteButton = voteContainer.querySelector(".downvote-button");
+
+          voteCount.textContent = data.votes.totalVotes;
+
+          // Mettre à jour l'état des boutons
+          upvoteButton.classList.toggle("upvoted", data.votes.userVote === 1);
+          downvoteButton.classList.toggle("downvoted", data.votes.userVote === -1);
+        }
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors du vote:", error);
+      alert("Une erreur est survenue lors du vote.");
+    }
+  }
+
+  async function loadVotes(postId) {
+    try {
+      const response = await fetch(`/votes/${postId}${userId ? `?userId=${userId}` : ""}`);
+      const data = await response.json();
+
+      if (data.success) {
+        return data;
+      }
+      return { totalVotes: 0, userVote: 0 };
+    } catch (error) {
+      console.error("Erreur lors du chargement des votes:", error);
+      return { totalVotes: 0, userVote: 0 };
+    }
+  }
+
   async function loadPosts() {
     try {
       const response = await fetch("/posts");
       const data = await response.json();
 
       if (data.success && data.posts.length > 0) {
-        postsContainer.innerHTML = data.posts
-          .map(
-            (post) => `
-            <div class="post">
-              <h3>${post.title}</h3>
+        postsContainer.innerHTML = "";
+        
+        for (const post of data.posts) {
+          const votes = await loadVotes(post.id);
+          
+          const postElement = document.createElement("div");
+          postElement.className = "post";
+          
+          postElement.innerHTML = `
+            <div class="vote-container" id="vote-container-${post.id}">
+              <button class="vote-button upvote-button ${votes.userVote === 1 ? 'upvoted' : ''}">▲</button>
+              <span class="vote-count">${votes.totalVotes}</span>
+              <button class="vote-button downvote-button ${votes.userVote === -1 ? 'downvoted' : ''}">▼</button>
+            </div>
+            <div class="post-content">
+              <h3><a href="post.html?id=${post.id}">${post.title}</a></h3>
               <p>${post.content}</p>
               <div class="post-meta">
                 <span>Par: ${post.username}</span>
                 <span>Date: ${new Date(post.created_at).toLocaleString()}</span>
               </div>
             </div>
-          `
-          )
-          .join("");
+          `;
+          
+          postsContainer.appendChild(postElement);
+
+          const upvoteBtn = postElement.querySelector('.upvote-button');
+          const downvoteBtn = postElement.querySelector('.downvote-button');
+          upvoteBtn.addEventListener('click', () => handleVote(post.id, 1));
+          downvoteBtn.addEventListener('click', () => handleVote(post.id, -1));
+        }
       } else {
         postsContainer.innerHTML = "<p>Aucun post disponible.</p>";
       }
@@ -92,5 +164,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Erreur:", error);
     }
   }
+
   loadPosts();
 });

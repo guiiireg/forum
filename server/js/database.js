@@ -37,6 +37,37 @@ await db.exec(`
 `);
 
 /**
+ * Create the replies table if it doesn't exist
+ */
+await db.exec(`
+    CREATE TABLE IF NOT EXISTS replies (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES posts (id),
+        FOREIGN KEY (user_id) REFERENCES users (id)
+    );
+`);
+
+/**
+ * Create the votes table if it doesn't exist
+ */
+await db.exec(`
+    CREATE TABLE IF NOT EXISTS votes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        vote_type INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES posts (id),
+        FOREIGN KEY (user_id) REFERENCES users (id),
+        UNIQUE (post_id, user_id)
+    );
+`);
+
+/**
  * Export the database
  * @returns {Database} The database
  */

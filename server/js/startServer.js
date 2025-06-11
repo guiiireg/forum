@@ -4,7 +4,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { registerUser, loginUser } from "./users.js";
-import { createPost, getAllPosts, getPostsByUser } from "./posts.js";
+import { createPost, getAllPosts, getPostsByUser, getPostById } from "./posts.js";
+import { createReply, getRepliesByPost } from "./replies.js";
+import { votePost, getPostVotes, getUserVote } from "./votes.js";
 import db from "./database.js";
 
 dotenv.config();
@@ -138,6 +140,137 @@ app.get("/posts/user/:userId", async (req, res) => {
     res.json({ success: true, posts: result.posts });
   } else {
     res.status(400).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Vote for a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.post("/votes", async (req, res) => {
+  const { postId, userId, voteType } = req.body;
+  if (!postId || !userId || !voteType) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
+  }
+
+  try {
+    const result = await votePost(postId, userId, voteType);
+    if (result.success) {
+      const votes = await getPostVotes(postId);
+      const userVote = await getUserVote(postId, userId);
+      res.json({
+        success: true,
+        message: result.message,
+        votes: {
+          totalVotes: votes.totalVotes,
+          userVote: userVote.voteType,
+        },
+      });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error("Erreur lors du vote:", error);
+    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Get votes for a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/votes/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.query.userId;
+
+  try {
+    const votes = await getPostVotes(postId);
+    const userVote = userId ? await getUserVote(postId, userId) : { voteType: 0 };
+
+    res.json({
+      success: true,
+      totalVotes: votes.totalVotes,
+      userVote: userVote.voteType,
+    });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des votes:", error);
+    res.status(500).json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Get a single post by ID
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/api/posts/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  const result = await getPostById(postId);
+  
+  if (result.success) {
+    res.json({ success: true, post: result.post });
+  } else {
+    res.status(404).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Get replies for a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/api/replies/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  const result = await getRepliesByPost(postId);
+  
+  if (result.success) {
+    res.json({ success: true, replies: result.replies });
+  } else {
+    res.status(400).json({ success: false, message: result.message });
+  }
+});
+
+/**
+ * Create a reply
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.post("/api/replies", async (req, res) => {
+  const { content, postId, userId } = req.body;
+  
+  if (!content || !postId || !userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
+  }
+
+  try {
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Utilisateur non authentifié" });
+    }
+
+    const result = await createReply(content, postId, userId);
+    if (result.success) {
+      res.json({
+        success: true,
+        message: result.message,
+        replyId: result.replyId,
+      });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la création de la réponse:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
   }
 });
 

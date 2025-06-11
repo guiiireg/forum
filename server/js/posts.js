@@ -75,3 +75,37 @@ export async function getPostsByUser(userId) {
     };
   }
 }
+
+/**
+ * Get a post by ID
+ * @param {number} postId - The post ID
+ * @returns {Promise<Object>} The post
+ */
+export async function getPostById(postId) {
+  try {
+    const post = await db.get(
+      `
+      SELECT p.*, u.username 
+      FROM posts p
+      JOIN users u ON p.user_id = u.id
+      WHERE p.id = ?
+      `,
+      [postId]
+    );
+    
+    if (!post) {
+      return {
+        success: false,
+        message: "Post non trouvé",
+      };
+    }
+    
+    return { success: true, post };
+  } catch (error) {
+    console.error("Erreur lors de la récupération du post:", error);
+    return {
+      success: false,
+      message: "Une erreur est survenue lors de la récupération du post",
+    };
+  }
+}
