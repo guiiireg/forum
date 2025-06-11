@@ -9,7 +9,7 @@ import {
   handleDeletePost,
   handleVote,
   handleCreatePost,
-} from "./postsActions.js";
+} from "./postActions.js";
 
 export async function initializePosts() {
   const userId = localStorage.getItem("userId");

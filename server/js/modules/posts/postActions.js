@@ -123,4 +123,107 @@ export async function handleDeletePost(postId, userId) {
     return false;
   }
 }
- 
+
+export async function handleCreatePost(userId) {
+  const categorySelect = document.getElementById("category");
+  const titleInput = document.getElementById("title");
+  const contentInput = document.getElementById("content");
+
+  const categoryId = categorySelect.value;
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+
+  if (!title || !content) {
+    alert("Le titre et le contenu sont requis.");
+    return false;
+  }
+
+  if (!categoryId) {
+    alert("Veuillez sélectionner une catégorie.");
+    return false;
+  }
+
+  try {
+    const response = await fetch("/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        content,
+        userId: parseInt(userId),
+        categoryId: parseInt(categoryId),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      alert(data.message);
+      // Reset form
+      titleInput.value = "";
+      contentInput.value = "";
+      categorySelect.value = "";
+      return true;
+    } else {
+      alert(data.message);
+      return false;
+    }
+  } catch (error) {
+    console.error("Erreur lors de la création:", error);
+    alert("Une erreur est survenue lors de la création du post.");
+    return false;
+  }
+}
+
+export async function handleVote(postId, userId, voteType) {
+  if (!userId) {
+    alert("Vous devez être connecté pour voter.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/votes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        postId: parseInt(postId),
+        userId: parseInt(userId),
+        voteType: parseInt(voteType),
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Update vote display
+      const voteContainer = document.getElementById(`vote-container-${postId}`);
+      if (voteContainer) {
+        const voteCount = voteContainer.querySelector(".vote-count");
+        const upvoteBtn = voteContainer.querySelector(".upvote-button");
+        const downvoteBtn = voteContainer.querySelector(".downvote-button");
+
+        if (voteCount) voteCount.textContent = data.votes.totalVotes;
+
+        // Remove previous vote classes
+        upvoteBtn.classList.remove("upvoted");
+        downvoteBtn.classList.remove("downvoted");
+
+        // Add new vote class
+        if (data.votes.userVote === 1) {
+          upvoteBtn.classList.add("upvoted");
+        } else if (data.votes.userVote === -1) {
+          downvoteBtn.classList.add("downvoted");
+        }
+      }
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    console.error("Erreur lors du vote:", error);
+    alert("Une erreur est survenue lors du vote.");
+  }
+}
