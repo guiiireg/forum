@@ -4,7 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
 import { registerUser, loginUser } from "./users.js";
-import { createPost, getAllPosts, getPostsByUser, getPostById } from "./posts.js";
+import { createPost, getAllPosts, getPostsByUser, getPostById, updatePost, deletePost } from "./posts.js";
 import { createReply, getRepliesByPost } from "./replies.js";
 import { votePost, getPostVotes, getUserVote } from "./votes.js";
 import db from "./database.js";
@@ -268,6 +268,82 @@ app.post("/api/replies", async (req, res) => {
     }
   } catch (error) {
     console.error("Erreur lors de la création de la réponse:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Update a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.put("/posts/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  const { title, content, userId } = req.body;
+
+  if (!title || !content || !userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
+  }
+
+  try {
+    // Vérifier que l'utilisateur existe
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Utilisateur non authentifié" });
+    }
+
+    const result = await updatePost(postId, title, content, userId);
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du post:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Erreur interne du serveur" });
+  }
+});
+
+/**
+ * Delete a post
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.delete("/posts/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Données invalides" });
+  }
+
+  try {
+    // Vérifier que l'utilisateur existe
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Utilisateur non authentifié" });
+    }
+
+    const result = await deletePost(postId, userId);
+    if (result.success) {
+      res.json({ success: true, message: result.message });
+    } else {
+      res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error("Erreur lors de la suppression du post:", error);
     res
       .status(500)
       .json({ success: false, message: "Erreur interne du serveur" });

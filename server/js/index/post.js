@@ -12,6 +12,122 @@ document.addEventListener("DOMContentLoaded", async () => {
   const repliesContainer = document.getElementById("replies-container");
   const replyFormContainer = document.getElementById("reply-form-container");
 
+  async function handleEditPost() {
+    const postElement = document.querySelector('.post');
+    const titleElement = postElement.querySelector('h2');
+    const contentElement = postElement.querySelector('p');
+    const actionsElement = postElement.querySelector('.post-actions');
+    
+    const currentTitle = titleElement.textContent;
+    const currentContent = contentElement.textContent;
+    
+    // Créer le formulaire d'édition
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-form';
+    editForm.innerHTML = `
+      <div>
+        <label for="edit-title">Titre :</label>
+        <input type="text" id="edit-title" value="${currentTitle}" required />
+      </div>
+      <div>
+        <label for="edit-content">Contenu :</label>
+        <textarea id="edit-content" rows="4" required>${currentContent}</textarea>
+      </div>
+      <div class="edit-buttons">
+        <button onclick="saveEditPost()">Sauvegarder</button>
+        <button onclick="cancelEditPost()">Annuler</button>
+      </div>
+    `;
+    
+    // Masquer le contenu original et afficher le formulaire
+    titleElement.style.display = 'none';
+    contentElement.style.display = 'none';
+    if (actionsElement) actionsElement.style.display = 'none';
+    
+    postElement.appendChild(editForm);
+  }
+
+  window.saveEditPost = async function() {
+    const titleInput = document.getElementById('edit-title');
+    const contentInput = document.getElementById('edit-content');
+    
+    const newTitle = titleInput.value.trim();
+    const newContent = contentInput.value.trim();
+    
+    if (!newTitle || !newContent) {
+      alert("Le titre et le contenu sont requis.");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/posts/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          title: newTitle, 
+          content: newContent, 
+          userId: parseInt(userId) 
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(data.message);
+        loadPost(); // Recharger le post
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la modification:", error);
+      alert("Une erreur est survenue lors de la modification.");
+    }
+  };
+
+  window.cancelEditPost = function() {
+    const postElement = document.querySelector('.post');
+    const titleElement = postElement.querySelector('h2');
+    const contentElement = postElement.querySelector('p');
+    const actionsElement = postElement.querySelector('.post-actions');
+    const editForm = postElement.querySelector('.edit-form');
+    
+    // Remettre l'affichage normal
+    titleElement.style.display = '';
+    contentElement.style.display = '';
+    if (actionsElement) actionsElement.style.display = '';
+    editForm.remove();
+  };
+
+  async function handleDeletePost() {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: parseInt(userId) }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(data.message);
+        window.location.href = "posts.html"; // Rediriger vers la liste des posts
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      alert("Une erreur est survenue lors de la suppression.");
+    }
+  }
+
   async function loadPost() {
     try {
       const response = await fetch(`/api/posts/${postId}`);
@@ -19,6 +135,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (data.success) {
         const post = data.post;
+        
+        // Créer les boutons d'édition et suppression seulement si l'utilisateur est le propriétaire
+        const isOwner = userId && parseInt(userId) === post.user_id;
+        const actionsHtml = isOwner ? `
+          <div class="post-actions">
+            <button onclick="handleEditPost()" class="edit-btn">✏️ Modifier</button>
+            <button onclick="handleDeletePost()" class="delete-btn">🗑️ Supprimer</button>
+          </div>
+        ` : '';
+        
         postContainer.innerHTML = `
           <div class="post">
             <h2>${post.title}</h2>
@@ -27,8 +153,13 @@ document.addEventListener("DOMContentLoaded", async () => {
               <span>Par: ${post.username}</span>
               <span>Date: ${new Date(post.created_at).toLocaleString()}</span>
             </div>
+            ${actionsHtml}
           </div>
         `;
+        
+        // Rendre les fonctions globales pour les boutons
+        window.handleEditPost = handleEditPost;
+        window.handleDeletePost = handleDeletePost;
       } else {
         postContainer.innerHTML = "<p>Post non trouvé.</p>";
       }

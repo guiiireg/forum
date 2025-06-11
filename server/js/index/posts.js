@@ -82,18 +82,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (data.success) {
-        // Mettre à jour l'affichage des votes
-        const voteContainer = document.querySelector(`#vote-container-${postId}`);
+        const voteContainer = document.querySelector(
+          `#vote-container-${postId}`
+        );
         if (voteContainer) {
           const voteCount = voteContainer.querySelector(".vote-count");
           const upvoteButton = voteContainer.querySelector(".upvote-button");
-          const downvoteButton = voteContainer.querySelector(".downvote-button");
+          const downvoteButton =
+            voteContainer.querySelector(".downvote-button");
 
           voteCount.textContent = data.votes.totalVotes;
 
-          // Mettre à jour l'état des boutons
           upvoteButton.classList.toggle("upvoted", data.votes.userVote === 1);
-          downvoteButton.classList.toggle("downvoted", data.votes.userVote === -1);
+          downvoteButton.classList.toggle(
+            "downvoted",
+            data.votes.userVote === -1
+          );
         }
       } else {
         alert(data.message);
@@ -104,9 +108,127 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function handleEditPost(postId) {
+    const postElement = document.querySelector(`#post-${postId}`);
+    const titleElement = postElement.querySelector('.post-title');
+    const contentElement = postElement.querySelector('.post-content-text');
+    const actionsElement = postElement.querySelector('.post-actions');
+    
+    const currentTitle = titleElement.textContent;
+    const currentContent = contentElement.textContent;
+    
+    // Créer le formulaire d'édition
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-form';
+    editForm.innerHTML = `
+      <div>
+        <label for="edit-title-${postId}">Titre :</label>
+        <input type="text" id="edit-title-${postId}" value="${currentTitle}" required />
+      </div>
+      <div>
+        <label for="edit-content-${postId}">Contenu :</label>
+        <textarea id="edit-content-${postId}" rows="4" required>${currentContent}</textarea>
+      </div>
+      <div class="edit-buttons">
+        <button onclick="saveEditPost(${postId})">Sauvegarder</button>
+        <button onclick="cancelEditPost(${postId})">Annuler</button>
+      </div>
+    `;
+    
+    // Masquer le contenu original et afficher le formulaire
+    titleElement.style.display = 'none';
+    contentElement.style.display = 'none';
+    actionsElement.style.display = 'none';
+    
+    postElement.querySelector('.post-content').appendChild(editForm);
+  }
+
+  window.saveEditPost = async function(postId) {
+    const titleInput = document.getElementById(`edit-title-${postId}`);
+    const contentInput = document.getElementById(`edit-content-${postId}`);
+    
+    const newTitle = titleInput.value.trim();
+    const newContent = contentInput.value.trim();
+    
+    if (!newTitle || !newContent) {
+      alert("Le titre et le contenu sont requis.");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/posts/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          title: newTitle, 
+          content: newContent, 
+          userId: parseInt(userId) 
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(data.message);
+        loadPosts(); // Recharger les posts
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la modification:", error);
+      alert("Une erreur est survenue lors de la modification.");
+    }
+  };
+
+  window.cancelEditPost = function(postId) {
+    const postElement = document.querySelector(`#post-${postId}`);
+    const titleElement = postElement.querySelector('.post-title');
+    const contentElement = postElement.querySelector('.post-content-text');
+    const actionsElement = postElement.querySelector('.post-actions');
+    const editForm = postElement.querySelector('.edit-form');
+    
+    // Remettre l'affichage normal
+    titleElement.style.display = '';
+    contentElement.style.display = '';
+    actionsElement.style.display = '';
+    editForm.remove();
+  };
+
+  async function handleDeletePost(postId) {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: parseInt(userId) }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert(data.message);
+        loadPosts(); // Recharger les posts
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      alert("Une erreur est survenue lors de la suppression.");
+    }
+  }
+
   async function loadVotes(postId) {
     try {
-      const response = await fetch(`/votes/${postId}${userId ? `?userId=${userId}` : ""}`);
+      const response = await fetch(
+        `/votes/${postId}${userId ? `?userId=${userId}` : ""}`
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -132,6 +254,16 @@ document.addEventListener("DOMContentLoaded", () => {
           
           const postElement = document.createElement("div");
           postElement.className = "post";
+          postElement.id = `post-${post.id}`;
+          
+          // Créer les boutons d'édition et suppression seulement si l'utilisateur est le propriétaire
+          const isOwner = userId && parseInt(userId) === post.user_id;
+          const actionsHtml = isOwner ? `
+            <div class="post-actions">
+              <button onclick="handleEditPost(${post.id})" class="edit-btn">✏️ Modifier</button>
+              <button onclick="handleDeletePost(${post.id})" class="delete-btn">🗑️ Supprimer</button>
+            </div>
+          ` : '';
           
           postElement.innerHTML = `
             <div class="vote-container" id="vote-container-${post.id}">
@@ -140,12 +272,13 @@ document.addEventListener("DOMContentLoaded", () => {
               <button class="vote-button downvote-button ${votes.userVote === -1 ? 'downvoted' : ''}">▼</button>
             </div>
             <div class="post-content">
-              <h3><a href="post.html?id=${post.id}">${post.title}</a></h3>
-              <p>${post.content}</p>
+              <h3 class="post-title"><a href="post.html?id=${post.id}">${post.title}</a></h3>
+              <p class="post-content-text">${post.content}</p>
               <div class="post-meta">
                 <span>Par: ${post.username}</span>
                 <span>Date: ${new Date(post.created_at).toLocaleString()}</span>
               </div>
+              ${actionsHtml}
             </div>
           `;
           
@@ -156,6 +289,10 @@ document.addEventListener("DOMContentLoaded", () => {
           upvoteBtn.addEventListener('click', () => handleVote(post.id, 1));
           downvoteBtn.addEventListener('click', () => handleVote(post.id, -1));
         }
+        
+        // Rendre les fonctions globales pour les boutons
+        window.handleEditPost = handleEditPost;
+        window.handleDeletePost = handleDeletePost;
       } else {
         postsContainer.innerHTML = "<p>Aucun post disponible.</p>";
       }
