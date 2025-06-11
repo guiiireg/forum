@@ -5,6 +5,7 @@ Un forum moderne et interactif développé avec Node.js, Express et SQLite.
 ## Architecture Technique
 
 ### Diagramme d'Architecture Global
+
 ```mermaid
 graph TD
     A[Client Browser] --> B[Express Server]
@@ -17,47 +18,49 @@ graph TD
 ```
 
 ### Gestion des Sessions et Authentification
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
     participant DB
-    
+
     User->>Server: Register Request
     Server->>DB: Check Username
     DB-->>Server: Username Available
     Server->>DB: Create User
     Server-->>User: Registration Success
-    
+
     User->>Server: Login Request
     Server->>DB: Verify Credentials
     DB-->>Server: Valid Credentials
     Server->>Server: Create Session
     Server-->>User: Login Success + Session Cookie
-    
+
     User->>Server: Logout Request
     Server->>Server: Destroy Session
     Server-->>User: Logout Success
 ```
 
 ### Gestion des Posts
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
     participant DB
-    
+
     User->>Server: Create Post
     Server->>DB: Save Post
     DB-->>Server: Post Created
     Server-->>User: Post Created Success
-    
+
     User->>Server: Edit Post
     Server->>DB: Verify Ownership
     DB-->>Server: Ownership Confirmed
     Server->>DB: Update Post
     Server-->>User: Post Updated Success
-    
+
     User->>Server: Delete Post
     Server->>DB: Verify Ownership
     DB-->>Server: Ownership Confirmed
@@ -66,12 +69,13 @@ sequenceDiagram
 ```
 
 ### Système de Votes
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
     participant DB
-    
+
     User->>Server: Vote Request
     Server->>DB: Check Previous Vote
     DB-->>Server: Vote Status
@@ -80,15 +84,322 @@ sequenceDiagram
     Server-->>User: Vote Success
 ```
 
+### Structure de la Base de Données
+
+```mermaid
+erDiagram
+    USERS {
+        int id PK
+        string username UK
+        string password
+        string email
+        datetime created_at
+        datetime updated_at
+    }
+
+    CATEGORIES {
+        int id PK
+        string name UK
+        string description
+        string color
+        datetime created_at
+    }
+
+    POSTS {
+        int id PK
+        string title
+        text content
+        int user_id FK
+        int category_id FK
+        int votes_count
+        datetime created_at
+        datetime updated_at
+    }
+
+    REPLIES {
+        int id PK
+        text content
+        int post_id FK
+        int user_id FK
+        int votes_count
+        datetime created_at
+        datetime updated_at
+    }
+
+    VOTES {
+        int id PK
+        int user_id FK
+        int post_id FK
+        int reply_id FK
+        int vote_type
+        datetime created_at
+    }
+
+    USERS ||--o{ POSTS : creates
+    USERS ||--o{ REPLIES : writes
+    USERS ||--o{ VOTES : casts
+    CATEGORIES ||--o{ POSTS : contains
+    POSTS ||--o{ REPLIES : has
+    POSTS ||--o{ VOTES : receives
+    REPLIES ||--o{ VOTES : receives
+```
+
+### Architecture des Modules
+
+```mermaid
+graph TD
+    A[Client Browser] --> B[Static Files Server]
+    B --> C[HTML Templates]
+    B --> D[CSS Styles]
+    B --> E[Client-side JS]
+
+    E --> F[Auth Module]
+    E --> G[Posts Module]
+    E --> H[Categories Module]
+
+    F --> F1[checkAuth.js]
+    F --> F2[isAuthenticated.js]
+    F --> F3[requiresAuth.js]
+    F --> F4[updateAuthUI.js]
+
+    G --> G1[postsUI.js]
+    G --> G2[postsActions.js]
+    G --> G3[postUI.js]
+    G --> G4[postActions.js]
+    G --> G5[postReplies.js]
+
+    E --> I[Server API Calls]
+    I --> J[Express Routes]
+
+    J --> K[Users API]
+    J --> L[Posts API]
+    J --> M[Votes API]
+    J --> N[Categories API]
+    J --> O[Replies API]
+
+    K --> P[SQLite Database]
+    L --> P
+    M --> P
+    N --> P
+    O --> P
+```
+
+### Flux de Navigation et Routing
+
+```mermaid
+flowchart TD
+    A[Utilisateur arrive sur /] --> B{Authentifié ?}
+    B -->|Oui| C[Page d'accueil /home]
+    B -->|Non| D[Page de connexion /login]
+
+    C --> E[Liste des posts /posts]
+    C --> F[Profil utilisateur /profil]
+    C --> G[Créer un post /posts/create]
+
+    D --> H[Formulaire de connexion]
+    D --> I[Lien vers inscription /register]
+
+    H -->|Succès| C
+    H -->|Échec| J[Message d'erreur]
+
+    I --> K[Formulaire d'inscription]
+    K -->|Succès| C
+    K -->|Échec| L[Message d'erreur]
+
+    E --> M[Voir un post /posts/:id]
+    E --> N[Filtrer par catégorie]
+
+    M --> O[Voter sur le post]
+    M --> P[Ajouter une réponse]
+    M --> Q[Éditer le post]
+    M --> R[Supprimer le post]
+
+    G --> S[Sélectionner catégorie]
+    S --> T[Rédiger contenu]
+    T --> U[Publier le post]
+
+    F --> V[Voir ses posts]
+    F --> W[Modifier profil]
+    F --> X[Se déconnecter]
+
+    style A fill:#e1f5fe
+    style C fill:#c8e6c9
+    style D fill:#ffcdd2
+```
+
+### Système de Gestion des Erreurs
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Middleware
+    participant RouteHandler
+    participant Database
+    participant ErrorHandler
+
+    Client->>RouteHandler: HTTP Request
+
+    alt Erreur de Validation
+        RouteHandler->>ErrorHandler: ValidationError
+        ErrorHandler->>Client: 400 Bad Request
+    else Erreur d'Authentification
+        RouteHandler->>ErrorHandler: AuthError
+        ErrorHandler->>Client: 401 Unauthorized
+    else Erreur de Permission
+        RouteHandler->>ErrorHandler: PermissionError
+        ErrorHandler->>Client: 403 Forbidden
+    else Ressource non trouvée
+        RouteHandler->>ErrorHandler: NotFoundError
+        ErrorHandler->>Client: 404 Not Found
+    else Erreur de Base de Données
+        RouteHandler->>Database: Query
+        Database->>RouteHandler: DatabaseError
+        RouteHandler->>ErrorHandler: 500 Internal Error
+        ErrorHandler->>Client: 500 Server Error
+    else Succès
+        RouteHandler->>Database: Query
+        Database->>RouteHandler: Success
+        RouteHandler->>Client: 200 Success
+    end
+
+    ErrorHandler->>ErrorHandler: Log Error
+    ErrorHandler->>ErrorHandler: Send Error Response
+```
+
+### Architecture de Déploiement Docker
+
+```mermaid
+graph TB
+    subgraph "Docker Environment"
+        A[Docker Compose]
+
+        subgraph "Network: forum-network"
+            B[Node.js Container]
+            C[SQLite Volume]
+            D[Static Files Volume]
+        end
+
+        subgraph "Node.js Container"
+            E[Express Server :3000]
+            F[Session Management]
+            G[Authentication Middleware]
+            H[API Routes]
+        end
+
+        subgraph "Volumes"
+            I[./server:/app/server]
+            J[forum_data:/app/data]
+            K[forum_uploads:/app/uploads]
+        end
+    end
+
+    L[Host Machine :3000] --> A
+    A --> B
+    B --> E
+    E --> F
+    E --> G
+    E --> H
+
+    B --> C
+    B --> D
+    I --> B
+    J --> B
+    K --> B
+
+    style A fill:#4fc3f7
+    style B fill:#81c784
+    style C fill:#ffb74d
+    style D fill:#ffb74d
+```
+
+### Gestion des Catégories et Filtrage
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Client
+    participant Server
+    participant DB
+
+    Note over User,DB: Chargement initial des catégories
+    Client->>Server: GET /api/categories
+    Server->>DB: SELECT * FROM categories
+    DB-->>Server: Categories List
+    Server-->>Client: JSON Categories
+    Client->>Client: Populate Category Filter
+
+    Note over User,DB: Filtrage par catégorie
+    User->>Client: Select Category Filter
+    Client->>Server: GET /api/posts?category=tech
+    Server->>DB: SELECT posts WHERE category_id = ?
+    DB-->>Server: Filtered Posts
+    Server-->>Client: JSON Posts
+    Client->>Client: Update Posts Display
+
+    Note over User,DB: Création d'un post avec catégorie
+    User->>Client: Create Post with Category
+    Client->>Server: POST /api/posts {title, content, category_id}
+    Server->>DB: Validate Category Exists
+    DB-->>Server: Category Valid
+    Server->>DB: INSERT INTO posts
+    DB-->>Server: Post Created
+    Server-->>Client: Success Response
+    Client->>Client: Redirect to New Post
+```
+
+### Système de Réponses et Threading
+
+```mermaid
+graph TD
+    A[Post Principal] --> B[Réponse 1]
+    A --> C[Réponse 2]
+    A --> D[Réponse 3]
+
+    B --> E[Vote Up/Down]
+    C --> F[Vote Up/Down]
+    D --> G[Vote Up/Down]
+
+    subgraph "Actions sur Réponses"
+        H[Créer Réponse]
+        I[Éditer Réponse]
+        J[Supprimer Réponse]
+        K[Voter sur Réponse]
+    end
+
+    H --> L{Utilisateur connecté ?}
+    L -->|Oui| M[Validation du contenu]
+    L -->|Non| N[Redirection vers login]
+
+    M --> O{Contenu valide ?}
+    O -->|Oui| P[Sauvegarder en DB]
+    O -->|Non| Q[Afficher erreur]
+
+    I --> R{Propriétaire de la réponse ?}
+    R -->|Oui| S[Permettre édition]
+    R -->|Non| T[Erreur de permission]
+
+    J --> U{Propriétaire ou Admin ?}
+    U -->|Oui| V[Permettre suppression]
+    U -->|Non| W[Erreur de permission]
+
+    style A fill:#e3f2fd
+    style H fill:#e8f5e8
+    style I fill:#fff3e0
+    style J fill:#ffebee
+    style K fill:#f3e5f5
+```
+
 ## Fonctionnalités Détaillées
 
 ### 1. Gestion des Sessions et Cookies (1 point)
+
 - Utilisation de `express-session` pour la gestion des sessions
 - Stockage des sessions en mémoire avec possibilité de persistance
 - Cookies sécurisés avec options httpOnly et secure
 - Gestion des timeouts de session
 
 ### 2. Identification Sécurisée (1 point)
+
 - Inscription avec validation des données
 - Connexion avec hachage des mots de passe (bcrypt)
 - Déconnexion avec destruction de session
@@ -96,6 +407,7 @@ sequenceDiagram
 - Validation des entrées utilisateur
 
 ### 3. Création de Posts (1.75 points)
+
 - Création de posts pour utilisateurs connectés
 - Système de catégories obligatoire
 - Validation des données
@@ -103,12 +415,14 @@ sequenceDiagram
 - Gestion des erreurs
 
 ### 4. Édition des Posts (1 point)
+
 - Édition des posts par leurs auteurs
 - Suppression des posts
 - Historique des modifications
 - Validation des permissions
 
 ### 5. Base de Données (1 point)
+
 - Utilisation de SQLite
 - Schéma optimisé
 - Requêtes préparées
@@ -116,6 +430,7 @@ sequenceDiagram
 - Indexation appropriée
 
 ### 6. Routing Erreur Web + RGPD (0.5 point)
+
 - Gestion globale des erreurs avec middleware Express
 - Page d'erreur 404 personnalisée
 - Politique de confidentialité conforme RGPD
@@ -123,6 +438,7 @@ sequenceDiagram
 - Droits des utilisateurs (accès, rectification, effacement)
 
 ### 7. Système de Votes (0.5 point)
+
 - Upvote/Downvote
 - Un vote par utilisateur
 - Mise à jour en temps réel
@@ -136,51 +452,48 @@ sequenceDiagram
 - Gestion des requêtes AJAX/API
 
 ### 8. Syntaxe SQL (0.5 point)
+
 - Requêtes optimisées
 - Jointures appropriées
 - Sous-requêtes
 - Agrégations
 
 ### 9. Gestion des Versions (0.5 point)
-- Utilisation de Git avec workflow optimisé
+
+- Utilisation de Git
 - Branches thématiques :
   - `main` : Version stable
   - `test` : Tests et développement
   - `docker` : Configuration Docker
   - `main-css` : Styles
   - `main-html` : Templates
-  - `main-js` : Logique JavaScript optimisée (architecture modulaire)
-  - `readme` : Documentation mise à jour
-- Commits atomiques et descriptifs avec convention :
-  - `[REFACTOR]` : Restructuration du code
-  - `[ADD]` : Nouvelles fonctionnalités
-  - `[FIX]` : Corrections de bugs
-  - `[UPDATE]` : Mises à jour
-  - `[DOCS]` : Documentation
+  - `main-js` : Logique JavaScript
+  - `readme` : Documentation
+- Commits atomiques et descriptifs
 
 ### 10. Qualité du Code (0.5 point)
-### 10. Qualité du Code (0.5 point)
+
 - Code modulaire
 - Documentation claire
 - Tests unitaires
 - Gestion des erreurs
 
 ### 11. Nomenclature (0.75 point)
-### 11. Nomenclature (0.75 point)
+
 - Conventions de nommage cohérentes
 - Variables descriptives
 - Fonctions avec responsabilité unique
 - Commentaires pertinents
 
 ### 12. Organisation des Fichiers (1 point)
-### 12. Organisation des Fichiers (1 point)
+
 - Structure modulaire
 - Séparation des responsabilités
 - Architecture MVC
 - Gestion des dépendances
 
 ### 13. Docker (1.5 points - Bonus)
-### 13. Docker (1.5 points - Bonus)
+
 - Containerisation complète
 - Multi-stage builds
 - Volumes persistants
@@ -192,6 +505,7 @@ sequenceDiagram
 ### Installation de WSL (Windows Subsystem for Linux)
 
 1. Ouvrir PowerShell en tant qu'administrateur et exécuter :
+
 ```powershell
 wsl --install
 ```
@@ -201,6 +515,7 @@ wsl --install
 3. Après le redémarrage, WSL s'installera automatiquement et vous demandera de créer un nom d'utilisateur et un mot de passe pour votre distribution Linux
 
 4. Vérifier l'installation :
+
 ```powershell
 wsl --list --verbose
 ```
@@ -208,11 +523,13 @@ wsl --list --verbose
 ### Installation de Docker
 
 #### Sur Windows
+
 1. Télécharger Docker Desktop depuis [le site officiel](https://www.docker.com/products/docker-desktop)
 2. Installer Docker Desktop
 3. Lors de l'installation, cocher l'option "Use WSL 2 instead of Hyper-V"
 4. Redémarrer votre ordinateur
 5. Vérifier l'installation :
+
 ```powershell
 docker --version
 docker compose version
@@ -220,43 +537,52 @@ docker compose version
 ```
 
 #### Sur Ubuntu (WSL)
+
 1. Mettre à jour les paquets :
+
 ```bash
 sudo apt update && sudo apt upgrade
 ```
 
 2. Installer les prérequis :
+
 ```bash
 sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
 ```
 
 3. Ajouter la clé GPG officielle de Docker :
+
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
 4. Ajouter le dépôt Docker :
+
 ```bash
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 ```
 
 5. Installer Docker :
+
 ```bash
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 
 6. Ajouter votre utilisateur au groupe docker :
+
 ```bash
 sudo usermod -aG docker $USER
 ```
 
 7. Redémarrer WSL ou votre session :
+
 ```bash
 wsl --shutdown
 ```
 
 8. Vérifier l'installation :
+
 ```bash
 docker --version
 docker compose version
@@ -316,12 +642,14 @@ docker compose version
 ## Fonctionnalités Principales
 
 ### Authentification
+
 - Inscription et connexion des utilisateurs
 - Gestion des sessions
 - Protection des routes
 - Mise à jour de l'interface en fonction de l'état de connexion
 
 ### Posts
+
 - Création, édition et suppression de posts
 - Catégorisation des posts
 - Système de votes (upvote/downvote)
@@ -329,6 +657,7 @@ docker compose version
 - Filtrage par catégorie
 
 ### Interface Utilisateur
+
 - Design responsive
 - Feedback utilisateur en temps réel
 - Navigation intuitive
@@ -337,9 +666,11 @@ docker compose version
 ## Organisation du Code
 
 ### Structure Modulaire
+
 Le projet utilise une architecture modulaire pour une meilleure maintenabilité :
 
 1. **Module d'Authentification** (`/js/index/auth/`)
+
    - Séparation des responsabilités d'authentification
    - Gestion des états de connexion
    - Protection des routes
@@ -391,10 +722,12 @@ graph TD
 6. **Performance** : Chargement modulaire et optimisations possibles
 
 ### Base de Données
+
 - SQLite pour la persistance des données
 - Tables : users, posts, categories, replies, votes
 
 ### API REST
+
 - Routes pour l'authentification
 - Gestion des posts et réponses
 - Système de votes
@@ -403,11 +736,13 @@ graph TD
 ## Installation du Projet
 
 1. Cloner le repository
+
 ```bash
 git clone https://github.com/guiiireg/forum.git
 ```
 
 2. Installer les dépendances
+
 ```bash
 npm install
 ```
@@ -417,68 +752,54 @@ npm install
 ### Avec Docker (Recommandé)
 
 1. Se placer dans le répertoire du projet
+
 ```bash
 cd forum
 ```
 
 2. Lancer les conteneurs
+
 ```bash
 docker compose down && docker compose build && docker compose up -d
 ```
 
 Cette commande va :
+
 - Arrêter les conteneurs existants (`down`)
 - Reconstruire les images (`build`)
 - Démarrer les conteneurs en arrière-plan (`up -d`)
 
 3. Vérifier que les conteneurs sont en cours d'exécution
+
 ```bash
 docker compose ps
 ```
 
 4. Accéder au forum
-Ouvrir votre navigateur et aller à `http://localhost:3000`
+   Ouvrir votre navigateur et aller à `http://localhost:3000`
 
 ### Commandes Docker utiles
 
 - Voir les logs des conteneurs :
+
 ```bash
 docker compose logs -f
 ```
 
 - Arrêter les conteneurs :
+
 ```bash
 docker compose down
 ```
 
 - Reconstruire et redémarrer les conteneurs :
+
 ```bash
 docker compose up -d --build
 ```
 
 - Voir l'utilisation des ressources :
-```bash
-docker stats
-```
 
-### Commandes Docker utiles
-
-- Voir les logs des conteneurs :
-```bash
-docker compose logs -f
-```
-
-- Arrêter les conteneurs :
-```bash
-docker compose down
-```
-
-- Reconstruire et redémarrer les conteneurs :
-```bash
-docker compose up -d --build
-```
-
-- Voir l'utilisation des ressources :
 ```bash
 docker stats
 ```
@@ -486,86 +807,16 @@ docker stats
 ### Sans Docker
 
 1. Démarrer le serveur
+
 ```bash
 node server/js/startServer.js
 ```
 
 2. Accéder au forum
-Ouvrir votre navigateur et aller à `http://localhost:3000`
-
-## Utilisation du Module Posts Optimisé
-
-### Import Centralisé
-```javascript
-// Import depuis le point d'entrée centralisé
-import { 
-  initializePosts, 
-  handleCreatePost, 
-  validatePostForm,
-  showSuccess 
-} from './modules/posts/index.js';
-
-// Initialisation de la page des posts
-await initializePosts();
-```
-
-### Import Sélectif par Module
-```javascript
-// Import spécifique depuis les modules individuels
-import { fetchPosts, createPost } from './modules/posts/postApi.js';
-import { validatePostData } from './modules/posts/postValidation.js';
-import { handleVote } from './modules/posts/postVotes.js';
-```
-
-### Exemples d'Utilisation
-
-#### Création d'un Post
-```javascript
-import { handleCreatePost, validatePostForm } from './modules/posts/index.js';
-
-const formData = {
-  title: "Mon nouveau post",
-  content: "Contenu du post",
-  categoryId: 1
-};
-const userId = 123;
-
-// Validation avant création
-const validation = validatePostForm(formData, userId);
-if (validation.isValid) {
-  const success = await handleCreatePost(userId);
-  if (success) {
-    console.log("Post créé avec succès!");
-  }
-}
-```
-
-#### Gestion des Votes
-```javascript
-import { handleVote, loadVotes } from './modules/posts/index.js';
-
-// Voter pour un post
-await handleVote(postId, userId, 1); // 1 pour upvote, -1 pour downvote
-
-// Charger les votes d'un post
-const votes = await loadVotes(postId, userId);
-console.log(`Total votes: ${votes.totalVotes}, User vote: ${votes.userVote}`);
-```
-
-#### Validation de Données
-```javascript
-import { validatePostData, sanitizeText } from './modules/posts/index.js';
-
-const title = sanitizeText("  Mon titre  ");
-const content = sanitizeText("Mon contenu");
-
-const validation = validatePostData(title, content);
-if (!validation.isValid) {
-  console.error("Erreurs:", validation.errors);
-}
-```
+   Ouvrir votre navigateur et aller à `http://localhost:3000`
 
 ## Dépendances Principales
+
 - express: ^5.1.0
 - sqlite3: ^5.1.7
 - dotenv: ^16.5.0
@@ -573,6 +824,7 @@ if (!validation.isValid) {
 ## Développement
 
 ### Branches
+
 - `main` : Version stable
 - `test` : Tests et développement
 - `docker` : Configuration Docker
@@ -581,38 +833,8 @@ if (!validation.isValid) {
 - `main-js` : Logique JavaScript
 
 ### Conventions de Code
-- **Modules ES6** : Utilisation d'import/export pour la modularité
-- **Architecture modulaire** : Séparation claire des responsabilités
-- **Principe de responsabilité unique** : Chaque module a une fonction spécifique
-- **Documentation JSDoc** : Fonctions documentées avec types et descriptions
-- **Gestion d'erreurs** : Try-catch et messages utilisateur appropriés
-- **Validation des données** : Sanitisation et validation côté client
-- **Code asynchrone** : Utilisation d'async/await pour les appels API
-- **Séparation UI/Logique** : Interface et logique métier distinctes
-- **Commentaires explicatifs** : Code auto-documenté avec commentaires pertinents
 
-### Bonnes Pratiques Implémentées
-
-#### Sécurité
-- Validation et sanitisation des entrées utilisateur
-- Protection contre les injections XSS
-- Gestion sécurisée des sessions
-- Authentification et autorisation appropriées
-
-#### Performance
-- Chargement parallèle des données (Promise.all)
-- Gestion d'état optimisée
-- Mise à jour UI ciblée (pas de rechargement complet)
-- Caching des données catégories
-
-#### Maintenabilité
-- Code modulaire et réutilisable
-- Séparation des préoccupations
-- Tests unitaires possibles
-- Documentation complète
-
-#### Expérience Utilisateur
-- Feedback immédiat sur les actions
-- Gestion gracieuse des erreurs
-- Interface responsive
-- Messages d'erreur clairs
+- Modules ES6
+- Architecture modulaire
+- Séparation UI/Logique
+- Commentaires explicatifs
