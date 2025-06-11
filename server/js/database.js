@@ -77,7 +77,7 @@ await db.exec(`
 try {
   const tableInfo = await db.all("PRAGMA table_info(posts)");
   const hasCategoryId = tableInfo.some((col) => col.name === "category_id");
-  
+
   if (!hasCategoryId) {
     await db.exec(
       `ALTER TABLE posts ADD COLUMN category_id INTEGER DEFAULT NULL`

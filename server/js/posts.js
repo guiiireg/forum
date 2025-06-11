@@ -49,10 +49,22 @@ export async function createPost(title, content, userId, categoryId = null) {
 export async function getAllPosts() {
   try {
     const posts = await db.all(`
-      SELECT p.*, u.username, c.name as category_name, c.description as category_description
+      SELECT p.*, u.username, c.name as category_name, c.description as category_description,
+             COALESCE(vote_totals.total_votes, 0) as total_votes,
+             COALESCE(reply_counts.reply_count, 0) as reply_count
       FROM posts p
       JOIN users u ON p.user_id = u.id
       LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN (
+        SELECT post_id, SUM(vote_type) as total_votes
+        FROM votes
+        GROUP BY post_id
+      ) vote_totals ON p.id = vote_totals.post_id
+      LEFT JOIN (
+        SELECT post_id, COUNT(*) as reply_count
+        FROM replies
+        GROUP BY post_id
+      ) reply_counts ON p.id = reply_counts.post_id
       ORDER BY p.created_at DESC
     `);
     return { success: true, posts };
@@ -102,10 +114,22 @@ export async function getPostsByCategory(categoryId) {
   try {
     const posts = await db.all(
       `
-      SELECT p.*, u.username, c.name as category_name, c.description as category_description
+      SELECT p.*, u.username, c.name as category_name, c.description as category_description,
+             COALESCE(vote_totals.total_votes, 0) as total_votes,
+             COALESCE(reply_counts.reply_count, 0) as reply_count
       FROM posts p
       JOIN users u ON p.user_id = u.id
       LEFT JOIN categories c ON p.category_id = c.id
+      LEFT JOIN (
+        SELECT post_id, SUM(vote_type) as total_votes
+        FROM votes
+        GROUP BY post_id
+      ) vote_totals ON p.id = vote_totals.post_id
+      LEFT JOIN (
+        SELECT post_id, COUNT(*) as reply_count
+        FROM replies
+        GROUP BY post_id
+      ) reply_counts ON p.id = reply_counts.post_id
       WHERE p.category_id = ?
       ORDER BY p.created_at DESC
       `,
