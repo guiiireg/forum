@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reddit</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/index/posts.js" defer></script>
+    <script src="/js/index/login.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Reddit</h1>
+      <nav>
+        <ul>
+          <li><a href="home.html">Accueil</a></li>
+          <li><a href="profil.html">Profil</a></li>
+          <li>
+            <a href="#" id="logout-link" style="display: none">Déconnexion</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Posts</h2>
+
+      <div id="create-post-container">
+        <h3>Créer un nouveau post</h3>
+        <form id="create-post-form">
+          <div>
+            <label for="title">Titre :</label>
+            <input type="text" id="title" name="title" required />
+          </div>
+          <div>
+            <label for="content">Contenu :</label>
+            <textarea id="content" name="content" rows="4" required></textarea>
+          </div>
+          <button type="submit">Publier</button>
+        </form>
+        <div id="post-message"></div>
+      </div>
+
+      <h3>Liste des posts</h3>
+      <div id="posts-container"></div>
+    </main>
+  </body>
+</html>
