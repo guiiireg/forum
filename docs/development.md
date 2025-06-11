@@ -1,45 +1,39 @@
 # Guide de Développement
 
-## Gestion des Versions
+## Structure des Branches
 
-### Structure des Versions
-- Format : `X.Y.Z` (Semantic Versioning)
-  - X : Version majeure (changements incompatibles)
-  - Y : Version mineure (nouvelles fonctionnalités compatibles)
-  - Z : Patch (corrections de bugs)
-
-### Convention de Nommage des Branches
-- `main` : Branche principale stable
-- `develop` : Branche de développement
-- `feature/*` : Nouvelles fonctionnalités
-- `bugfix/*` : Corrections de bugs
-- `hotfix/*` : Corrections urgentes en production
+- `main` : Version stable principale
+- `docker` : Configuration et optimisation Docker
+- `main-css` : Styles et interface utilisateur
+- `main-html` : Templates et structure HTML
+- `main-js` : Logique JavaScript et API
+- `main-db` : Structure et optimisation de la base de données
+- `test` : Tests et développement
+- `fixes` : Corrections de bugs
+- `user-error` : Gestion des erreurs utilisateur
+- `readme` : Documentation et guides
 
 ## Conventions de Commit
 
 ### Format des Messages
 ```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
+[TYPE]: description
 ```
 
 ### Types de Commit
-- `feat` : Nouvelle fonctionnalité
-- `fix` : Correction de bug
-- `docs` : Documentation
-- `style` : Formatage
-- `refactor` : Refactoring
-- `test` : Tests
-- `chore` : Maintenance
+- `[add]` : Ajout de fonctionnalités
+- `[fix]` : Correction de bugs
+- `[update]` : Mise à jour de fonctionnalités
+- `[refactor]` : Refactoring de code
+- `[style]` : Modifications de style
 
 ### Exemples
 ```
-feat(auth): add password reset functionality
-fix(api): correct user validation
-docs(readme): update installation instructions
+[add]: nouvelle fonctionnalité de recherche
+[fix]: correction du bug de connexion
+[update]: mise à jour de l'interface utilisateur
+[refactor]: optimisation du code de la base de données
+[style]: amélioration du CSS des posts
 ```
 
 ## Conventions de Code
@@ -63,19 +57,6 @@ docs(readme): update installation instructions
 - Utiliser des index.js pour l'export
 - Séparer la logique métier des routes
 
-## Tests
-
-### Types de Tests
-- Tests unitaires
-- Tests d'intégration
-- Tests de performance
-- Tests de sécurité
-
-### Outils Recommandés
-- Jest pour les tests unitaires
-- Supertest pour les tests d'API
-- SQLite pour les tests de base de données
-
 ## Configuration Docker
 
 ### Structure
@@ -89,36 +70,15 @@ docs(readme): update installation instructions
 - Optimiser les layers
 - Sécuriser les conteneurs
 
-## Workflow de Développement Local
-
-1. Cloner le repository
-2. Créer une branche feature
-3. Développer et tester
-4. Créer une pull request
-5. Code review
-6. Merge dans develop
-7. Tests d'intégration
-8. Merge dans main
-
-## Outils Recommandés
+## Outils de Développement
 
 ### IDE
 - Visual Studio Code
-- Extensions recommandées :
-  - ESLint
-  - Prettier
-  - Docker
-  - SQLite
+- Extensions :
+  - Prettier : Formatage du code
+  - Docker : Gestion des conteneurs
 
-### Ligne de Commande
-- Git
-- Docker
-- Node.js
-- npm
-
-### Monitoring
-- Docker Desktop
-- Chrome DevTools
-- SQLite Browser
+### Debugging
+- Chrome DevTools (F12) pour l'inspection et le debugging
 
 [Retour au README principal](../README.md) 
