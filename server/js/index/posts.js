@@ -1,3 +1,5 @@
+import { initializeFilters } from '../modules/posts/postsActions.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
@@ -64,33 +66,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  async function loadPosts() {
-    try {
-      const response = await fetch("/posts");
-      const data = await response.json();
-
-      if (data.success && data.posts.length > 0) {
-        postsContainer.innerHTML = data.posts
-          .map(
-            (post) => `
-            <div class="post">
-              <h3>${post.title}</h3>
-              <p>${post.content}</p>
-              <div class="post-meta">
-                <span>Par: ${post.username}</span>
-                <span>Date: ${new Date(post.created_at).toLocaleString()}</span>
-              </div>
-            </div>
-          `
-          )
-          .join("");
-      } else {
-        postsContainer.innerHTML = "<p>Aucun post disponible.</p>";
-      }
-    } catch (error) {
-      postsContainer.innerHTML = "<p>Erreur lors du chargement des posts.</p>";
-      console.error("Erreur:", error);
-    }
+  if (!userId) {
+    window.location.href = '/login';
+    return;
   }
+
+  initializeFilters();
+
   loadPosts();
 });
+
+async function loadPosts() {
+  try {
+    const response = await fetch("/api/posts");
+    const data = await response.json();
+
+    if (data.success && data.posts.length > 0) {
+      postsContainer.innerHTML = data.posts
+        .map(
+          (post) => `
+          <div class="post">
+            <h3>${post.title}</h3>
+            <p>${post.content}</p>
+            <div class="post-meta">
+              <span>Par: ${post.username}</span>
+              <span>Date: ${new Date(post.created_at).toLocaleString()}</span>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    } else {
+      postsContainer.innerHTML = "<p>Aucun post disponible.</p>";
+    }
+
+    initializeFilters();
+  } catch (error) {
+    postsContainer.innerHTML = "<p>Erreur lors du chargement des posts.</p>";
+    console.error("Erreur:", error);
+  }
+}
