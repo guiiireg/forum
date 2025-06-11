@@ -76,14 +76,12 @@ export async function saveEditPost(postId, userId) {
   try {
     const formData = getEditFormData(postId);
 
-    // Sanitize input data
     const sanitizedData = {
       title: sanitizeText(formData.title),
       content: sanitizeText(formData.content),
       categoryId: formData.categoryId,
     };
 
-    // Validate the form data
     const validation = validatePostForm(sanitizedData, userId);
     if (!validation.isValid) {
       showError(validation.error);
@@ -150,14 +148,12 @@ export async function handleCreatePost(userId) {
   try {
     const formData = getPostFormData();
 
-    // Sanitize input data
     const sanitizedData = {
       title: sanitizeText(formData.title),
       content: sanitizeText(formData.content),
       categoryId: formData.categoryId,
     };
 
-    // Validate the form data
     const validation = validatePostForm(sanitizedData, userId);
     if (!validation.isValid) {
       showError(validation.error);

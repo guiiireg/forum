@@ -79,10 +79,8 @@ async function loadCategories() {
     const response = await fetchCategories();
 
     if (response.success) {
-      // Populate create post category select
       populateCategorySelect("category", response.categories);
 
-      // Populate filter category select
       populateCategorySelect(
         "category-filter-select",
         response.categories,
@@ -110,12 +108,10 @@ async function loadPosts(categoryId = null) {
     if (response.success) {
       postsContainer.innerHTML = "";
 
-      // Process posts in parallel
       const postElements = await Promise.all(
         response.posts.map((post) => createPostWithVotes(post))
       );
 
-      // Add all posts to container
       postElements.forEach((postElement) => {
         postsContainer.appendChild(postElement);
       });
@@ -144,7 +140,6 @@ async function createPostWithVotes(post) {
   const postHTML = createPostElement(post, isOwner, votes);
   const postElement = createPostDOMElement(postHTML);
 
-  // Setup vote listeners if user is authenticated
   if (postsState.isAuthenticated) {
     setupVoteListeners(postElement, post.id, postsState.currentUserId);
   }
@@ -156,7 +151,6 @@ async function createPostWithVotes(post) {
  * Sets up global post action handlers
  */
 function setupGlobalPostHandlers() {
-  // These functions need to be available globally for onclick handlers
   window.handleEditPost = (postId) => {
     const postElement = document.querySelector(`#post-${postId}`);
     if (postElement) {

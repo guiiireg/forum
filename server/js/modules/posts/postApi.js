@@ -84,7 +84,7 @@ export async function deletePost(postId, userId) {
  */
 export async function fetchPosts(categoryId = null) {
   try {
-    const url = categoryId ? `/posts/category/${categoryId}` : "/posts";
+    const url = categoryId ? `/api/posts/category/${categoryId}` : "/api/posts";
     const response = await fetch(url);
     return await response.json();
   } catch (error) {

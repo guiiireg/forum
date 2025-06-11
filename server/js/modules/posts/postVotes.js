@@ -56,11 +56,9 @@ export function updateVoteUI(postId, voteData) {
   }
 
   if (upvoteBtn && downvoteBtn) {
-    // Reset vote button states
     upvoteBtn.classList.remove("upvoted");
     downvoteBtn.classList.remove("downvoted");
 
-    // Apply current vote state
     if (voteData.userVote === 1) {
       upvoteBtn.classList.add("upvoted");
     } else if (voteData.userVote === -1) {

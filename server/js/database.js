@@ -74,17 +74,17 @@ await db.exec(`
 /**
  * Add category_id column to existing posts table if it doesn't exist
  */
-const pragma = await db.get("PRAGMA table_info(posts)");
-const hasCategoryId =
-  Array.isArray(pragma) && pragma.some((col) => col.name === "category_id");
-if (!hasCategoryId) {
-  try {
+try {
+  const tableInfo = await db.all("PRAGMA table_info(posts)");
+  const hasCategoryId = tableInfo.some((col) => col.name === "category_id");
+  
+  if (!hasCategoryId) {
     await db.exec(
       `ALTER TABLE posts ADD COLUMN category_id INTEGER DEFAULT NULL`
     );
-  } catch (error) {
-    console.error("Error adding category_id column:", error);
   }
+} catch (error) {
+  console.error("Error checking/adding category_id column:", error);
 }
 
 /**

@@ -58,12 +58,10 @@ export function toggleEditMode(postElement, isEditing) {
   const editForm = postElement.querySelector(".edit-form");
 
   if (isEditing) {
-    // Hide normal elements
     if (titleElement) titleElement.style.display = "none";
     if (contentElement) contentElement.style.display = "none";
     if (actionsElement) actionsElement.style.display = "none";
   } else {
-    // Show normal elements and remove edit form
     if (titleElement) titleElement.style.display = "";
     if (contentElement) contentElement.style.display = "";
     if (actionsElement) actionsElement.style.display = "";
@@ -131,7 +129,6 @@ export function removePostElement(postId) {
  * @param {string} message - Error message to display
  */
 export function showError(message) {
-  // Using alert for now, can be replaced with a more sophisticated notification system
   alert(message);
 }
 
@@ -140,6 +137,5 @@ export function showError(message) {
  * @param {string} message - Success message to display
  */
 export function showSuccess(message) {
-  // Using alert for now, can be replaced with a more sophisticated notification system
   alert(message);
 }

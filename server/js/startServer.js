@@ -176,7 +176,7 @@ app.post("/posts", async (req, res) => {
  * @param {import("express").Request} req - The request object
  * @param {import("express").Response} res - The response object
  */
-app.get("/posts", async (req, res) => {
+app.get("/api/posts", async (req, res) => {
   const result = await getAllPosts();
   if (result.success) {
     res.json({ success: true, posts: result.posts });
@@ -190,7 +190,7 @@ app.get("/posts", async (req, res) => {
  * @param {import("express").Request} req - The request object
  * @param {import("express").Response} res - The response object
  */
-app.get("/posts/user/:userId", async (req, res) => {
+app.get("/api/posts/user/:userId", async (req, res) => {
   const userId = req.params.userId;
   const result = await getPostsByUser(userId);
   if (result.success) {
@@ -430,7 +430,7 @@ app.get("/categories", async (req, res) => {
  * @param {import("express").Request} req - The request object
  * @param {import("express").Response} res - The response object
  */
-app.get("/posts/category/:categoryId", async (req, res) => {
+app.get("/api/posts/category/:categoryId", async (req, res) => {
   const categoryId = req.params.categoryId;
   const result = await getPostsByCategory(categoryId);
   if (result.success) {
@@ -445,12 +445,10 @@ app.get("/posts/category/:categoryId", async (req, res) => {
  */
 async function setupRoutes() {
   try {
-    // Route 404 - doit être après toutes les autres routes
     app.use((req, res) => {
       res.status(404).sendFile(path.join(htmlDir, "404.html"));
     });
 
-    // Middleware de gestion d'erreurs - doit être en dernier
     app.use(errorHandler);
   } catch (error) {
     console.error("Error setting up routes:", error);
