@@ -1,6 +1,5 @@
 import { initializeFilters } from '../modules/posts/postsActions.js';
 
-// Variables globales
 let postsContainer;
 let postMessage;
 
@@ -76,7 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Initialize everything
   loadCategories();
   loadPosts();
   initializeFilters();
@@ -89,7 +87,6 @@ async function loadCategories() {
     const data = await response.json();
 
     if (data.success) {
-      // Populate create post category select
       const categorySelect = document.getElementById("category");
       if (categorySelect) {
         categorySelect.innerHTML = '<option value="">Sélectionnez une catégorie</option>';
@@ -101,7 +98,6 @@ async function loadCategories() {
         });
       }
 
-      // Populate filter category select
       const categoryFilterSelect = document.getElementById("category-filter-select");
       if (categoryFilterSelect) {
         categoryFilterSelect.innerHTML = '<option value="">Toutes les catégories</option>';

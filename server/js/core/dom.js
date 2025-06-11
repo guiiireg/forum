@@ -23,7 +23,10 @@ export function createElementFromHTML(htmlString) {
  */
 export function populateSelect(selectId, options, defaultText = null) {
   const select = document.getElementById(selectId);
-  if (!select) return;
+  if (!select) {
+    console.error(`Select element ${selectId} not found!`);
+    return;
+  }
 
   if (defaultText) {
     select.innerHTML = `<option value="">${defaultText}</option>`;
@@ -31,7 +34,7 @@ export function populateSelect(selectId, options, defaultText = null) {
     select.innerHTML = "";
   }
 
-  options.forEach((option) => {
+  options.forEach((option, index) => {
     const optionElement = document.createElement("option");
     optionElement.value = option.value || option.id;
     optionElement.textContent = option.text || option.name;

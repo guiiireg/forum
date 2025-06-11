@@ -44,10 +44,12 @@ const postsState = {
 export async function initializePosts() {
   postsState.currentUser = getCurrentUser();
 
-  await Promise.all([loadCategories(), loadPosts()]);
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-  setupEventListeners();
   setupUI();
+  await loadCategories();
+  await loadPosts();
+  setupEventListeners();
 }
 
 // ==================== DATA LOADING ====================
@@ -56,21 +58,53 @@ export async function initializePosts() {
  * Load categories and populate selects
  */
 async function loadCategories() {
-  const result = await safeApiCall(
-    () => fetchCategories(),
-    "chargement des catégories"
-  );
+  try {
+    const result = await fetchCategories();
 
-  if (result.success) {
-    postsState.categories = result.categories;
+    if (result.success && result.categories) {
+      postsState.categories = result.categories;
 
-    // Populate category selects
-    populateSelect("category", result.categories);
-    populateSelect(
-      "category-filter-select",
-      result.categories,
-      "Toutes les catégories"
-    );
+      const categorySelect = document.getElementById("category");
+      const filterSelect = document.getElementById("category-filter-select");
+      
+      if (categorySelect) {
+        populateSelect("category", result.categories);
+        
+        categorySelect.style.display = "block";
+        categorySelect.style.visibility = "visible";
+        categorySelect.style.opacity = "1";
+        categorySelect.style.height = "auto";
+        categorySelect.style.minHeight = "30px";
+        categorySelect.style.backgroundColor = "white";
+        categorySelect.style.border = "2px solid red";
+      } else {
+        console.warn("Element 'category' not found");
+      }
+      
+      if (filterSelect) {
+        populateSelect("category-filter-select", result.categories, "Toutes les catégories");
+      } else {
+        console.warn("Element 'category-filter-select' not found");
+      }
+    } else {
+      console.error("Failed to load categories:", result.message || "No categories data");
+      const selects = ["category", "category-filter-select"];
+      selects.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (select) {
+          select.innerHTML = '<option value="">Erreur de chargement</option>';
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error loading categories:", error);
+    const selects = ["category", "category-filter-select"];
+    selects.forEach(selectId => {
+      const select = document.getElementById(selectId);
+      if (select) {
+        select.innerHTML = '<option value="">Erreur de chargement</option>';
+      }
+    });
   }
 }
 
@@ -97,14 +131,12 @@ async function loadPosts() {
 function applyFilters(posts, filters) {
   let filteredPosts = [...posts];
 
-  // Filter by category
   if (filters.category && filters.category !== "") {
     filteredPosts = filteredPosts.filter(
       (post) => post.category_id == filters.category
     );
   }
 
-  // Sort posts
   filteredPosts.sort((a, b) => {
     let valueA, valueB;
 
@@ -283,12 +315,20 @@ async function handleCreatePost(e) {
 
   if (result.success) {
     resetForm("create-post-form");
-    await loadPosts(); // Reload posts to show new one
+    await loadPosts();
     showError("Post créé avec succès !", "post-message");
   } else {
     showError(result.message, "post-message");
   }
 }
+
+/**
+ * Edit a post
+ * @param {number} postId - Post ID
+ */
+window.editPost = function (postId) {
+  alert(`Fonctionnalité d'édition pour le post ${postId} à implémenter`);
+};
 
 /**
  * Delete a post
@@ -297,13 +337,19 @@ async function handleCreatePost(e) {
 window.deletePostHandler = async function (postId) {
   if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) return;
 
+  if (!postsState.currentUser) {
+    showError("Vous devez être connecté pour supprimer un post.");
+    return;
+  }
+
   const result = await safeApiCall(
-    () => deletePost(postId),
+    () => deletePost(postId, postsState.currentUser.id),
     "suppression du post"
   );
 
   if (result.success) {
     await loadPosts();
+    showError("Post supprimé avec succès !", "post-message");
   } else {
     showError(result.message);
   }
@@ -363,16 +409,27 @@ async function handleVote(postId, voteType, postElement) {
   );
 
   if (result.success) {
-    // Update vote display
     const voteCount = postElement.querySelector(".vote-count");
     const upvoteBtn = postElement.querySelector(".upvote-button");
     const downvoteBtn = postElement.querySelector(".downvote-button");
+    const likesSpan = postElement.querySelector(".likes");
 
-    if (voteCount) voteCount.textContent = result.totalVotes;
+    if (voteCount) {
+      voteCount.textContent = result.votes.totalVotes || 0;
+    }
 
-    // Update button states
-    upvoteBtn.classList.toggle("upvoted", result.userVote === 1);
-    downvoteBtn.classList.toggle("downvoted", result.userVote === -1);
+    if (upvoteBtn) {
+      upvoteBtn.classList.toggle("upvoted", result.votes.userVote === 1);
+      upvoteBtn.classList.toggle("not-voted", result.votes.userVote !== 1);
+    }
+    if (downvoteBtn) {
+      downvoteBtn.classList.toggle("downvoted", result.votes.userVote === -1);
+      downvoteBtn.classList.toggle("not-voted", result.votes.userVote !== -1);
+    }
+
+    if (likesSpan) {
+      likesSpan.textContent = `❤️ ${result.votes.totalVotes || 0}`;
+    }
   }
 }
 
@@ -382,7 +439,6 @@ async function handleVote(postId, voteType, postElement) {
  * Setup event listeners
  */
 function setupEventListeners() {
-  // Filter form
   const filterForm = document.getElementById("filter-form");
   if (filterForm) {
     filterForm.addEventListener("submit", async (e) => {
@@ -392,7 +448,6 @@ function setupEventListeners() {
     });
   }
 
-  // Reset filters
   const resetBtn = document.getElementById("reset-filters-btn");
   if (resetBtn) {
     resetBtn.addEventListener("click", async () => {
@@ -401,7 +456,6 @@ function setupEventListeners() {
     });
   }
 
-  // Category filter change
   const categorySelect = document.getElementById("category-filter-select");
   if (categorySelect) {
     categorySelect.addEventListener("change", async () => {
@@ -409,7 +463,6 @@ function setupEventListeners() {
     });
   }
 
-  // Create post form
   setTimeout(() => {
     const createForm = document.getElementById("create-post-form");
     if (createForm) {

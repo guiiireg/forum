@@ -66,13 +66,23 @@ export async function put(url, data) {
 /**
  * Make a DELETE request
  * @param {string} url - URL to delete
+ * @param {Object} data - Data to send (optional)
  * @returns {Promise<Object>} Response data
  */
-export async function del(url) {
+export async function del(url, data = null) {
   try {
-    const response = await fetch(url, {
+    const options = {
       method: "DELETE",
-    });
+    };
+    
+    if (data) {
+      options.headers = {
+        "Content-Type": "application/json",
+      };
+      options.body = JSON.stringify(data);
+    }
+    
+    const response = await fetch(url, options);
     return await response.json();
   } catch (error) {
     console.error(`DELETE ${url} error:`, error);
@@ -122,10 +132,11 @@ export async function updatePost(postId, postData) {
 /**
  * Delete a post
  * @param {number} postId - Post ID to delete
+ * @param {number} userId - User ID for authorization
  * @returns {Promise<Object>} Response from server
  */
-export async function deletePost(postId) {
-  return await del(`/posts/${postId}`);
+export async function deletePost(postId, userId) {
+  return await del(`/posts/${postId}`, { userId });
 }
 
 /**
@@ -146,7 +157,7 @@ export async function submitVote(postId, voteType, userId) {
  * @returns {Promise<Object>} Response containing vote data
  */
 export async function fetchVotes(postId, userId) {
-  return await get(`/votes/${postId}/${userId}`);
+  return await get(`/votes/${postId}?userId=${userId}`);
 }
 
 /**
@@ -177,11 +188,9 @@ export async function createReply(replyData) {
 export function handleApiError(error, operation) {
   console.error(`API Error during ${operation}:`, error);
 
-  // You can extend this to show user-friendly error messages
   const errorMessage =
     error.message || `Une erreur est survenue lors de ${operation}`;
 
-  // Dispatch a custom event that UI components can listen for
   window.dispatchEvent(
     new CustomEvent("api-error", {
       detail: { error, operation, message: errorMessage },

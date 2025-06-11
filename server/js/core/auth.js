@@ -79,7 +79,6 @@ export function updateAuthUI() {
   if (isAuthenticated()) {
     if (logoutLink) {
       logoutLink.style.display = "block";
-      // Remove any existing listeners to avoid duplicates
       logoutLink.replaceWith(logoutLink.cloneNode(true));
       const newLogoutLink = document.getElementById("logout-link");
 
@@ -205,7 +204,6 @@ export function initAuth() {
   checkAuth();
   updateAuthUI();
 
-  // Setup form listeners
   const loginForm = document.getElementById("login-form");
   const registerForm = document.getElementById("register-form");
 
