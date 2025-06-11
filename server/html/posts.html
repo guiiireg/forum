@@ -28,6 +28,12 @@
         <h3>Créer un nouveau post</h3>
         <form id="create-post-form">
           <div>
+            <label for="category">Catégorie :</label>
+            <select id="category" name="category" required>
+              <option value="">Chargement des catégories...</option>
+            </select>
+          </div>
+          <div>
             <label for="title">Titre :</label>
             <input type="text" id="title" name="title" required />
           </div>
@@ -41,6 +47,12 @@
       </div>
 
       <h3>Liste des posts</h3>
+      <div id="category-filter">
+        <label for="category-filter-select">Filtrer par catégorie :</label>
+        <select id="category-filter-select">
+          <option value="">Toutes les catégories</option>
+        </select>
+      </div>
       <div id="posts-container"></div>
     </main>
   </body>

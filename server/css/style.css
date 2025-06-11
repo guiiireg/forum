@@ -54,14 +54,46 @@ body {
   flex: 1;
 }
 
-/* Styles pour les boutons d'édition et suppression */
+.category-badge {
+  display: inline-block;
+  background-color: #3f51b5;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+#category-filter {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#category-filter label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+#category-filter-select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-family: inherit;
+}
+
 .post-actions {
   margin-top: 1rem;
   display: flex;
   gap: 0.5rem;
 }
 
-.edit-btn, .delete-btn {
+.edit-btn,
+.delete-btn {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.25rem;
@@ -88,7 +120,6 @@ body {
   background-color: #d32f2f;
 }
 
-/* Styles pour le formulaire d'édition */
 .edit-form {
   margin-top: 1rem;
   padding: 1rem;
@@ -107,7 +138,9 @@ body {
   font-weight: bold;
 }
 
-.edit-form input, .edit-form textarea {
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
