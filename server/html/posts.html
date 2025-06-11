@@ -43,6 +43,41 @@
 
       <h3>Liste des posts</h3>
       <div id="posts-container"></div>
+
+      <form id="filter-form" class="filter-form">
+        <div class="filter-group">
+          <label for="category">Catégorie :</label>
+          <select name="category" id="category">
+            <option value="all">Toutes les catégories</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="sortBy">Trier par :</label>
+          <select name="sortBy" id="sortBy">
+            <option value="date">Date</option>
+            <option value="likes">Nombre de likes</option>
+            <option value="messages">Nombre de messages</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="order">Ordre :</label>
+          <select name="order" id="order">
+            <option value="desc">Décroissant</option>
+            <option value="asc">Croissant</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn">Filtrer</button>
+      </form>
     </main>
+
+    <script type="module">
+      import { initializeFilters } from '/js/modules/posts/postsActions.js';
+      document.addEventListener('DOMContentLoaded', () => {
+        initializeFilters();
+      });
+    </script>
   </body>
 </html>
