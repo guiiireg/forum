@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Politique de Confidentialité</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Politique de Confidentialité</h1>
+
+      <section>
+        <h2>1. Collecte des Données</h2>
+        <p>Nous collectons les informations suivantes :</p>
+        <ul>
+          <li>Nom d'utilisateur</li>
+          <li>Mot de passe (haché)</li>
+          <li>Posts et commentaires</li>
+          <li>Votes sur les posts</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Utilisation des Données</h2>
+        <p>Vos données sont utilisées pour :</p>
+        <ul>
+          <li>Gérer votre compte utilisateur</li>
+          <li>Publier vos posts et commentaires</li>
+          <li>Gérer le système de votes</li>
+          <li>Améliorer nos services</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>3. Protection des Données</h2>
+        <p>
+          Nous mettons en œuvre des mesures de sécurité pour protéger vos
+          données :
+        </p>
+        <ul>
+          <li>Chiffrement des mots de passe</li>
+          <li>Protection contre les injections SQL</li>
+          <li>Validation des entrées utilisateur</li>
+          <li>Accès sécurisé aux données</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Vos Droits</h2>
+        <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+        <ul>
+          <li>Droit d'accès à vos données</li>
+          <li>Droit de rectification</li>
+          <li>Droit à l'effacement</li>
+          <li>Droit à la portabilité</li>
+          <li>Droit d'opposition</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Cookies</h2>
+        <p>Nous utilisons des cookies pour :</p>
+        <ul>
+          <li>Maintenir votre session</li>
+          <li>Améliorer votre expérience</li>
+          <li>Analyser l'utilisation du site</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>6. Contact</h2>
+        <p>
+          Pour toute question concernant vos données personnelles,
+          contactez-nous à :
+        </p>
+        <p>Email : privacy@forum.com</p>
+      </section>
+
+      <div class="privacy-footer">
+        <p>Dernière mise à jour : <span id="last-update"></span></p>
+        <a href="/" class="btn">Retour à l'accueil</a>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("last-update").textContent =
+        new Date().toLocaleDateString("fr-FR");
+    </script>
+  </body>
+</html>

@@ -17,6 +17,7 @@ import { createReply, getRepliesByPost } from "./replies.js";
 import { votePost, getPostVotes, getUserVote } from "./votes.js";
 import { getAllCategories, getCategoryById } from "./categories.js";
 import db from "./database.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 
@@ -412,6 +413,12 @@ async function setupRoutes() {
         });
       }
     });
+
+    app.use((req, res) => {
+      res.status(404).sendFile(path.join(htmlDir, "404.html"));
+    });
+
+    app.use(errorHandler);
   } catch (error) {
     console.error("Error setting up routes:", error);
   }
