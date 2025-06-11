@@ -1,7 +1,6 @@
 # Architecture Technique
 
 ## Architecture Globale
-
 ```mermaid
 graph TD
     A[Client Browser] --> B[Express Server]
@@ -142,7 +141,6 @@ erDiagram
         int user_id FK
         int vote_type
         datetime created_at
-        -- Unicité : un vote par user par post, score jamais négatif
     }
     
     users ||--o{ posts : "creates"
@@ -169,3 +167,5 @@ erDiagram
 - `validation.js` : Validation des données
 
 [Retour au README principal](../README.md) 
+
+
