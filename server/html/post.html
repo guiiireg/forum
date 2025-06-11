@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forum - Post</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/replies.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Forum</h1>
+      <nav>
+        <ul>
+          <li><a href="home.html">Accueil</a></li>
+          <li><a href="profil.html">Profil</a></li>
+          <li><a href="posts.html">Créer un post</a></li>
+          <li>
+            <a href="#" id="logout-link" style="display: none">Déconnexion</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div id="post-container"></div>
+      <div id="replies-container"></div>
+      <div id="reply-form-container"></div>
+    </main>
+    <script type="module" src="/js/index/post.js"></script>
+  </body>
+</html> 
