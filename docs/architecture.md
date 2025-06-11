@@ -1,6 +1,7 @@
 # Architecture Technique
 
-## Diagramme d'Architecture Global
+## Architecture Globale
+
 ```mermaid
 graph TD
     A[Client Browser] --> B[Express Server]
@@ -12,85 +13,142 @@ graph TD
     B --> H[Category System]
 ```
 
-## Gestion des Sessions et Authentification
+## Flux d'Authentification
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
-    participant DB
-    
-    User->>Server: Register Request
-    Server->>DB: Check Username
-    DB-->>Server: Username Available
-    Server->>DB: Create User
-    Server-->>User: Registration Success
+    participant Database
     
     User->>Server: Login Request
-    Server->>DB: Verify Credentials
-    DB-->>Server: Valid Credentials
+    Server->>Database: Verify Credentials
+    Database-->>Server: User Data
     Server->>Server: Create Session
-    Server-->>User: Login Success + Session Cookie
-    
-    User->>Server: Logout Request
-    Server->>Server: Destroy Session
-    Server-->>User: Logout Success
+    Server-->>User: Session Token
 ```
 
-## Gestion des Posts
+## Flux de Gestion des Posts
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
-    participant DB
+    participant Database
     
     User->>Server: Create Post
-    Server->>DB: Save Post
-    DB-->>Server: Post Created
-    Server-->>User: Post Created Success
-    
-    User->>Server: Edit Post
-    Server->>DB: Verify Ownership
-    DB-->>Server: Ownership Confirmed
-    Server->>DB: Update Post
-    Server-->>User: Post Updated Success
-    
-    User->>Server: Delete Post
-    Server->>DB: Verify Ownership
-    DB-->>Server: Ownership Confirmed
-    Server->>DB: Delete Post
-    Server-->>User: Post Deleted Success
+    Server->>Database: Save Post
+    Database-->>Server: Post ID
+    Server-->>User: Success Response
 ```
 
-## Système de Votes
+## Flux du Système de Votes
+
 ```mermaid
 sequenceDiagram
     participant User
     participant Server
-    participant DB
+    participant Database
     
     User->>Server: Vote Request
-    Server->>DB: Check Previous Vote
-    DB-->>Server: Vote Status
-    Server->>DB: Update Vote
-    DB-->>Server: Vote Updated
-    Server-->>User: Vote Success
+    Server->>Database: Check Existing Vote
+    Database-->>Server: Vote Status
+    Server->>Database: Update Vote
+    Server-->>User: Updated Score
+```
+
+## Architecture des Modules
+
+```mermaid
+graph TB
+    subgraph Frontend
+        A[HTML Templates]
+        B[CSS Styles]
+    end
+    
+    subgraph Backend
+        C[Core Module]
+        D[Middleware]
+        E[Pages]
+        F[Modules]
+    end
+    
+    subgraph Database
+        G[SQLite]
+    end
+    
+    A --> C
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    E --> G
+    F --> G
+```
+
+## Schéma de la Base de Données
+
+```mermaid
+erDiagram
+    users {
+        int id PK
+        string username
+        string password
+        datetime created_at
+    }
+    
+    categories {
+        int id PK
+        string name
+        string description
+        datetime created_at
+    }
+    
+    posts {
+        int id PK
+        string title
+        string content
+        int user_id FK
+        int category_id FK
+        datetime created_at
+    }
+    
+    replies {
+        int id PK
+        string content
+        int post_id FK
+        int user_id FK
+        datetime created_at
+    }
+    
+    votes {
+        int id PK
+        int post_id FK
+        int user_id FK
+        int vote_type
+        datetime created_at
+    }
+    
+    users ||--o{ posts : "creates"
+    users ||--o{ replies : "writes"
+    users ||--o{ votes : "casts"
+    categories ||--o{ posts : "contains"
+    posts ||--o{ replies : "has"
+    posts ||--o{ votes : "receives"
 ```
 
 ## Composants Principaux
 
-### Core Module
-- `api.js` : Gestion centralisée des appels API
-- `auth.js` : Logique d'authentification
-- `dom.js` : Utilitaires de manipulation DOM
+### Modules Core
+- `api.js` : Configuration des routes API
+- `auth.js` : Gestion de l'authentification
+- `posts.js` : Gestion des posts
+- `votes.js` : Système de votes
+- `categories.js` : Gestion des catégories
 
 ### Middleware
-- `authMiddleware.js` : Protection des routes
-- `errorHandler.js` : Gestion globale des erreurs
-
-### Base de Données
-- SQLite pour la persistance
-- Tables optimisées
-- Requêtes préparées
-- Transactions
+- `auth.js` : Middleware d'authentification
+- `error.js` : Gestion des erreurs
+- `validation.js` : Validation des données
 
 [Retour au README principal](../README.md) 

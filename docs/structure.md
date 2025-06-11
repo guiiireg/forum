@@ -1,114 +1,89 @@
 # Structure du Projet
 
 ## Vue d'ensemble
+
 ```
-.
-├── Dockerfile
-├── README.md
+forum/
+├── server/
+│   ├── js/
+│   │   ├── core/
+│   │   │   ├── api.js
+│   │   │   ├── auth.js
+│   │   │   ├── posts.js
+│   │   │   ├── votes.js
+│   │   │   └── categories.js
+│   │   ├── middleware/
+│   │   │   ├── auth.js
+│   │   │   ├── error.js
+│   │   │   └── validation.js
+│   │   └── startServer.js
+│   ├── public/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   └── views/
 ├── database.db
+├── Dockerfile
 ├── docker-compose.yml
-├── package-lock.json
-├── package.json
-└── server/
-    ├── css/
-    │   ├── replies.css
-    │   └── style.css
-    ├── html/
-    │   ├── 404.html
-    │   ├── home.html
-    │   ├── login.html
-    │   ├── password.html
-    │   ├── post.html
-    │   ├── posts.html
-    │   ├── privacy.html
-    │   ├── profil.html
-    │   └── register.html
-    └── js/
-        ├── cache.js
-        ├── categories.js
-        ├── core/
-        │   ├── api.js
-        │   ├── auth.js
-        │   └── dom.js
-        ├── database.js
-        ├── middleware/
-        │   ├── authMiddleware.js
-        │   └── errorHandler.js
-        ├── modules/
-        │   └── posts/
-        │       └── index.js
-        ├── pages/
-        │   ├── generic.js
-        │   ├── home.js
-        │   ├── login.js
-        │   └── posts.js
-        ├── posts.js
-        ├── replies.js
-        ├── startServer.js
-        ├── users.js
-        └── votes.js
+└── package.json
 ```
 
-## Description des Dossiers
+## Description des Répertoires
 
-### `/server`
-Dossier principal contenant tout le code source de l'application.
+### `server/`
+Contient tout le code source du serveur.
 
-### `/server/css`
-- `style.css` : Styles globaux de l'application
-- `replies.css` : Styles spécifiques aux réponses
+#### `js/`
+Code JavaScript du serveur.
 
-### `/server/html`
-Templates HTML pour chaque page de l'application :
-- `404.html` : Page d'erreur 404
-- `home.html` : Page d'accueil
-- `login.html` : Page de connexion
-- `password.html` : Gestion des mots de passe
-- `post.html` : Affichage d'un post
-- `posts.html` : Liste des posts
-- `privacy.html` : Politique de confidentialité
-- `profil.html` : Page de profil
-- `register.html` : Page d'inscription
+##### `core/`
+Modules principaux de l'application.
 
-### `/server/js`
-Code JavaScript de l'application.
-
-#### `/server/js/core`
-Fonctionnalités core de l'application :
-- `api.js` : Gestion des appels API
-- `auth.js` : Logique d'authentification
-- `dom.js` : Utilitaires DOM
-
-#### `/server/js/middleware`
-Middlewares Express :
-- `authMiddleware.js` : Protection des routes
-- `errorHandler.js` : Gestion des erreurs
-
-#### `/server/js/modules`
-Modules modulaires de l'application :
-- `/posts` : Gestion des posts
-
-#### `/server/js/pages`
-Logique spécifique à chaque page :
-- `generic.js` : Fonctionnalités communes
-- `home.js` : Page d'accueil
-- `login.js` : Gestion de la connexion
+- `api.js` : Configuration des routes API
+- `auth.js` : Gestion de l'authentification
 - `posts.js` : Gestion des posts
-
-#### Fichiers Racine
-- `cache.js` : Gestion du cache
-- `categories.js` : Gestion des catégories
-- `database.js` : Configuration de la base de données
-- `posts.js` : API des posts
-- `replies.js` : Gestion des réponses
-- `startServer.js` : Point d'entrée de l'application
-- `users.js` : Gestion des utilisateurs
 - `votes.js` : Système de votes
+- `categories.js` : Gestion des catégories
 
-## Fichiers de Configuration
-- `Dockerfile` : Configuration Docker
-- `docker-compose.yml` : Configuration des services Docker
-- `package.json` : Dépendances et scripts npm
+##### `middleware/`
+Middleware Express.
+
+- `auth.js` : Middleware d'authentification
+- `error.js` : Gestion des erreurs
+- `validation.js` : Validation des données
+
+#### `public/`
+Fichiers statiques.
+
+- `css/` : Styles
+- `js/` : Scripts client
+- `images/` : Images
+
+#### `views/`
+Templates EJS.
+
+### Fichiers Racine
+
 - `database.db` : Base de données SQLite
+- `Dockerfile` : Configuration Docker
+- `docker-compose.yml` : Configuration Docker Compose
+- `package.json` : Dépendances et scripts
+
+## Organisation du Code
+
+### Architecture Modulaire
+- Séparation claire des responsabilités
+- Modules indépendants
+- Interface bien définie entre les modules
+
+### Gestion des Dépendances
+- Dépendances minimales
+- Versions fixes
+- Pas de dépendances inutiles
+
+### Structure des Modules
+- Un fichier = une responsabilité
+- Exports clairs
+- Documentation intégrée
 
 [Retour au README principal](../README.md) 
