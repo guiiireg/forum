@@ -121,13 +121,20 @@ sequenceDiagram
 - Mise à jour en temps réel
 - Calcul des scores
 
-### 7. Syntaxe SQL (0.5 point)
+### 7. Vérification d'Authentification (1 point)
+- Redirection automatique vers la page de connexion
+- Protection des routes nécessitant une authentification
+- Gestion des sessions avec express-session
+- Middleware de vérification d'authentification
+- Gestion des requêtes AJAX/API
+
+### 8. Syntaxe SQL (0.5 point)
 - Requêtes optimisées
 - Jointures appropriées
 - Sous-requêtes
 - Agrégations
 
-### 8. Gestion des Versions (0.5 point)
+### 9. Gestion des Versions (0.5 point)
 - Utilisation de Git
 - Branches thématiques :
   - `main` : Version stable
@@ -139,25 +146,25 @@ sequenceDiagram
   - `readme` : Documentation
 - Commits atomiques et descriptifs
 
-### 9. Qualité du Code (0.5 point)
+### 10. Qualité du Code (0.5 point)
 - Code modulaire
 - Documentation claire
 - Tests unitaires
 - Gestion des erreurs
 
-### 10. Nomenclature (0.75 point)
+### 11. Nomenclature (0.75 point)
 - Conventions de nommage cohérentes
 - Variables descriptives
 - Fonctions avec responsabilité unique
 - Commentaires pertinents
 
-### 11. Organisation des Fichiers (1 point)
+### 12. Organisation des Fichiers (1 point)
 - Structure modulaire
 - Séparation des responsabilités
 - Architecture MVC
 - Gestion des dépendances
 
-### 12. Docker (1.5 points - Bonus)
+### 13. Docker (1.5 points - Bonus)
 - Containerisation complète
 - Multi-stage builds
 - Volumes persistants
