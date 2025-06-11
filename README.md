@@ -172,7 +172,7 @@ Le projet utilise une architecture modulaire pour une meilleure maintenabilité 
 
 1. Cloner le repository
 ```bash
-git clone [URL_DU_REPO]
+git clone https://github.com/guiiireg/forum.git
 ```
 
 2. Installer les dépendances
