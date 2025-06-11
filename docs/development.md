@@ -81,4 +81,13 @@
 ### Debugging
 - Chrome DevTools (F12) pour l'inspection et le debugging
 
+## Debug et Système de Vote
+
+- Le système de vote côté serveur (votes.js) inclut des logs détaillés pour le debug (affichage des paramètres, calculs de score, décisions prises).
+- La logique côté client (modules/posts/index.js) gère :
+  - Le toggle du vote (clic répété supprime le vote)
+  - Le changement de vote (upvote <-> downvote)
+  - L'affichage dynamique du score et de l'état des boutons
+- La gestion des erreurs API côté client utilise `safeApiCall` pour afficher un feedback immédiat à l'utilisateur (ex : impossibilité de descendre sous zéro, non connecté, etc).
+
 [Retour au README principal](../README.md) 

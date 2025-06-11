@@ -42,48 +42,13 @@ Modules principaux de l'application.
 - `api.js` : Configuration des routes API
 - `auth.js` : Gestion de l'authentification
 - `posts.js` : Gestion des posts
-- `votes.js` : Système de votes
+- `votes.js` : Système de votes (logique serveur, gestion du score, unicité, prévention du score négatif)
 - `categories.js` : Gestion des catégories
+
+##### `modules/posts/index.js`
+- Gestion dynamique des posts et des votes côté client (UI réactive, feedback immédiat, gestion des erreurs, toggle/changement de vote)
 
 ##### `middleware/`
 Middleware Express.
 
-- `auth.js` : Middleware d'authentification
-- `error.js` : Gestion des erreurs
-- `validation.js` : Validation des données
-
-#### `public/`
-Fichiers statiques.
-
-- `css/` : Styles
-- `js/` : Scripts client
-- `images/` : Images
-
-#### `views/`
-Templates EJS.
-
-### Fichiers Racine
-
-- `database.db` : Base de données SQLite
-- `Dockerfile` : Configuration Docker
-- `docker-compose.yml` : Configuration Docker Compose
-- `package.json` : Dépendances et scripts
-
-## Organisation du Code
-
-### Architecture Modulaire
-- Séparation claire des responsabilités
-- Modules indépendants
-- Interface bien définie entre les modules
-
-### Gestion des Dépendances
-- Dépendances minimales
-- Versions fixes
-- Pas de dépendances inutiles
-
-### Structure des Modules
-- Un fichier = une responsabilité
-- Exports clairs
-- Documentation intégrée
-
-[Retour au README principal](../README.md) 
+- `

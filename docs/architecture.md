@@ -127,6 +127,7 @@ erDiagram
         int user_id FK
         int vote_type
         datetime created_at
+        -- Unicité : un vote par user par post, score jamais négatif
     }
     
     users ||--o{ posts : "creates"
