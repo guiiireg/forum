@@ -8,4 +8,4 @@ export function checkAuth() {
   if (requiresAuth() && !isAuthenticated()) {
     window.location.href = "/login.html";
   }
-} 
+}
