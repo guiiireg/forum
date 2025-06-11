@@ -3,10 +3,12 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs/promises";
+import session from "express-session";
 import { registerUser, loginUser } from "./users.js";
 import { createPost, getAllPosts, getPostsByUser } from "./posts.js";
 import db from "./database.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { requireAuth, requireGuest } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 
@@ -23,11 +25,48 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const htmlDir = path.join(__dirname, "../html");
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "votre_secret_tres_securise",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(htmlDir));
 app.use("/js", express.static(path.join(__dirname)));
 app.use("/css", express.static(path.join(__dirname, "../css")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(htmlDir, "home.html"));
+});
+
+app.get("/login", requireGuest, (req, res) => {
+  res.sendFile(path.join(htmlDir, "login.html"));
+});
+
+app.get("/register", requireGuest, (req, res) => {
+  res.sendFile(path.join(htmlDir, "register.html"));
+});
+
+app.get("/posts", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "posts.html"));
+});
+
+app.get("/post/:id", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "post.html"));
+});
+
+app.get("/profil", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "profil.html"));
+});
 
 /**
  * Register a user
