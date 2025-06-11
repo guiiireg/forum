@@ -1,4 +1,5 @@
 import db from "./database.js";
+import { createSession, getSession } from "./cache.js";
 
 /**
  * Register a user
@@ -14,15 +15,15 @@ export async function registerUser(username, password) {
     if (existUser) {
       return { success: false, message: "Nom d'utilisateur déjà utilisé" };
     }
-    const result = await db.run("INSERT INTO users (username, password) VALUES (?, ?)", [
-      username,
-      password,
-    ]);
-    return { 
-      success: true, 
+    const result = await db.run(
+      "INSERT INTO users (username, password) VALUES (?, ?)",
+      [username, password]
+    );
+    return {
+      success: true,
       message: "Inscription réussie",
       userId: result.lastID,
-      username: username
+      username: username,
     };
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error);
@@ -50,11 +51,17 @@ export async function loginUser(username, password) {
         message: "Nom d'utilisateur ou mot de passe incorrect",
       };
     }
+    const sessionId = createSession(user.id, {
+      username: user.username,
+      id: user.id,
+    });
+
     return {
       success: true,
       message: "Connexion réussie",
       userId: user.id,
       username: user.username,
+      sessionId: sessionId,
     };
   } catch (error) {
     console.error("Erreur lors de la connexion:", error);
@@ -63,4 +70,14 @@ export async function loginUser(username, password) {
       message: "Une erreur est survenue lors de la connexion",
     };
   }
+}
+
+/**
+ * Get user data from session
+ * @param {string} sessionId - The session ID
+ * @returns {Object|null} The user data or null if session not found
+ */
+export function getUserFromSession(sessionId) {
+  const session = getSession(sessionId);
+  return session ? session.userData : null;
 }
