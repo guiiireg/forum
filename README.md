@@ -2,6 +2,168 @@
 
 Un forum moderne et interactif développé avec Node.js, Express et SQLite.
 
+## Architecture Technique
+
+### Diagramme d'Architecture Global
+```mermaid
+graph TD
+    A[Client Browser] --> B[Express Server]
+    B --> C[SQLite Database]
+    B --> D[Session Management]
+    B --> E[Authentication]
+    B --> F[Post Management]
+    B --> G[Vote System]
+    B --> H[Category System]
+```
+
+### Gestion des Sessions et Authentification
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server
+    participant DB
+    
+    User->>Server: Register Request
+    Server->>DB: Check Username
+    DB-->>Server: Username Available
+    Server->>DB: Create User
+    Server-->>User: Registration Success
+    
+    User->>Server: Login Request
+    Server->>DB: Verify Credentials
+    DB-->>Server: Valid Credentials
+    Server->>Server: Create Session
+    Server-->>User: Login Success + Session Cookie
+    
+    User->>Server: Logout Request
+    Server->>Server: Destroy Session
+    Server-->>User: Logout Success
+```
+
+### Gestion des Posts
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server
+    participant DB
+    
+    User->>Server: Create Post
+    Server->>DB: Save Post
+    DB-->>Server: Post Created
+    Server-->>User: Post Created Success
+    
+    User->>Server: Edit Post
+    Server->>DB: Verify Ownership
+    DB-->>Server: Ownership Confirmed
+    Server->>DB: Update Post
+    Server-->>User: Post Updated Success
+    
+    User->>Server: Delete Post
+    Server->>DB: Verify Ownership
+    DB-->>Server: Ownership Confirmed
+    Server->>DB: Delete Post
+    Server-->>User: Post Deleted Success
+```
+
+### Système de Votes
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server
+    participant DB
+    
+    User->>Server: Vote Request
+    Server->>DB: Check Previous Vote
+    DB-->>Server: Vote Status
+    Server->>DB: Update Vote
+    DB-->>Server: Vote Updated
+    Server-->>User: Vote Success
+```
+
+## Fonctionnalités Détaillées
+
+### 1. Gestion des Sessions et Cookies (1 point)
+- Utilisation de `express-session` pour la gestion des sessions
+- Stockage des sessions en mémoire avec possibilité de persistance
+- Cookies sécurisés avec options httpOnly et secure
+- Gestion des timeouts de session
+
+### 2. Identification Sécurisée (1 point)
+- Inscription avec validation des données
+- Connexion avec hachage des mots de passe (bcrypt)
+- Déconnexion avec destruction de session
+- Protection contre les attaques CSRF
+- Validation des entrées utilisateur
+
+### 3. Création de Posts (1.75 points)
+- Création de posts pour utilisateurs connectés
+- Système de catégories obligatoire
+- Validation des données
+- Support du markdown
+- Gestion des erreurs
+
+### 4. Édition des Posts (1 point)
+- Édition des posts par leurs auteurs
+- Suppression des posts
+- Historique des modifications
+- Validation des permissions
+
+### 5. Base de Données (1 point)
+- Utilisation de SQLite
+- Schéma optimisé
+- Requêtes préparées
+- Gestion des transactions
+- Indexation appropriée
+
+### 6. Système de Votes (0.5 point)
+- Upvote/Downvote
+- Un vote par utilisateur
+- Mise à jour en temps réel
+- Calcul des scores
+
+### 7. Syntaxe SQL (0.5 point)
+- Requêtes optimisées
+- Jointures appropriées
+- Sous-requêtes
+- Agrégations
+
+### 8. Gestion des Versions (0.5 point)
+- Utilisation de Git
+- Branches thématiques :
+  - `main` : Version stable
+  - `test` : Tests et développement
+  - `docker` : Configuration Docker
+  - `main-css` : Styles
+  - `main-html` : Templates
+  - `main-js` : Logique JavaScript
+  - `readme` : Documentation
+- Commits atomiques et descriptifs
+
+### 9. Qualité du Code (0.5 point)
+- Code modulaire
+- Documentation claire
+- Tests unitaires
+- Gestion des erreurs
+
+### 10. Nomenclature (0.75 point)
+- Conventions de nommage cohérentes
+- Variables descriptives
+- Fonctions avec responsabilité unique
+- Commentaires pertinents
+
+### 11. Organisation des Fichiers (1 point)
+- Structure modulaire
+- Séparation des responsabilités
+- Architecture MVC
+- Gestion des dépendances
+
+### 12. Docker (1.5 points - Bonus)
+- Containerisation complète
+- Multi-stage builds
+- Volumes persistants
+- Réseau isolé
+- Variables d'environnement
+
 ## Prérequis
 
 ### Installation de WSL (Windows Subsystem for Linux)
