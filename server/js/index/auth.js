@@ -13,18 +13,9 @@ export function isAuthenticated() {
  * @returns {boolean} True if the page requires authentication, false otherwise
  */
 export function requiresAuth() {
-  // Get the full path and remove any query parameters
   const fullPath = window.location.pathname;
-  console.log("Full path:", fullPath);
-  
-  // Get the last part of the path
   const currentPage = fullPath.split("/").pop() || "index.html";
-  console.log("Current page:", currentPage);
-  
-  // List of pages that don't require authentication
   const publicPages = ["login.html", "register.html"];
-  console.log("Is public page:", publicPages.includes(currentPage));
-  
   return !publicPages.includes(currentPage);
 }
 
@@ -32,12 +23,7 @@ export function requiresAuth() {
  * Check authentication and redirect if necessary
  */
 export function checkAuth() {
-  console.log("Checking authentication...");
-  console.log("Is authenticated:", isAuthenticated());
-  console.log("Requires auth:", requiresAuth());
-  
   if (requiresAuth() && !isAuthenticated()) {
-    console.log("Redirecting to login page...");
     window.location.href = "/login.html";
   }
 }
