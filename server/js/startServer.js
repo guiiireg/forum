@@ -55,16 +55,16 @@ app.use(express.static(htmlDir));
 app.use("/js", express.static(path.join(__dirname)));
 app.use("/css", express.static(path.join(__dirname, "../css")));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(htmlDir, "home.html"));
-});
-
 app.get("/login", requireGuest, (req, res) => {
   res.sendFile(path.join(htmlDir, "login.html"));
 });
 
 app.get("/register", requireGuest, (req, res) => {
   res.sendFile(path.join(htmlDir, "register.html"));
+});
+
+app.get("/", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "home.html"));
 });
 
 app.get("/posts", requireAuth, (req, res) => {
@@ -77,6 +77,14 @@ app.get("/post/:id", requireAuth, (req, res) => {
 
 app.get("/profil", requireAuth, (req, res) => {
   res.sendFile(path.join(htmlDir, "profil.html"));
+});
+
+app.get("/password", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "password.html"));
+});
+
+app.get("/privacy", requireAuth, (req, res) => {
+  res.sendFile(path.join(htmlDir, "privacy.html"));
 });
 
 /**
@@ -433,30 +441,16 @@ app.get("/posts/category/:categoryId", async (req, res) => {
 });
 
 /**
- * Setup the routes
+ * Setup error handling and 404 route
  */
 async function setupRoutes() {
   try {
-    const files = await fs.readdir(htmlDir);
-
-    files.forEach((file) => {
-      if (file.endsWith(".html")) {
-        let route;
-        if (file === "home.html") {
-          route = "/";
-        } else {
-          route = `/${file.replace(".html", "")}`;
-        }
-        app.get(route, (req, res) => {
-          res.sendFile(path.join(htmlDir, file));
-        });
-      }
-    });
-
+    // Route 404 - doit être après toutes les autres routes
     app.use((req, res) => {
       res.status(404).sendFile(path.join(htmlDir, "404.html"));
     });
 
+    // Middleware de gestion d'erreurs - doit être en dernier
     app.use(errorHandler);
   } catch (error) {
     console.error("Error setting up routes:", error);
