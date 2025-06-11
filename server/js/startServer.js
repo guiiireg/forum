@@ -6,6 +6,7 @@ import fs from "fs/promises";
 import { registerUser, loginUser } from "./users.js";
 import { createPost, getAllPosts, getPostsByUser } from "./posts.js";
 import db from "./database.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 
@@ -161,6 +162,12 @@ async function setupRoutes() {
         });
       }
     });
+
+    app.use((req, res) => {
+      res.status(404).sendFile(path.join(htmlDir, "404.html"));
+    });
+
+    app.use(errorHandler);
   } catch (error) {
     console.error("Error setting up routes:", error);
   }

@@ -6,3 +6,271 @@
 body {
   background-color: rgba(0, 0, 0, 0.41);
 }
+
+.vote-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.vote-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1.5rem;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.vote-button:hover {
+  color: #333;
+}
+
+.vote-button.upvoted {
+  color: #4caf50;
+}
+
+.vote-button.downvoted {
+  color: #f44336;
+}
+
+.vote-count {
+  font-weight: bold;
+  margin: 0.25rem 0;
+}
+
+.post {
+  display: flex;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.post-content {
+  flex: 1;
+}
+
+.category-badge {
+  display: inline-block;
+  background-color: #3f51b5;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+#category-filter {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#category-filter label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+#category-filter-select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-family: inherit;
+}
+
+.post-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background-color: #2196f3;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #1976d2;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+.edit-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 0.25rem;
+  border: 1px solid #ddd;
+}
+
+.edit-form div {
+  margin-bottom: 1rem;
+}
+
+.edit-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: bold;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  font-family: inherit;
+}
+
+.edit-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.edit-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.edit-buttons button:first-child {
+  background-color: #4caf50;
+  color: white;
+}
+
+.edit-buttons button:first-child:hover {
+  background-color: #45a049;
+}
+
+.edit-buttons button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.edit-buttons button:last-child:hover {
+  background-color: #d32f2f;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-container h1 {
+  font-size: 6rem;
+  margin: 0;
+  color: #e74c3c;
+}
+
+.error-container h2 {
+  font-size: 2rem;
+  margin: 1rem 0;
+  color: #2c3e50;
+}
+
+.error-container p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+}
+
+.error-container .btn {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.error-container .btn:hover {
+  background-color: #2980b9;
+}
+
+/* Styles pour la page de politique de confidentialité */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.container h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.container section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+}
+
+.container h2 {
+  color: #3498db;
+  margin-bottom: 1rem;
+}
+
+.container ul {
+  list-style-type: disc;
+  margin-left: 2rem;
+}
+
+.container li {
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.privacy-footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.privacy-footer p {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
