@@ -17,10 +17,6 @@ export async function initializePosts() {
 
   const postsContainer = document.getElementById("posts-container");
   const createPostContainer = document.getElementById("create-post-container");
-  const categorySelect = document.getElementById("category");
-  const categoryFilterSelect = document.getElementById(
-    "category-filter-select"
-  );
 
   if (!userId || !username) {
     createPostContainer.innerHTML =
@@ -28,6 +24,11 @@ export async function initializePosts() {
   } else {
     createPostContainer.innerHTML = createPostForm();
   }
+
+  const categorySelect = document.getElementById("category");
+  const categoryFilterSelect = document.getElementById(
+    "category-filter-select"
+  );
 
   async function loadCategories() {
     try {
@@ -64,9 +65,7 @@ export async function initializePosts() {
 
   async function loadPosts(categoryId = null) {
     try {
-      const url = categoryId
-        ? `/posts/category/${categoryId}`
-        : "/posts";
+      const url = categoryId ? `/posts/category/${categoryId}` : "/posts";
       const response = await fetch(url);
       const data = await response.json();
 
@@ -132,7 +131,7 @@ export async function initializePosts() {
       if (data.success) {
         return {
           totalVotes: data.totalVotes,
-          userVote: data.userVote
+          userVote: data.userVote,
         };
       }
       return { totalVotes: 0, userVote: 0 };
@@ -149,9 +148,9 @@ export async function initializePosts() {
     });
   }
 
-  const createPostForm = document.getElementById("create-post-form");
-  if (createPostForm) {
-    createPostForm.addEventListener("submit", async (e) => {
+  const createPostFormElement = document.getElementById("create-post-form");
+  if (createPostFormElement) {
+    createPostFormElement.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (await handleCreatePost(userId)) {
         loadPosts(categoryFilterSelect ? categoryFilterSelect.value : null);

@@ -161,7 +161,6 @@ export async function handleCreatePost(userId) {
 
     if (data.success) {
       alert(data.message);
-      // Reset form
       titleInput.value = "";
       contentInput.value = "";
       categorySelect.value = "";
@@ -199,7 +198,6 @@ export async function handleVote(postId, userId, voteType) {
     const data = await response.json();
 
     if (data.success) {
-      // Update vote display
       const voteContainer = document.getElementById(`vote-container-${postId}`);
       if (voteContainer) {
         const voteCount = voteContainer.querySelector(".vote-count");
@@ -208,11 +206,9 @@ export async function handleVote(postId, userId, voteType) {
 
         if (voteCount) voteCount.textContent = data.votes.totalVotes;
 
-        // Remove previous vote classes
         upvoteBtn.classList.remove("upvoted");
         downvoteBtn.classList.remove("downvoted");
 
-        // Add new vote class
         if (data.votes.userVote === 1) {
           upvoteBtn.classList.add("upvoted");
         } else if (data.votes.userVote === -1) {
