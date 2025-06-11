@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
-  <script src="https://cdn.jsdelivr.net/npm/js-sha256@0.9.0/build/sha256.min.js"></script>;
+
   if (userId && username) {
     if (logoutLink) {
       logoutLink.style.display = "block";

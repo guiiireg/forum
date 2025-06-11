@@ -65,8 +65,8 @@ export async function initializePosts() {
   async function loadPosts(categoryId = null) {
     try {
       const url = categoryId
-        ? `/api/posts/category/${categoryId}`
-        : "/api/posts";
+        ? `/posts/category/${categoryId}`
+        : "/posts";
       const response = await fetch(url);
       const data = await response.json();
 
@@ -130,7 +130,10 @@ export async function initializePosts() {
       const data = await response.json();
 
       if (data.success) {
-        return data.votes;
+        return {
+          totalVotes: data.totalVotes,
+          userVote: data.userVote
+        };
       }
       return { totalVotes: 0, userVote: 0 };
     } catch (error) {
