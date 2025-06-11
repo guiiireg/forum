@@ -74,13 +74,20 @@
 - Gestion des cookies et des données personnelles
 - Droits des utilisateurs (accès, rectification, effacement)
 
-### 7. Système de Votes (0.5 point)
+### 7. Suivi des posts (0.5 point)
 - Upvote/Downvote
 - Un vote par utilisateur
 - Mise à jour en temps réel
 - Calcul des scores
 
-### 8. Syntaxe SQL (0.5 point)
+### 8. Filtres (0.5 point)
+- Filtrage par catégories
+- Tri par date de création
+- Tri par nombre de likes
+- Tri par nombre de réponses
+- Ordre croissant/décroissant
+
+### 9. Syntaxe SQL (0.5 point)
 - Requêtes optimisées
 - Jointures appropriées
 - Sous-requêtes

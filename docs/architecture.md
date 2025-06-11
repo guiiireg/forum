@@ -57,6 +57,21 @@ sequenceDiagram
     Server-->>User: Updated Score
 ```
 
+## Flux du Système de Filtres
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Server
+    participant Database
+    
+    User->>Server: Filter Request
+    Server->>Database: Query Posts
+    Database-->>Server: Filtered Posts
+    Server->>Server: Sort Results
+    Server-->>User: Filtered & Sorted Posts
+```
+
 ## Architecture des Modules
 
 ```mermaid
@@ -146,6 +161,7 @@ erDiagram
 - `posts.js` : Gestion des posts
 - `votes.js` : Système de votes
 - `categories.js` : Gestion des catégories
+- `index.js` : Système de filtrage et tri
 
 ### Middleware
 - `auth.js` : Middleware d'authentification

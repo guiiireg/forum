@@ -18,6 +18,7 @@ Le Forum Project est une application web moderne offrant :
 - Système de votes
 - Interface responsive
 - Performance optimisée
+- Filtres avancés (catégories, date, popularité)
 
 ## Démarrage Rapide
 
