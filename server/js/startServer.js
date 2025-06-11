@@ -117,7 +117,7 @@ app.post("/posts", async (req, res) => {
  * @param {import("express").Request} req - The request object
  * @param {import("express").Response} res - The response object
  */
-app.get("/posts", async (req, res) => {
+app.get("/api/posts", async (req, res) => {
   const result = await getAllPosts();
   if (result.success) {
     res.json({ success: true, posts: result.posts });
