@@ -67,8 +67,25 @@
           <li>Analyser l'utilisation du site</li>
         </ul>
       </section>
+
+      <section>
+        <h2>6. Contact</h2>
+        <p>
+          Pour toute question concernant vos données personnelles,
+          contactez-nous à :
+        </p>
+        <p>Email : privacy@forum.com</p>
+      </section>
+
+      <div class="privacy-footer">
+        <p>Dernière mise à jour : <span id="last-update"></span></p>
+        <a href="/" class="btn">Retour à l'accueil</a>
+      </div>
     </div>
 
-    <script src="../js/privacy/privacy.js" type="module"></script>
+    <script>
+      document.getElementById("last-update").textContent =
+        new Date().toLocaleDateString("fr-FR");
+    </script>
   </body>
 </html>
