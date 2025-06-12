@@ -302,8 +302,8 @@ async function handleCreatePost(e) {
   const postData = {
     title: formData.title,
     content: formData.content,
-    userId: postsState.currentUser.id,
-    categoryId: formData.category,
+    userId: parseInt(postsState.currentUser.id),
+    categoryId: formData.category ? parseInt(formData.category) : null,
   };
 
   const result = await safeApiCall(
@@ -343,7 +343,7 @@ window.deletePostHandler = async function (postId) {
   }
 
   const result = await safeApiCall(
-    () => deletePost(postId, postsState.currentUser.id),
+    () => deletePost(parseInt(postId), parseInt(postsState.currentUser.id)),
     "suppression du post"
   );
 
@@ -365,7 +365,7 @@ window.deletePostHandler = async function (postId) {
  */
 async function loadVotesForPost(postId, userId) {
   const result = await safeApiCall(
-    () => fetchVotes(postId, userId),
+    () => fetchVotes(parseInt(postId), parseInt(userId)),
     "chargement des votes"
   );
 
@@ -404,7 +404,7 @@ async function handleVote(postId, voteType, postElement) {
   if (!postsState.currentUser) return;
 
   const result = await safeApiCall(
-    () => submitVote(postId, voteType, postsState.currentUser.id),
+    () => submitVote(parseInt(postId), parseInt(voteType), parseInt(postsState.currentUser.id)),
     "enregistrement du vote"
   );
 

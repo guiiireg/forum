@@ -343,7 +343,7 @@ app.post("/api/replies", async (req, res) => {
  * @param {import("express").Response} res - The response object
  */
 app.put("/posts/:postId", async (req, res) => {
-  const postId = req.params.postId;
+  const postId = parseInt(req.params.postId);
   const { title, content, userId, categoryId } = req.body;
 
   if (!title || !content || !userId) {
@@ -353,14 +353,14 @@ app.put("/posts/:postId", async (req, res) => {
   }
 
   try {
-    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [parseInt(userId)]);
     if (!user) {
       return res
         .status(401)
         .json({ success: false, message: "Utilisateur non authentifié" });
     }
 
-    const result = await updatePost(postId, title, content, userId, categoryId);
+    const result = await updatePost(postId, title, content, parseInt(userId), categoryId ? parseInt(categoryId) : null);
     if (result.success) {
       res.json({ success: true, message: result.message });
     } else {
@@ -380,7 +380,7 @@ app.put("/posts/:postId", async (req, res) => {
  * @param {import("express").Response} res - The response object
  */
 app.delete("/posts/:postId", async (req, res) => {
-  const postId = req.params.postId;
+  const postId = parseInt(req.params.postId);
   const { userId } = req.body;
 
   if (!userId) {
@@ -390,14 +390,14 @@ app.delete("/posts/:postId", async (req, res) => {
   }
 
   try {
-    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [parseInt(userId)]);
     if (!user) {
       return res
         .status(401)
         .json({ success: false, message: "Utilisateur non authentifié" });
     }
 
-    const result = await deletePost(postId, userId);
+    const result = await deletePost(postId, parseInt(userId));
     if (result.success) {
       res.json({ success: true, message: result.message });
     } else {

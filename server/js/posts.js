@@ -220,7 +220,7 @@ export async function updatePost(
       };
     }
 
-    if (post.user_id !== userId) {
+    if (parseInt(post.user_id) !== parseInt(userId)) {
       return {
         success: false,
         message: "Vous n'êtes pas autorisé à modifier ce post",
@@ -289,7 +289,7 @@ export async function deletePost(postId, userId) {
       };
     }
 
-    if (post.user_id !== userId) {
+    if (parseInt(post.user_id) !== parseInt(userId)) {
       return {
         success: false,
         message: "Vous n'êtes pas autorisé à supprimer ce post",
