@@ -1,5 +1,6 @@
 import db from "./database.js";
 import { createSession, getSession } from "./cache.js";
+import { randomUUID } from "crypto";
 
 /**
  * Register a user
@@ -15,15 +16,19 @@ export async function registerUser(username, password) {
     if (existUser) {
       return { success: false, message: "Nom d'utilisateur déjà utilisé" };
     }
+
+    const userUuid = randomUUID();
+
     const result = await db.run(
-      "INSERT INTO users (username, password) VALUES (?, ?)",
-      [username, password]
+      "INSERT INTO users (username, password, uuid) VALUES (?, ?, ?)",
+      [username, password, userUuid]
     );
     return {
       success: true,
       message: "Inscription réussie",
       userId: result.lastID,
       username: username,
+      uuid: userUuid,
     };
   } catch (error) {
     console.error("Erreur lors de l'inscription:", error);
@@ -54,6 +59,7 @@ export async function loginUser(username, password) {
     const sessionId = createSession(user.id, {
       username: user.username,
       id: user.id,
+      uuid: user.uuid,
     });
 
     return {
@@ -61,6 +67,7 @@ export async function loginUser(username, password) {
       message: "Connexion réussie",
       userId: user.id,
       username: user.username,
+      uuid: user.uuid,
       sessionId: sessionId,
     };
   } catch (error) {
@@ -80,4 +87,46 @@ export async function loginUser(username, password) {
 export function getUserFromSession(sessionId) {
   const session = getSession(sessionId);
   return session ? session.userData : null;
+}
+
+/**
+ * Get user by UUID
+ * @param {string} uuid - The user UUID
+ * @returns {Promise<Object|null>} The user data or null if not found
+ */
+export async function getUserByUuid(uuid) {
+  try {
+    const user = await db.get(
+      "SELECT id, username, uuid, created_at FROM users WHERE uuid = ?",
+      [uuid]
+    );
+    return user || null;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'utilisateur par UUID:",
+      error
+    );
+    return null;
+  }
+}
+
+/**
+ * Get user by ID with UUID
+ * @param {number} userId - The user ID
+ * @returns {Promise<Object|null>} The user data or null if not found
+ */
+export async function getUserById(userId) {
+  try {
+    const user = await db.get(
+      "SELECT id, username, uuid, created_at FROM users WHERE id = ?",
+      [userId]
+    );
+    return user || null;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération de l'utilisateur par ID:",
+      error
+    );
+    return null;
+  }
 }

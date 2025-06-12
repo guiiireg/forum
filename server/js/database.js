@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { randomUUID } from "crypto";
 
 /**
  * Open the database
@@ -21,6 +22,50 @@ await db.exec(`
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 `);
+
+/**
+ * Add uuid column to existing users table if it doesn't exist
+ */
+const userTableInfo = await db.all("PRAGMA table_info(users)");
+const hasUuidColumn = userTableInfo.some((col) => col.name === "uuid");
+if (!hasUuidColumn) {
+  try {
+    await db.exec(`ALTER TABLE users ADD COLUMN uuid TEXT`);
+    console.log("✅ Added uuid column to users table");
+  } catch (error) {
+    console.error("Error adding uuid column to users table:", error);
+  }
+}
+
+/**
+ * Generate UUIDs for existing users who don't have one
+ */
+try {
+  const usersWithoutUuid = await db.all(
+    "SELECT id FROM users WHERE uuid IS NULL OR uuid = ''"
+  );
+  if (usersWithoutUuid.length > 0) {
+    console.log(
+      `Generating UUIDs for ${usersWithoutUuid.length} existing users...`
+    );
+
+    for (const user of usersWithoutUuid) {
+      const uuid = randomUUID();
+      await db.run("UPDATE users SET uuid = ? WHERE id = ?", [uuid, user.id]);
+    }
+
+    try {
+      await db.exec(
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_users_uuid ON users(uuid)"
+      );
+      console.log("✅ Added unique constraint to uuid column");
+    } catch (indexError) {
+      console.error("Error adding unique constraint to uuid:", indexError);
+    }
+  }
+} catch (error) {
+  console.error("Error generating UUIDs for existing users:", error);
+}
 
 /**
  * Create the categories table if it doesn't exist
