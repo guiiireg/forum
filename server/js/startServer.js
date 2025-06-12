@@ -426,6 +426,21 @@ app.get("/categories", async (req, res) => {
 });
 
 /**
+ * Get all users (for testing UUID generation)
+ * @param {import("express").Request} req - The request object
+ * @param {import("express").Response} res - The response object
+ */
+app.get("/test/users", async (req, res) => {
+  try {
+    const users = await db.all("SELECT id, username, uuid, created_at FROM users");
+    res.json({ success: true, users });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ success: false, message: "Error fetching users" });
+  }
+});
+
+/**
  * Get posts by category
  * @param {import("express").Request} req - The request object
  * @param {import("express").Response} res - The response object

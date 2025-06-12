@@ -1,6 +1,7 @@
 import db from "./database.js";
 import { createSession, getSession } from "./cache.js";
 import { randomUUID } from "crypto";
+import bcrypt from "bcrypt";
 
 /**
  * Register a user
@@ -17,11 +18,14 @@ export async function registerUser(username, password) {
       return { success: false, message: "Nom d'utilisateur déjà utilisé" };
     }
 
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const userUuid = randomUUID();
 
     const result = await db.run(
       "INSERT INTO users (username, password, uuid) VALUES (?, ?, ?)",
-      [username, password, userUuid]
+      [username, hashedPassword, userUuid]
     );
     return {
       success: true,
@@ -50,12 +54,21 @@ export async function loginUser(username, password) {
     const user = await db.get("SELECT * FROM users WHERE username = ?", [
       username,
     ]);
-    if (!user || user.password !== password) {
+    if (!user) {
       return {
         success: false,
         message: "Nom d'utilisateur ou mot de passe incorrect",
       };
     }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return {
+        success: false,
+        message: "Nom d'utilisateur ou mot de passe incorrect",
+      };
+    }
+
     const sessionId = createSession(user.id, {
       username: user.username,
       id: user.id,

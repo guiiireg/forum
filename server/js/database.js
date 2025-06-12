@@ -1,6 +1,7 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import { randomUUID } from "crypto";
+import bcrypt from "bcrypt";
 
 /**
  * Open the database
@@ -173,6 +174,36 @@ await db.exec(`
         UNIQUE (post_id, user_id)
     );
 `);
+
+/**
+ * Migrate existing plain text passwords to hashed passwords
+ */
+try {
+  console.log("🔐 Vérification des mots de passe à migrer...");
+  const usersWithPlainPasswords = await db.all(
+    "SELECT id, username, password FROM users WHERE password NOT LIKE '$2b$%'"
+  );
+  
+  if (usersWithPlainPasswords.length > 0) {
+    console.log(`🔄 Migration de ${usersWithPlainPasswords.length} mots de passe...`);
+    const saltRounds = 12;
+    
+    for (const user of usersWithPlainPasswords) {
+      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+      await db.run("UPDATE users SET password = ? WHERE id = ?", [
+        hashedPassword,
+        user.id,
+      ]);
+      console.log(`✅ Mot de passe hashé pour l'utilisateur: ${user.username}`);
+    }
+    
+    console.log("✅ Migration des mots de passe terminée !");
+  } else {
+    console.log("✅ Tous les mots de passe sont déjà hashés.");
+  }
+} catch (error) {
+  console.error("❌ Erreur lors de la migration des mots de passe:", error);
+}
 
 /**
  * Export the database
