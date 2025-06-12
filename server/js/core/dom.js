@@ -75,7 +75,6 @@ export function resetForm(form) {
 
   formElement.reset();
 
-  // Clear error messages
   const errorElements = formElement.querySelectorAll(
     ".error-message, #error-message"
   );
