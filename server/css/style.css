@@ -545,7 +545,7 @@ body {
 }
 form {
 background-color: rgba(0, 0, 0, 0.7);
-  
+  padding: 10px;
   border-radius: 15px;
   padding: 20px;
   width: 300px ;
@@ -561,41 +561,59 @@ h3 {
 
 label {
   font-family: 'Arial', sans-serif;  
-  color: rgb(190, 26, 26);
+  color: white;
   display: block;
   margin-bottom: 10px;
 }
 textarea{
-  color: yellowgreen;
+  color: rgb(0, 0, 7);
 }
  input {
   width: 100%;
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgb(229, 34, 212);
+  color: rgb(0, 0, 7);
   font-size: 16px;}
 
-  nav{
-  font-family: 'Arial', sans-serif;  
-  color: white;
-  height: 60px;  
+nav{
   background-color: rgba(0, 0, 0, 0.7);
-  border: none;
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
 
+li {
+  display: inline-block;
+  margin:1%;
+  font-family: 'Arial', sans-serif;
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
 
+a {
+  color:black;
+  text-decoration: none;
+  font-family: 'Arial', sans-serif;  
 }
 
 button {
-  background-color: #00000089;
-  border: none;
+  background-color: rgba(71, 71, 71, 0.469);
   color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  margin-top: 5px;
+  margin-bottom: 5px;
   border-radius: 5px;
+  
+}
+p {
+  font-family: 'Arial', sans-serif;  
+  color: rgb(0, 0, 0);
+}
+
+h1 {
+  font-family: 'Arial', sans-serif;  
+  color: black;
+  font-size: 36px;
+  margin-bottom: 20px;
 }
