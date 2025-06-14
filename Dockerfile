@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Commande de démarrage
-CMD ["node", "server/js/startServer.js"]
+CMD ["node", "server/js/server/index.js"]
