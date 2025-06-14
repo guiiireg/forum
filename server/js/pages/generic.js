@@ -2,7 +2,7 @@
  * Generic Page - Simple initialization for basic pages
  */
 
-import { initAuth } from "../core/auth.js";
+import { initAuth } from "../lib/auth.js";
 
 /**
  * Initialize basic authentication and UI

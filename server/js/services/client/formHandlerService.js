@@ -1,5 +1,5 @@
 import { apiService } from "../apiService.js";
-import { MessageHandler } from "../../modules/ui/messageHandler.js";
+import { MessageHandler } from "../../lib/messageHandler.js";
 
 /**
  * Form Handler Service - Manages form interactions and submissions

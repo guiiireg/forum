@@ -1,4 +1,4 @@
-import { fetchVotes, submitVote, safeApiCall } from "../../core/api.js";
+import { fetchVotes, submitVote, safeApiCall } from "../../lib/api.js";
 import { getCurrentUser } from "./postsState.js";
 
 /**

@@ -1,4 +1,4 @@
-import { AuthGuard } from "../../modules/auth/authGuard.js";
+import { AuthGuard } from "../../lib/authGuard.js";
 import { formHandlerService } from "./formHandlerService.js";
 import { categoryManagerService } from "./categoryManagerService.js";
 import { postManagerService } from "./postManagerService.js";

@@ -2,7 +2,7 @@
  * Home Page - Main entry point for the home page
  */
 
-import { initAuth } from "../core/auth.js";
+import { initAuth } from "../lib/auth.js";
 import { initializePosts } from "../modules/posts/index.js";
 
 /**

@@ -1,5 +1,5 @@
 import { createPost } from "../../../posts.js";
-import { PostAuthHelper } from "./postAuthHelper.js";
+import db from "../../../database.js";
 
 /**
  * Post Create Routes Handler
@@ -7,7 +7,16 @@ import { PostAuthHelper } from "./postAuthHelper.js";
 export class PostCreateRoutes {
   constructor(app) {
     this.app = app;
-    this.authHelper = new PostAuthHelper();
+  }
+
+  /**
+   * Verify user authentication
+   * @param {number} userId - The user ID to verify
+   * @returns {Promise<boolean>} True if user exists and is authenticated
+   */
+  async verifyUser(userId) {
+    const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
+    return !!user;
   }
 
   /**
@@ -31,7 +40,7 @@ export class PostCreateRoutes {
       }
 
       try {
-        if (!(await this.authHelper.verifyUser(userId))) {
+        if (!(await this.verifyUser(userId))) {
           return res
             .status(401)
             .json({ success: false, message: "Utilisateur non authentifié" });

@@ -1,5 +1,5 @@
 import { apiService } from "../apiService.js";
-import { SelectPopulator } from "../../modules/ui/selectPopulator.js";
+import { SelectPopulator } from "../../lib/selectPopulator.js";
 
 /**
  * Category Manager Service - Handles category loading and filtering

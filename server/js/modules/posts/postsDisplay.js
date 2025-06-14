@@ -1,4 +1,4 @@
-import { createElementFromHTML } from "../../core/dom.js";
+import { createElementFromHTML } from "../../lib/dom.js";
 import { getCurrentUser } from "./postsState.js";
 import { loadVotesForPost } from "./postsVoting.js";
 

@@ -1,5 +1,5 @@
-import { getAllCategories } from "../../categories.js";
 import db from "../../database.js";
+import { categoryService } from "../../services/categoryService.js";
 
 /**
  * Category Routes Handler
@@ -18,11 +18,36 @@ export class CategoryRoutes {
   }
 
   /**
+   * Get all categories
+   * @returns {Promise<Object>} The categories
+   */
+  async getAllCategories() {
+    return categoryService.getAll();
+  }
+
+  /**
+   * Get category by ID
+   * @param {number} categoryId - The category ID
+   * @returns {Promise<Object>} The category
+   */
+  async getCategoryById(categoryId) {
+    return categoryService.getById(categoryId);
+  }
+
+  /**
+   * Get the "Autres" category ID
+   * @returns {Promise<number>} The "Autres" category ID
+   */
+  async getAutresCategoryId() {
+    return categoryService.getAutresCategoryId();
+  }
+
+  /**
    * Setup get all categories route
    */
   setupGetAllCategories() {
     this.app.get("/categories", async (req, res) => {
-      const result = await getAllCategories();
+      const result = await this.getAllCategories();
 
       if (result.success) {
         res.json({ success: true, categories: result.categories });

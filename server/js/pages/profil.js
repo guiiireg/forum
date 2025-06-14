@@ -2,9 +2,9 @@
  * Profile Page - Display user's posts
  */
 
-import { initAuth, getCurrentUser } from "../core/auth.js";
-import { createElementFromHTML, showError } from "../core/dom.js";
-import { safeApiCall } from "../core/api.js";
+import { initAuth, getCurrentUser } from "../lib/auth.js";
+import { createElementFromHTML, showError } from "../lib/dom.js";
+import { safeApiCall } from "../lib/api.js";
 
 // ==================== STATE MANAGEMENT ====================
 

@@ -2,7 +2,7 @@
  * Posts Page - Entry point for the posts creation page
  */
 
-import { initAuth } from "../core/auth.js";
+import { initAuth } from "../lib/auth.js";
 import { initializePosts } from "../modules/posts/index.js";
 
 /**

@@ -22,7 +22,6 @@ export class PostRoutes {
   }
 }
 
-export { PostAuthHelper } from "./postAuthHelper.js";
 export { PostReadRoutes } from "./postReadRoutes.js";
 export { PostCreateRoutes } from "./postCreateRoutes.js";
 export { PostUpdateRoutes } from "./postUpdateRoutes.js";

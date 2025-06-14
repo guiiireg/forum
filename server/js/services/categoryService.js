@@ -1,5 +1,5 @@
 import db from "../database.js";
-import { BaseModel } from "../models/base.js";
+import { BaseModel } from "../lib/base.js";
 
 class CategoryService extends BaseModel {
   constructor() {

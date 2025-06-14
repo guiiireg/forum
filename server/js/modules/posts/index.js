@@ -1,17 +1,18 @@
 /**
  * Posts Module - Main posts functionality orchestrator
  */
-import { getCurrentUser } from "../../core/auth.js";
+import { getCurrentUser } from "../../lib/auth.js";
 import {
   updateCurrentUserState,
   getCurrentPosts,
   getCurrentFilters,
+  applyFilters,
+  setupEventListeners,
+  loadCategories,
+  loadPosts,
 } from "./postsState.js";
-import { loadCategories, loadPosts } from "./postsDataLoader.js";
-import { applyFilters } from "./postsFilter.js";
 import { displayPosts, setupUI, createPostElement } from "./postsDisplay.js";
 import { setupPostVoting } from "./postsVoting.js";
-import { setupEventListeners } from "./postsEventHandlers.js";
 import { editPost, deletePostHandler } from "./postsActions.js";
 
 /**

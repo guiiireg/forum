@@ -1,5 +1,5 @@
 import { apiService } from "../apiService.js";
-import { PostRenderer } from "../../modules/ui/postRenderer.js";
+import { PostRenderer } from "../../lib/postRenderer.js";
 
 /**
  * Post Manager Service - Handles post loading and display

@@ -3,7 +3,7 @@ import {
   updatePost,
   deletePost,
   safeApiCall,
-} from "../../core/api.js";
+} from "../../lib/api.js";
 import {
   getFormData,
   resetForm,
@@ -11,9 +11,12 @@ import {
   showLoading,
   hideLoading,
   populateSelect,
-} from "../../core/dom.js";
-import { getCurrentUser, getCurrentCategories } from "./postsState.js";
-import { loadCategories } from "./postsDataLoader.js";
+} from "../../lib/dom.js";
+import {
+  getCurrentUser,
+  getCurrentCategories,
+  loadCategories,
+} from "./postsState.js";
 
 /**
  * Handle post creation
