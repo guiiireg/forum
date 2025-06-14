@@ -401,5 +401,4 @@ FodyWeavers.xsd
 
 # Node.js
 node_modules/
-package-lock.json
-package.json
+database.db

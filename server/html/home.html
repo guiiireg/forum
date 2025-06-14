@@ -8,6 +8,7 @@
     <title>Forum - Accueil</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/replies.css" />
+    <script src="../js/pages/home.js" type="module"></script>
   </head>
   <body>
     <header>
@@ -28,6 +29,47 @@
         <input type="text" id="search-input" placeholder="Search..." />
         <button id="search-button">Search</button>
       </div>
-    </div>
+      <p>Explorez les dernières nouvelles et discussions.</p>
+
+      <div id="filters-container">
+        <form id="filter-form">
+          <div class="filter-row">
+            <div class="filter-group">
+              <label for="category-filter-select"
+                >Filtrer par catégorie :</label
+              >
+              <select id="category-filter-select" name="category">
+                <option value="">Toutes les catégories</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="sort-by-select">Trier par :</label>
+              <select id="sort-by-select" name="sortBy">
+                <option value="date">Date de création</option>
+                <option value="likes">Messages aimés</option>
+                <option value="replies">Nombre de réponses</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="sort-order-select">Ordre :</label>
+              <select id="sort-order-select" name="order">
+                <option value="desc">Décroissant</option>
+                <option value="asc">Croissant</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <button type="submit" id="apply-filters-btn">
+                Appliquer les filtres
+              </button>
+              <button type="button" id="reset-filters-btn">
+                Réinitialiser
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div id="posts-container"></div>
+    </main>
   </body>
 </html>
