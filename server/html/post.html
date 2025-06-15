@@ -6,26 +6,271 @@
     <title>Forum - Post</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="stylesheet" href="/css/replies.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   </head>
   <body>
-    <header>
-      <h1>Forum</h1>
-      <nav>
-        <ul>
-          <li><a href="home.html">Accueil</a></li>
-          <li><a href="profil.html">Profil</a></li>
-          <li><a href="posts.html">Créer un post</a></li>
-          <li>
-            <a href="#" id="logout-link" style="display: none">Déconnexion</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <div id="post-container"></div>
-      <div id="replies-container"></div>
-      <div id="reply-form-container"></div>
-    </main>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-comments"></i> Forum</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="home.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="posts.html">
+            <i class="fas fa-plus-circle"></i>
+            <span>Créer un post</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="profil.html">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="privacy.html">
+            <i class="fas fa-shield-alt"></i>
+            <span>Confidentialité</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="user-info">
+            <div class="username">Utilisateur</div>
+            <div class="user-status">En ligne</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <a href="home.html" class="btn btn-secondary" style="margin-right: 16px;">
+            <i class="fas fa-arrow-left"></i>
+            Retour
+          </a>
+          <h1><i class="fas fa-newspaper"></i> Détail du post</h1>
+        </div>
+        <div class="header-right">
+          <a href="#" id="logout-link" class="btn btn-secondary" style="display: none">
+            <i class="fas fa-sign-out-alt"></i>
+            Déconnexion
+          </a>
+        </div>
+      </header>
+
+      <!-- Post Detail Section -->
+      <section class="posts-section">
+        <div id="post-container">
+          <!-- Post content will be loaded here -->
+          <div class="post" id="main-post" style="display: none;">
+            <div class="vote-container">
+              <button class="vote-button" id="upvote-btn">
+                <i class="fas fa-chevron-up"></i>
+              </button>
+              <div class="vote-count" id="vote-count">0</div>
+              <button class="vote-button" id="downvote-btn">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+            </div>
+            <div class="post-content">
+              <h2 class="post-title" id="post-title">Titre du post</h2>
+              <div class="post-meta">
+                <span class="category-badge" id="post-category">Catégorie</span>
+                <span class="post-stat">
+                  <i class="fas fa-user"></i>
+                  <span id="post-author">Auteur</span>
+                </span>
+                <span class="post-stat">
+                  <i class="fas fa-clock"></i>
+                  <span id="post-date">Date</span>
+                </span>
+              </div>
+              <div class="post-description" id="post-content">
+                Contenu du post...
+              </div>
+              <div class="post-stats">
+                <div class="post-stat">
+                  <i class="fas fa-heart"></i>
+                  <span id="likes-count">0 likes</span>
+                </div>
+                <div class="post-stat">
+                  <i class="fas fa-comment"></i>
+                  <span id="replies-count">0 réponses</span>
+                </div>
+                <div class="post-stat">
+                  <i class="fas fa-eye"></i>
+                  <span id="views-count">0 vues</span>
+                </div>
+              </div>
+              
+              <!-- Post Actions (only for post author) -->
+              <div class="post-actions" id="post-actions" style="display: none;">
+                <button class="edit-btn" id="edit-post-btn">
+                  <i class="fas fa-edit"></i>
+                  Modifier
+                </button>
+                <button class="delete-btn" id="delete-post-btn">
+                  <i class="fas fa-trash"></i>
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="empty-state" id="loading-state">
+          <div class="empty-icon">
+            <i class="fas fa-spinner fa-spin"></i>
+          </div>
+          <h3>Chargement du post...</h3>
+          <p>Veuillez patienter pendant le chargement du contenu.</p>
+        </div>
+
+        <!-- Error state -->
+        <div class="empty-state" id="error-state" style="display: none;">
+          <div class="empty-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3>Post introuvable</h3>
+          <p>Le post que vous recherchez n'existe pas ou a été supprimé.</p>
+          <a href="home.html" class="btn btn-primary">
+            <i class="fas fa-home"></i>
+            Retour à l'accueil
+          </a>
+        </div>
+      </section>
+
+      <!-- Reply Form Section -->
+      <section class="create-post-section" id="reply-section" style="display: none;">
+        <div class="create-post-card">
+          <div class="card-header">
+            <h3><i class="fas fa-reply"></i> Répondre au post</h3>
+            <p>Partagez votre opinion ou posez une question</p>
+          </div>
+          
+          <form id="reply-form" class="post-form">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="reply-content">
+                  <i class="fas fa-comment"></i>
+                  Votre réponse <span class="required">*</span>
+                </label>
+                <textarea id="reply-content" name="content" rows="6" required 
+                         placeholder="Écrivez votre réponse ici..."></textarea>
+                <div class="character-count">
+                  <span id="reply-char-count">0</span> / 1000 caractères
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-paper-plane"></i>
+                Publier la réponse
+              </button>
+              <button type="button" class="btn btn-secondary" id="cancel-reply">
+                <i class="fas fa-times"></i>
+                Annuler
+              </button>
+            </div>
+          </form>
+          
+          <div id="reply-message" class="message-container"></div>
+        </div>
+      </section>
+
+      <!-- Replies Section -->
+      <section class="posts-section" id="replies-section" style="display: none;">
+        <div class="section-header">
+          <h3><i class="fas fa-comments"></i> Réponses</h3>
+          <div class="section-actions">
+            <button class="btn btn-primary" id="add-reply-btn">
+              <i class="fas fa-plus"></i>
+              Répondre
+            </button>
+          </div>
+        </div>
+        
+        <div id="replies-container">
+          <!-- Replies will be loaded here -->
+        </div>
+
+        <!-- No replies message -->
+        <div class="empty-state" id="no-replies" style="display: none;">
+          <div class="empty-icon">
+            <i class="fas fa-comments"></i>
+          </div>
+          <h3>Aucune réponse</h3>
+          <p>Soyez le premier à répondre à ce post !</p>
+          <button class="btn btn-primary" id="first-reply-btn">
+            <i class="fas fa-plus"></i>
+            Être le premier à répondre
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div id="edit-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-edit"></i> Modifier le post</h3>
+          <button class="close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="edit-post-form">
+            <div class="form-group">
+              <label for="edit-title">Titre</label>
+              <input type="text" id="edit-title" name="title" required />
+            </div>
+            <div class="form-group">
+              <label for="edit-category">Catégorie</label>
+              <select id="edit-category" name="category" required>
+                <option value="">Chargement...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit-content">Contenu</label>
+              <textarea id="edit-content" name="content" rows="8" required></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="cancel-btn">
+                <i class="fas fa-times"></i>
+                Annuler
+              </button>
+              <button type="submit" class="save-btn">
+                <i class="fas fa-save"></i>
+                Sauvegarder
+              </button>
+            </div>
+          </form>
+          <div id="edit-message" class="message-container"></div>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="/js/index/post.js"></script>
+    
   </body>
 </html>

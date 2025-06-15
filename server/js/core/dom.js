@@ -227,3 +227,26 @@ export function debounce(func, wait) {
     timeout = setTimeout(later, wait);
   };
 }
+
+// ==================== SIDEBAR UTILITIES ====================
+
+/**
+ * Initialize sidebar toggle functionality for mobile
+ */
+export function initSidebarToggle() {
+  const sidebarToggle = document.querySelector('.sidebar-toggle');
+  const sidebar = document.querySelector('.sidebar');
+  const mobileOverlay = document.querySelector('.mobile-overlay');
+
+  if (sidebarToggle && sidebar && mobileOverlay) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mobileOverlay.classList.toggle('active');
+    });
+
+    mobileOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      mobileOverlay.classList.remove('active');
+    });
+  }
+}

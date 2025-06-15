@@ -3,15 +3,189 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>404 - Page non trouvée</title>
+    <title>404 - Page non trouvée - Forum</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   </head>
   <body>
-    <div class="error-container">
-      <h1>404</h1>
-      <h2>Page non trouvée</h2>
-      <p>Désolé, la page que vous recherchez n'existe pas.</p>
-      <a href="/" class="btn">Retour à l'accueil</a>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-comments"></i> Forum</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="/home.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="/posts.html">
+            <i class="fas fa-plus-circle"></i>
+            <span>Créer un post</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="/profil.html">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="/privacy.html">
+            <i class="fas fa-shield-alt"></i>
+            <span>Confidentialité</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1><i class="fas fa-exclamation-triangle"></i> Erreur 404</h1>
+        </div>
+        <div class="header-right">
+          <a href="/" class="btn btn-primary">
+            <i class="fas fa-home"></i>
+            Accueil
+          </a>
+        </div>
+      </header>
+
+      <!-- 404 Error Section -->
+      <section class="create-post-section">
+        <div class="create-post-card">
+          <div class="card-header" style="text-align: center;">
+            <div style="font-size: 6rem; font-weight: 900; color: var(--primary-color); margin-bottom: 16px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+              404
+            </div>
+            <h3><i class="fas fa-search"></i> Page non trouvée</h3>
+            <p style="font-size: 1.1rem;">Oups ! La page que vous recherchez semble s'être perdue dans le cyberespace.</p>
+          </div>
+          
+          <!-- Search suggestion -->
+          <div style="margin: 32px 0;">
+            <div class="search-container" style="max-width: 500px; margin: 0 auto;">
+              <input type="text" id="search-404" placeholder="Rechercher quelque chose d'autre..." />
+              <button id="search-404-btn">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 32px;">
+            <a href="/" class="btn btn-primary" style="padding: 16px; text-align: center; text-decoration: none;">
+              <i class="fas fa-home" style="display: block; font-size: 1.5rem; margin-bottom: 8px;"></i>
+              Retour à l'accueil
+            </a>
+            <a href="/posts.html" class="btn btn-secondary" style="padding: 16px; text-align: center; text-decoration: none;">
+              <i class="fas fa-plus-circle" style="display: block; font-size: 1.5rem; margin-bottom: 8px;"></i>
+              Créer un post
+            </a>
+          </div>
+
+          <!-- Error details -->
+          <div style="margin-top: 32px; padding: 16px; background: var(--background-primary); border-radius: var(--border-radius); border-left: 4px solid var(--error-color);">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <i class="fas fa-info-circle" style="color: var(--error-color); margin-top: 2px;"></i>
+              <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+                <strong style="color: var(--text-primary);">Que s'est-il passé ?</strong><br>
+                L'URL que vous avez demandée n'existe pas sur ce serveur. 
+                Cela peut être dû à une erreur de frappe dans l'URL ou à une page qui a été déplacée ou supprimée.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Helpful Links Section -->
+      <section class="posts-section">
+        <div class="section-header">
+          <h3><i class="fas fa-compass"></i> Où aller maintenant ?</h3>
+        </div>
+        
+        <div class="posts-grid">
+          <div class="post">
+            <div class="vote-container">
+              <div style="width: 40px; height: 40px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-newspaper" style="color: white; font-size: 1.2rem;"></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">
+                <a href="/" style="text-decoration: none; color: inherit;">Découvrir les derniers posts</a>
+              </h4>
+              <p class="post-description">
+                Explorez les discussions les plus récentes et les plus populaires de notre communauté. 
+                Peut-être trouverez-vous exactement ce que vous cherchiez !
+              </p>
+              <div class="post-stats">
+                <a href="/" class="btn btn-primary" style="text-decoration: none;">
+                  <i class="fas fa-arrow-right"></i>
+                  Voir les posts
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="post">
+            <div class="vote-container">
+              <div style="width: 40px; height: 40px; background: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-users" style="color: white; font-size: 1.2rem;"></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">
+                <a href="/profil.html" style="text-decoration: none; color: inherit;">Gérer votre profil</a>
+              </h4>
+              <p class="post-description">
+                Accédez à votre profil utilisateur pour voir vos posts, vos statistiques 
+                et personnaliser votre expérience sur le forum.
+              </p>
+              <div class="post-stats">
+                <a href="/profil.html" class="btn btn-secondary" style="text-decoration: none;">
+                  <i class="fas fa-user"></i>
+                  Mon profil
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="post">
+            <div class="vote-container">
+              <div style="width: 40px; height: 40px; background: var(--success-color); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-question-circle" style="color: white; font-size: 1.2rem;"></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">Besoin d'aide ?</h4>
+              <p class="post-description">
+                Si vous pensez qu'il s'agit d'une erreur ou si vous avez besoin d'assistance, 
+                n'hésitez pas à créer un post pour demander de l'aide à la communauté.
+              </p>
+              <div class="post-stats">
+                <a href="/posts.html" class="btn btn-primary" style="text-decoration: none;">
+                  <i class="fas fa-plus"></i>
+                  Demander de l'aide
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+
+    <script type="module" src="/js/pages/404.js"></script>
   </body>
 </html>

@@ -1,41 +1,326 @@
-<!doctype html>
-<html lang="">
+<!DOCTYPE html>
+<html lang="fr">
   <head>
-    <script src="../js/pages/login.js" type="module"></script>
+    <script src="../js/pages/register.js" type="module"></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reddit</title>
+    <title>Forum - Inscription</title>
     <link rel="stylesheet" href="../css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
   <body>
-    <header>
-      <h1>Reddit</h1>
-      <nav>
-        <ul>
-          <li><a href="login.html">Connexion</a></li>
-          <li><a href="password.html">Mot de passe</a></li>
-          <li>
-            <a href="#" id="logout-link" style="display: none">Déconnexion</a>
-          </li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      <h2>Inscription</h2>
-      <form id="register-form" method="POST" action="/register">
-        <label for="username">Nom d'utilisateur:</label>
-        <input type="text" id="username" name="username" required />
-        <br />
-        <label for="password">Mot de passe:</label>
-        <input type="password" id="password" name="password" required />
-        <br />
-        <button type="submit">S'inscrire</button>
-      </form>
-      <p>
-        Déjà inscrit? <a href="login.html">Connectez-vous ici</a>
-      </p>
-      <div id="error-message"></div>
-      <div id="success-message"></div>
-    </main>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-comments"></i> Forum</h2>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="menu-item">
+          <a href="home.html">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+          </a>
+        </li>
+        <li class="menu-item active">
+          <a href="register.html">
+            <i class="fas fa-user-plus"></i>
+            <span>Inscription</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="login.html">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Connexion</span>
+          </a>
+        </li>
+        <li class="menu-item">
+          <a href="password.html">
+            <i class="fas fa-key"></i>
+            <span>Mot de passe</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1><i class="fas fa-user-plus"></i> Inscription</h1>
+        </div>
+        <div class="header-right">
+          <a href="login.html" class="btn btn-secondary">
+            <i class="fas fa-sign-in-alt"></i>
+            Connexion
+          </a>
+        </div>
+      </header>
+
+      <!-- Register Section -->
+      <section class="create-post-section">
+        <div class="create-post-card">
+          <div class="card-header">
+            <h3><i class="fas fa-user-plus"></i> Inscription</h3>
+            <p>Créez votre compte pour rejoindre la communauté</p>
+          </div>
+
+          <form
+            id="register-form"
+            class="post-form"
+            method="POST"
+            action="/register"
+          >
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="username">
+                  <i class="fas fa-user"></i>
+                  Nom d'utilisateur <span class="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  required
+                  placeholder="Choisissez un nom d'utilisateur unique"
+                  minlength="3"
+                  maxlength="20"
+                />
+                <small
+                  style="
+                    color: var(--text-secondary);
+                    font-size: 0.85rem;
+                    margin-top: 4px;
+                  "
+                >
+                  Entre 3 et 20 caractères, lettres et chiffres uniquement
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="password">
+                  <i class="fas fa-lock"></i>
+                  Mot de passe <span class="required">*</span>
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  required
+                  placeholder="Créez un mot de passe sécurisé"
+                  minlength="6"
+                />
+                <small
+                  style="
+                    color: var(--text-secondary);
+                    font-size: 0.85rem;
+                    margin-top: 4px;
+                  "
+                >
+                  Au moins 6 caractères recommandés
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="confirm-password">
+                  <i class="fas fa-lock"></i>
+                  Confirmer le mot de passe <span class="required">*</span>
+                </label>
+                <input
+                  type="password"
+                  id="confirm-password"
+                  name="confirm-password"
+                  required
+                  placeholder="Confirmez votre mot de passe"
+                />
+              </div>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div
+              style="
+                margin: 24px 0;
+                padding: 16px;
+                background: var(--background-primary);
+                border-radius: var(--border-radius);
+                border-left: 4px solid var(--primary-color);
+              "
+            >
+              <label
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 12px;
+                  cursor: pointer;
+                  font-size: 0.9rem;
+                  color: var(--text-secondary);
+                  line-height: 1.5;
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="terms"
+                  name="terms"
+                  required
+                  style="margin-top: 2px"
+                />
+                <span>
+                  J'accepte les
+                  <a
+                    href="privacy.html"
+                    style="
+                      color: var(--primary-color);
+                      text-decoration: none;
+                      font-weight: 500;
+                    "
+                  >
+                    conditions d'utilisation et la politique de confidentialité
+                  </a>
+                  du forum.
+                </span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i>
+                S'inscrire
+              </button>
+            </div>
+          </form>
+
+          <div id="error-message" class="message-container"></div>
+          <div id="success-message" class="message-container"></div>
+
+          <!-- Additional Links -->
+          <div
+            style="
+              margin-top: 32px;
+              text-align: center;
+              padding-top: 24px;
+              border-top: 2px solid var(--background-primary);
+            "
+          >
+            <p style="color: var(--text-secondary)">
+              Déjà inscrit ?
+              <a
+                href="login.html"
+                style="
+                  color: var(--primary-color);
+                  text-decoration: none;
+                  font-weight: 500;
+                "
+              >
+                <i class="fas fa-sign-in-alt"></i>
+                Connectez-vous ici
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="posts-section">
+        <div class="section-header">
+          <h3><i class="fas fa-gift"></i> Avantages de l'inscription</h3>
+        </div>
+
+        <div class="posts-grid">
+          <div class="post">
+            <div class="vote-container">
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--primary-color);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i
+                  class="fas fa-edit"
+                  style="color: white; font-size: 1.2rem"
+                ></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">Créer des posts</h4>
+              <p class="post-description">
+                Partagez vos pensées, questions et découvertes avec la
+                communauté. Lancez des discussions sur les sujets qui vous
+                passionnent.
+              </p>
+            </div>
+          </div>
+
+          <div class="post">
+            <div class="vote-container">
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--accent-color);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i
+                  class="fas fa-heart"
+                  style="color: white; font-size: 1.2rem"
+                ></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">Interagir avec la communauté</h4>
+              <p class="post-description">
+                Aimez, commentez et répondez aux posts qui vous intéressent.
+                Construisez votre réputation et vos relations dans la
+                communauté.
+              </p>
+            </div>
+          </div>
+
+          <div class="post">
+            <div class="vote-container">
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: var(--success-color);
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <i
+                  class="fas fa-user-circle"
+                  style="color: white; font-size: 1.2rem"
+                ></i>
+              </div>
+            </div>
+            <div class="post-content">
+              <h4 class="post-title">Profil personnalisé</h4>
+              <p class="post-description">
+                Créez votre profil unique, suivez vos statistiques et gardez une
+                trace de toutes vos contributions au forum.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
   </body>
 </html>

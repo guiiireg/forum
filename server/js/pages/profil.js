@@ -3,7 +3,7 @@
  */
 
 import { initAuth, getCurrentUser } from "../core/auth.js";
-import { createElementFromHTML, showError } from "../core/dom.js";
+import { createElementFromHTML, showError, initSidebarToggle } from "../core/dom.js";
 import { safeApiCall } from "../core/api.js";
 
 // ==================== STATE MANAGEMENT ====================
@@ -190,6 +190,66 @@ function updatePageTitle() {
   }
 }
 
+// ==================== TAB FUNCTIONALITY ====================
+
+/**
+ * Initialize tab functionality
+ */
+function initTabFunctionality() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      
+      // Remove active class from all tabs and contents
+      tabBtns.forEach(tb => tb.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding content
+      btn.classList.add('active');
+      const tabContent = document.getElementById(tabId + '-tab');
+      if (tabContent) {
+        tabContent.classList.add('active');
+      }
+    });
+  });
+}
+
+/**
+ * Initialize profile actions
+ */
+function initProfileActions() {
+  const editProfileBtn = document.getElementById('edit-profile-btn');
+  const settingsBtn = document.getElementById('settings-btn');
+  const postsSort = document.getElementById('posts-sort');
+
+  if (editProfileBtn) {
+    editProfileBtn.addEventListener('click', () => {
+      alert('Fonctionnalité de modification du profil à implémenter');
+    });
+  }
+
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      alert('Fonctionnalité des paramètres à implémenter');
+    });
+  }
+
+  if (postsSort) {
+    postsSort.addEventListener('change', (e) => {
+      // Implement sorting logic
+      console.log('Sorting posts by:', e.target.value);
+    });
+  }
+}
+
 // ==================== EVENT LISTENERS ====================
 
-document.addEventListener("DOMContentLoaded", initProfilePage); 
+document.addEventListener("DOMContentLoaded", () => {
+  initProfilePage();
+  initSidebarToggle();
+  initTabFunctionality();
+  initProfileActions();
+}); 
