@@ -87,24 +87,32 @@ body {
 }
 
 #filters-container {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
+  
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 2%;
+  width: 90%;
+  align-items: center;
+  display: flex;  
+  padding: 1%;
   background-color: white;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.221);
+  
 }
 
 .filter-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: end;
+ flex-direction: row;
+   gap: 1rem;
+  align-items: center;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   min-width: 150px;
+  
 }
 
 .filter-group label {
@@ -172,6 +180,15 @@ body {
 }
 
 /* Styles pour les métadonnées des posts (likes, réponses) */
+#posts-container {
+  transform: translate(auto, auto);
+width: 80%;
+margin-top: 1%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-bottom: 1%;
+  padding: 1% ;
+}
 .post-meta {
   display: flex;
   gap: 1rem;
@@ -483,6 +500,7 @@ body {
 .post-actions {
   display: flex;
   gap: 0.5rem;
+  width: 55%;
 }
 
 .btn {
@@ -548,15 +566,37 @@ background-color: rgba(0, 0, 0, 0.7);
   padding: 10px;
   border-radius: 15px;
   padding: 20px;
-  width: 300px ;
+  width: 80%; ;
   margin: 20px;
+  text-align:justify;
+  margin: auto;
+}
+
+h2 {
+  font-family: 'Arial', sans-serif;  
+  color: white;
+  font-size: 28px;
+  margin-top: 1%;
+  margin-left: 1%;
+  margin-right: 85%;
+  margin-bottom: 1%;
+  text-align: center;
+  background-color: rgba(71, 71, 71, 0.469);
+  padding: 1%;
+  border-radius: 10px;
+  
 }
 
 h3 {
   font-family: 'Arial', sans-serif;  
   color: white;
   font-size: 24px;
-  margin-bottom: 20px;
+  margin-top: 2%;
+  margin-left: 1%;
+  margin-right: 1%;
+  margin-bottom: 1%;
+  text-align: center;
+  
 }
 
 label {
@@ -566,7 +606,9 @@ label {
   margin-bottom: 10px;
 }
 textarea{
+  font-family: 'Arial', sans-serif;  
   color: rgb(0, 0, 7);
+  
 }
  input {
   width: 100%;
@@ -593,7 +635,10 @@ li {
 a {
   color:black;
   text-decoration: none;
-  font-family: 'Arial', sans-serif;  
+  font-family: 'Arial', sans-serif;
+  position: right;
+  margin-left: 10%;
+  width: 100%;
 }
 
 button {
@@ -607,6 +652,7 @@ button {
   
 }
 p {
+  margin-left: 5%;
   font-family: 'Arial', sans-serif;  
   color: rgb(0, 0, 0);
 }
