@@ -47,7 +47,7 @@ export class PostCrudService extends BaseModel {
   async getById(postId) {
     return this.executeQuery(async () => {
       const query = buildPostQuery(
-        POST_QUERIES.SIMPLE_SELECT,
+        POST_QUERIES.BASE_SELECT,
         POST_QUERIES.WHERE_POST_ID,
         ""
       );

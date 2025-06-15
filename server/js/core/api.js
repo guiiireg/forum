@@ -111,6 +111,15 @@ export async function fetchPosts(categoryId = null) {
 }
 
 /**
+ * Fetch a single post by ID
+ * @param {number} postId - Post ID to fetch
+ * @returns {Promise<Object>} Response containing post data
+ */
+export async function fetchPost(postId) {
+  return await get(`/api/posts/${postId}`);
+}
+
+/**
  * Create a new post
  * @param {Object} postData - Post data containing title, content, userId, categoryId
  * @returns {Promise<Object>} Response from server
@@ -175,7 +184,7 @@ export async function fetchReplies(postId) {
  * @returns {Promise<Object>} Response from server
  */
 export async function createReply(replyData) {
-  return await post("/replies", replyData);
+  return await post("/api/replies", replyData);
 }
 
 // ==================== ERROR HANDLING ====================

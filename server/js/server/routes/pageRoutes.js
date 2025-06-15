@@ -46,6 +46,10 @@ export class PageRoutes {
     this.app.get("/post/:id", requireAuth, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "post.html"));
     });
+    
+    this.app.get("/post.html", requireAuth, (req, res) => {
+      res.sendFile(path.join(this.htmlDir, "post.html"));
+    });
 
     this.app.get("/profil", requireAuth, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "profil.html"));
