@@ -3,6 +3,12 @@ import { createSession, getSession } from "./cache.js";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 
+/**
+ * Register a user
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @returns {Promise<Object>} The result of the registration
+ */
 export async function registerUser(username, password) {
   try {
     const existUser = await db.get("SELECT * FROM users WHERE username = ?", [
@@ -37,6 +43,12 @@ export async function registerUser(username, password) {
   }
 }
 
+/**
+ * Login a user
+ * @param {string} username - The username
+ * @param {string} password - The password
+ * @returns {Promise<Object>} The result of the login
+ */
 export async function loginUser(username, password) {
   try {
     const user = await db.get("SELECT * FROM users WHERE username = ?", [
@@ -80,11 +92,21 @@ export async function loginUser(username, password) {
   }
 }
 
+/**
+ * Get user data from session
+ * @param {string} sessionId - The session ID
+ * @returns {Object|null} The user data or null if session not found
+ */
 export function getUserFromSession(sessionId) {
   const session = getSession(sessionId);
   return session ? session.userData : null;
 }
 
+/**
+ * Get user by UUID
+ * @param {string} uuid - The user UUID
+ * @returns {Promise<Object|null>} The user data or null if not found
+ */
 export async function getUserByUuid(uuid) {
   try {
     const user = await db.get(
@@ -101,6 +123,11 @@ export async function getUserByUuid(uuid) {
   }
 }
 
+/**
+ * Get user by ID with UUID
+ * @param {number} userId - The user ID
+ * @returns {Promise<Object|null>} The user data or null if not found
+ */
 export async function getUserById(userId) {
   try {
     const user = await db.get(

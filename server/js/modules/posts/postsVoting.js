@@ -1,6 +1,12 @@
 import { fetchVotes, submitVote, safeApiCall } from "../../core/api.js";
 import { getCurrentUser } from "./postsState.js";
 
+/**
+ * Load votes for a post
+ * @param {number} postId - Post ID
+ * @param {number} userId - User ID
+ * @returns {Object} Vote data
+ */
 export async function loadVotesForPost(postId, userId) {
   const result = await safeApiCall(
     () => fetchVotes(parseInt(postId), parseInt(userId)),
@@ -10,6 +16,11 @@ export async function loadVotesForPost(postId, userId) {
   return result.success ? result : { totalVotes: 0, userVote: 0 };
 }
 
+/**
+ * Setup voting functionality for a post
+ * @param {HTMLElement} postElement - Post element
+ * @param {number} postId - Post ID
+ */
 export function setupPostVoting(postElement, postId) {
   const upvoteBtn = postElement.querySelector(".upvote-button");
   const downvoteBtn = postElement.querySelector(".downvote-button");
@@ -27,6 +38,12 @@ export function setupPostVoting(postElement, postId) {
   }
 }
 
+/**
+ * Handle voting
+ * @param {number} postId - Post ID
+ * @param {number} voteType - Vote type (1 or -1)
+ * @param {HTMLElement} postElement - Post element
+ */
 export async function handleVote(postId, voteType, postElement) {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
@@ -46,6 +63,11 @@ export async function handleVote(postId, voteType, postElement) {
   }
 }
 
+/**
+ * Update vote UI elements
+ * @param {HTMLElement} postElement - Post element
+ * @param {Object} votes - Vote data
+ */
 function updateVoteUI(postElement, votes) {
   const voteCount = postElement.querySelector(".vote-count");
   const upvoteBtn = postElement.querySelector(".upvote-button");

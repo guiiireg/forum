@@ -1,8 +1,16 @@
+/**
+ * Post Renderer for displaying posts in the UI
+ */
 export class PostRenderer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
   }
 
+  /**
+   * Render a single post
+   * @param {Object} post - Post data
+   * @returns {string} HTML string for the post
+   */
   renderPost(post) {
     const formatDate = (dateString) => {
       return new Date(dateString).toLocaleString();
@@ -23,6 +31,10 @@ export class PostRenderer {
     `;
   }
 
+  /**
+   * Render multiple posts
+   * @param {Array} posts - Array of posts
+   */
   renderPosts(posts) {
     if (!this.container) return;
 
@@ -36,6 +48,10 @@ export class PostRenderer {
       .join("");
   }
 
+  /**
+   * Show error message in container
+   * @param {string} message - Error message
+   */
   showError(message = "Erreur lors du chargement des posts.") {
     if (this.container) {
       this.container.innerHTML = `<p class="error">${this.escapeHtml(
@@ -44,12 +60,20 @@ export class PostRenderer {
     }
   }
 
+  /**
+   * Show loading state
+   */
   showLoading() {
     if (this.container) {
       this.container.innerHTML = "<p>Chargement des posts...</p>";
     }
   }
 
+  /**
+   * Escape HTML to prevent XSS
+   * @param {string} text - Text to escape
+   * @returns {string} Escaped text
+   */
   escapeHtml(text) {
     if (!text) return "";
     const div = document.createElement("div");

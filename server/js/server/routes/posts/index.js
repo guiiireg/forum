@@ -2,6 +2,9 @@ import { PostReadRoutes } from "./postReadRoutes.js";
 import { PostCreateRoutes } from "./postCreateRoutes.js";
 import { PostUpdateRoutes } from "./postUpdateRoutes.js";
 
+/**
+ * Post Routes Orchestrator
+ */
 export class PostRoutes {
   constructor(app) {
     this.readRoutes = new PostReadRoutes(app);
@@ -9,6 +12,9 @@ export class PostRoutes {
     this.updateRoutes = new PostUpdateRoutes(app);
   }
 
+  /**
+   * Setup all post routes
+   */
   setupRoutes() {
     this.readRoutes.setupRoutes();
     this.createRoutes.setupRoutes();

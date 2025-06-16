@@ -1,16 +1,25 @@
 import { createPost } from "../../../posts.js";
 import { PostAuthHelper } from "./postAuthHelper.js";
 
+/**
+ * Post Create Routes Handler
+ */
 export class PostCreateRoutes {
   constructor(app) {
     this.app = app;
     this.authHelper = new PostAuthHelper();
   }
 
+  /**
+   * Setup create post route
+   */
   setupRoutes() {
     this.setupCreatePost();
   }
 
+  /**
+   * Setup create post route
+   */
   setupCreatePost() {
     this.app.post("/posts", async (req, res) => {
       const { title, content, userId, categoryId } = req.body;

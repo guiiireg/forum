@@ -1,17 +1,26 @@
 import path from "path";
 import { requireAuth, requireGuest } from "../../middleware/authMiddleware.js";
 
+/**
+ * Page Routes Handler
+ */
 export class PageRoutes {
   constructor(app, htmlDir) {
     this.app = app;
     this.htmlDir = htmlDir;
   }
 
+  /**
+   * Setup all page routes
+   */
   setupRoutes() {
     this.setupAuthPages();
     this.setupMainPages();
   }
 
+  /**
+   * Setup authentication pages
+   */
   setupAuthPages() {
     this.app.get("/login", requireGuest, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "login.html"));
@@ -22,6 +31,9 @@ export class PageRoutes {
     });
   }
 
+  /**
+   * Setup main application pages
+   */
   setupMainPages() {
     this.app.get("/", requireAuth, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "home.html"));
@@ -34,7 +46,7 @@ export class PageRoutes {
     this.app.get("/post/:id", requireAuth, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "post.html"));
     });
-
+    
     this.app.get("/post.html", requireAuth, (req, res) => {
       res.sendFile(path.join(this.htmlDir, "post.html"));
     });

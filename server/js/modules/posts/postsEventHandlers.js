@@ -2,11 +2,20 @@ import { getFormData, resetForm } from "../../core/dom.js";
 import { updateFilters } from "./postsFilter.js";
 import { handleCreatePost } from "./postsActions.js";
 
+/**
+ * Setup event listeners
+ * @param {Function} onFilterUpdate - Callback when filters are updated
+ * @param {Function} onPostCreate - Callback when post is created
+ */
 export function setupEventListeners(onFilterUpdate, onPostCreate) {
   setupFilterEventListeners(onFilterUpdate);
   setupCreatePostEventListener(onPostCreate);
 }
 
+/**
+ * Setup filter-related event listeners
+ * @param {Function} onFilterUpdate - Callback when filters are updated
+ */
 function setupFilterEventListeners(onFilterUpdate) {
   const filterForm = document.getElementById("filter-form");
   if (filterForm) {
@@ -36,6 +45,10 @@ function setupFilterEventListeners(onFilterUpdate) {
   }
 }
 
+/**
+ * Setup create post event listener
+ * @param {Function} onPostCreate - Callback when post is created
+ */
 function setupCreatePostEventListener(onPostCreate) {
   setTimeout(() => {
     const createForm = document.getElementById("create-post-form");

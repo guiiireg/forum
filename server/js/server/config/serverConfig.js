@@ -8,6 +8,9 @@ import cors from "cors";
 
 dotenv.config();
 
+/**
+ * Server Configuration
+ */
 export class ServerConfig {
   constructor() {
     this.app = express();
@@ -17,6 +20,9 @@ export class ServerConfig {
     this.htmlDir = path.join(this.__dirname, "../../../html");
   }
 
+  /**
+   * Setup middleware
+   */
   setupMiddleware() {
     this.app.use(
       helmet({
@@ -77,6 +83,9 @@ export class ServerConfig {
     this.app.use(express.urlencoded({ extended: true }));
   }
 
+  /**
+   * Setup static files
+   */
   setupStaticFiles() {
     this.app.use(express.static(this.htmlDir));
     this.app.use("/js", express.static(path.join(this.__dirname, "../../")));
@@ -86,14 +95,23 @@ export class ServerConfig {
     );
   }
 
+  /**
+   * Get Express app instance
+   */
   getApp() {
     return this.app;
   }
 
+  /**
+   * Get server port
+   */
   getPort() {
     return this.port;
   }
 
+  /**
+   * Get HTML directory path
+   */
   getHtmlDir() {
     return this.htmlDir;
   }

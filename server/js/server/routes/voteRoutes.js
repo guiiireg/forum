@@ -1,15 +1,24 @@
 import { votePost, getPostVotes, getUserVote } from "../../votes.js";
 
+/**
+ * Vote Routes Handler
+ */
 export class VoteRoutes {
   constructor(app) {
     this.app = app;
   }
 
+  /**
+   * Setup all vote routes
+   */
   setupRoutes() {
     this.setupVotePost();
     this.setupGetVotes();
   }
 
+  /**
+   * Setup vote for a post route
+   */
   setupVotePost() {
     this.app.post("/votes", async (req, res) => {
       const { postId, userId, voteType } = req.body;
@@ -47,6 +56,9 @@ export class VoteRoutes {
     });
   }
 
+  /**
+   * Setup get votes for a post route
+   */
   setupGetVotes() {
     this.app.get("/votes/:postId", async (req, res) => {
       const postId = req.params.postId;

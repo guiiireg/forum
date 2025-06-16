@@ -1,3 +1,6 @@
+/**
+ * Central export for client-side services
+ */
 export { apiService } from "./apiService.js";
 export { postPageService } from "./postPageService.js";
 

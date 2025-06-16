@@ -15,6 +15,11 @@ import {
 import { getCurrentUser, getCurrentCategories } from "./postsState.js";
 import { loadCategories } from "./postsDataLoader.js";
 
+/**
+ * Handle post creation
+ * @param {Event} e - Form submit event
+ * @param {Function} onSuccess - Success callback
+ */
 export async function handleCreatePost(e, onSuccess) {
   e.preventDefault();
 
@@ -54,6 +59,11 @@ export async function handleCreatePost(e, onSuccess) {
   }
 }
 
+/**
+ * Edit a post
+ * @param {number} postId - Post ID
+ * @param {Array} posts - Current posts array
+ */
 export async function editPost(postId, posts) {
   const currentUser = getCurrentUser();
   if (!currentUser) {
@@ -75,6 +85,10 @@ export async function editPost(postId, posts) {
   showEditModal(post);
 }
 
+/**
+ * Show edit modal for a post
+ * @param {Object} post - Post to edit
+ */
 function showEditModal(post) {
   const existingModal = document.getElementById("edit-modal");
   if (existingModal) {
@@ -101,6 +115,11 @@ function showEditModal(post) {
   document.addEventListener("keydown", closeOnEscape);
 }
 
+/**
+ * Generate edit modal HTML
+ * @param {Object} post - Post data
+ * @returns {string} HTML string
+ */
 function generateEditModalHTML(post) {
   return `
     <div id="edit-modal" class="modal">
@@ -135,6 +154,9 @@ function generateEditModalHTML(post) {
   `;
 }
 
+/**
+ * Close edit modal
+ */
 export function closeEditModal() {
   const modal = document.getElementById("edit-modal");
   if (modal) {
@@ -143,6 +165,10 @@ export function closeEditModal() {
   }
 }
 
+/**
+ * Handle escape key to close modal
+ * @param {KeyboardEvent} e - Keyboard event
+ */
 function closeOnEscape(e) {
   if (e.key === "Escape") {
     const modal = document.getElementById("edit-modal");
@@ -152,6 +178,10 @@ function closeOnEscape(e) {
   }
 }
 
+/**
+ * Populate categories in edit form
+ * @param {number} selectedCategoryId - Currently selected category ID
+ */
 async function populateEditCategories(selectedCategoryId) {
   const categorySelect = document.getElementById("edit-category");
   if (!categorySelect) return;
@@ -186,6 +216,11 @@ async function populateEditCategories(selectedCategoryId) {
   }
 }
 
+/**
+ * Handle edit post form submission
+ * @param {Event} e - Form submit event
+ * @param {number} postId - Post ID to edit
+ */
 async function handleEditPost(e, postId) {
   e.preventDefault();
 
@@ -211,13 +246,18 @@ async function handleEditPost(e, postId) {
 
   if (result.success) {
     closeEditModal();
-    window.location.reload();
+    window.location.reload(); // Reload to refresh posts
     showError("Post modifié avec succès !", "post-message");
   } else {
     showError(result.message, "edit-message");
   }
 }
 
+/**
+ * Delete a post
+ * @param {number} postId - Post ID
+ * @param {Function} onSuccess - Success callback
+ */
 export async function deletePostHandler(postId, onSuccess) {
   if (!confirm("Êtes-vous sûr de vouloir supprimer ce post ?")) return;
 

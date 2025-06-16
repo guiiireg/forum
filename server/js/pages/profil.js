@@ -1,17 +1,28 @@
+/**
+ * Profile Page - Display user's posts
+ */
+
 import { initAuth, getCurrentUser } from "../core/auth.js";
-import { createElementFromHTML, initSidebarToggle } from "../core/dom.js";
+import { createElementFromHTML, showError, initSidebarToggle } from "../core/dom.js";
 import { safeApiCall } from "../core/api.js";
+
+// ==================== STATE MANAGEMENT ====================
 
 const profileState = {
   currentUser: null,
   userPosts: [],
 };
 
+// ==================== INITIALIZATION ====================
+
+/**
+ * Initialize the profile page
+ */
 async function initProfilePage() {
   initAuth();
-
+  
   profileState.currentUser = getCurrentUser();
-
+  
   if (!profileState.currentUser) {
     window.location.href = "/login.html";
     return;
@@ -21,6 +32,11 @@ async function initProfilePage() {
   setupUI();
 }
 
+// ==================== DATA LOADING ====================
+
+/**
+ * Load posts created by the current user
+ */
 async function loadUserPosts() {
   if (!profileState.currentUser) return;
 
@@ -35,24 +51,33 @@ async function loadUserPosts() {
   }
 }
 
+/**
+ * Fetch user posts from API
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} API response
+ */
 async function fetchUserPosts(userId) {
   try {
     const response = await fetch(`/api/posts/user/${userId}`);
     const data = await response.json();
-
+    
     if (!response.ok) {
-      throw new Error(
-        data.message || "Erreur lors de la récupération des posts"
-      );
+      throw new Error(data.message || 'Erreur lors de la récupération des posts');
     }
-
+    
     return data;
   } catch (error) {
-    console.error("Erreur lors de la récupération des posts:", error);
+    console.error('Erreur lors de la récupération des posts:', error);
     throw error;
   }
 }
 
+// ==================== UI DISPLAY ====================
+
+/**
+ * Display user posts in the container
+ * @param {Array} posts - Posts to display
+ */
 function displayUserPosts(posts) {
   const container = document.getElementById("posts-container");
   if (!container) return;
@@ -69,24 +94,34 @@ function displayUserPosts(posts) {
 
   container.innerHTML = "";
 
-  posts.forEach((post) => {
+  posts.forEach(post => {
     const postElement = createUserPostElement(post);
     container.appendChild(postElement);
   });
 }
 
+/**
+ * Create a post element for user profile
+ * @param {Object} post - Post data
+ * @returns {HTMLElement} Post element
+ */
 function createUserPostElement(post) {
   const postHTML = generateUserPostHTML(post);
   return createElementFromHTML(postHTML);
 }
 
+/**
+ * Generate HTML for a user post
+ * @param {Object} post - Post data
+ * @returns {string} Post HTML
+ */
 function generateUserPostHTML(post) {
-  const createdAt = new Date(post.created_at).toLocaleDateString("fr-FR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+  const createdAt = new Date(post.created_at).toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
 
   return `
@@ -95,13 +130,7 @@ function generateUserPostHTML(post) {
         <h3 class="post-title">${escapeHtml(post.title)}</h3>
         <div class="post-meta">
           <span class="post-date">${createdAt}</span>
-          ${
-            post.category_name
-              ? `<span class="post-category">${escapeHtml(
-                  post.category_name
-                )}</span>`
-              : ""
-          }
+          ${post.category_name ? `<span class="post-category">${escapeHtml(post.category_name)}</span>` : ''}
         </div>
       </div>
       
@@ -122,81 +151,105 @@ function generateUserPostHTML(post) {
         </div>
         
         <div class="post-actions">
-          <a href="post.html?id=${
-            post.id
-          }" class="btn btn-small btn-primary">Voir le post</a>
+          <a href="post.html?id=${post.id}" class="btn btn-small btn-primary">Voir le post</a>
         </div>
       </div>
     </article>
   `;
 }
 
+/**
+ * Escape HTML characters to prevent XSS
+ * @param {string} text - Text to escape
+ * @returns {string} Escaped text
+ */
 function escapeHtml(text) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
+// ==================== UI SETUP ====================
+
+/**
+ * Setup the profile page UI
+ */
 function setupUI() {
   updatePageTitle();
 }
 
+/**
+ * Update page title with user information
+ */
 function updatePageTitle() {
   if (profileState.currentUser) {
-    const titleElement = document.querySelector("main h3");
+    const titleElement = document.querySelector('main h3');
     if (titleElement) {
       titleElement.textContent = `Posts de ${profileState.currentUser.username}`;
     }
   }
 }
 
+// ==================== TAB FUNCTIONALITY ====================
+
+/**
+ * Initialize tab functionality
+ */
 function initTabFunctionality() {
-  const tabBtns = document.querySelectorAll(".tab-btn");
-  const tabContents = document.querySelectorAll(".tab-content");
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
 
-  tabBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const tabId = btn.getAttribute("data-tab");
-
-      tabBtns.forEach((tb) => tb.classList.remove("active"));
-      tabContents.forEach((tc) => tc.classList.remove("active"));
-
-      btn.classList.add("active");
-      const tabContent = document.getElementById(tabId + "-tab");
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      
+      // Remove active class from all tabs and contents
+      tabBtns.forEach(tb => tb.classList.remove('active'));
+      tabContents.forEach(tc => tc.classList.remove('active'));
+      
+      // Add active class to clicked tab and corresponding content
+      btn.classList.add('active');
+      const tabContent = document.getElementById(tabId + '-tab');
       if (tabContent) {
-        tabContent.classList.add("active");
+        tabContent.classList.add('active');
       }
     });
   });
 }
 
+/**
+ * Initialize profile actions
+ */
 function initProfileActions() {
-  const editProfileBtn = document.getElementById("edit-profile-btn");
-  const settingsBtn = document.getElementById("settings-btn");
-  const postsSort = document.getElementById("posts-sort");
+  const editProfileBtn = document.getElementById('edit-profile-btn');
+  const settingsBtn = document.getElementById('settings-btn');
+  const postsSort = document.getElementById('posts-sort');
 
   if (editProfileBtn) {
-    editProfileBtn.addEventListener("click", () => {
-      alert("Fonctionnalité de modification du profil à implémenter");
+    editProfileBtn.addEventListener('click', () => {
+      alert('Fonctionnalité de modification du profil à implémenter');
     });
   }
 
   if (settingsBtn) {
-    settingsBtn.addEventListener("click", () => {
-      alert("Fonctionnalité des paramètres à implémenter");
+    settingsBtn.addEventListener('click', () => {
+      alert('Fonctionnalité des paramètres à implémenter');
     });
   }
 
   if (postsSort) {
-    postsSort.addEventListener("change", (e) => {
-      console.log("Sorting posts by:", e.target.value);
+    postsSort.addEventListener('change', (e) => {
+      // Implement sorting logic
+      console.log('Sorting posts by:', e.target.value);
     });
   }
 }
+
+// ==================== EVENT LISTENERS ====================
 
 document.addEventListener("DOMContentLoaded", () => {
   initProfilePage();
   initSidebarToggle();
   initTabFunctionality();
   initProfileActions();
-});
+}); 
