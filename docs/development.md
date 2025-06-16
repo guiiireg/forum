@@ -36,26 +36,58 @@
 [style]: amélioration du CSS des posts
 ```
 
-## Conventions de Code
+## 📋 Conventions de Code
 
-### JavaScript/Node.js
-- Utiliser ES6+ features
-- Préférer les fonctions fléchées
-- Utiliser async/await pour les opérations asynchrones
-- Commenter les fonctions complexes
-- Utiliser des noms explicites
+### JavaScript/Node.js Moderne
+- **ES Modules** : `import/export` exclusivement (défini dans package.json)
+- **Classes OOP** : Architecture orientée objet (ex: ServerOrchestrator)
+- **Async/Await** : Gestion asynchrone moderne, éviter les callbacks
+- **Arrow Functions** : Préférer `() =>` pour les fonctions courtes
+- **Template Literals** : Utiliser `` ` `` pour les chaînes complexes
+- **Destructuring** : Extraction de propriétés moderne
+- **Noms explicites** : Variables et fonctions auto-documentées
 
-### SQL
-- Utiliser des requêtes paramétrées
-- Éviter les requêtes dynamiques
-- Commenter les requêtes complexes
-- Utiliser des transactions quand nécessaire
+```javascript
+// ✅ Bon exemple
+export class PostManager {
+  async createPost({ title, content, categoryId, userId }) {
+    const result = await this.database.insert(/* ... */);
+    return { success: true, postId: result.id };
+  }
+}
 
-### Structure des Fichiers
-- Un fichier = une responsabilité
-- Regrouper les fichiers par fonctionnalité
-- Utiliser des index.js pour l'export
-- Séparer la logique métier des routes
+// ❌ Éviter
+function createPost(a, b, c, d, callback) {
+  db.query("INSERT...", [a, b, c, d], callback);
+}
+```
+
+### Architecture Modulaire
+- **Un fichier = une responsabilité** claire
+- **Modules par fonctionnalité** : posts/, auth/, ui/
+- **Index.js systématique** : Export centralisé de chaque module
+- **Séparation couches** : routes ≠ services ≠ models
+- **Injection de dépendances** : Éviter les imports statiques pour les services
+
+### SQL et Base de Données
+- **Requêtes préparées** : Protection SQL injection obligatoire
+- **Transactions** : Pour les opérations multi-tables
+- **Naming convention** : snake_case pour les colonnes
+- **Documentation** : Commenter les requêtes complexes
+- **Indexation** : Performance sur les clés étrangères
+
+```javascript
+// ✅ Requête préparée sécurisée
+const result = await db.get(
+  "SELECT * FROM posts WHERE user_id = ? AND category_id = ?",
+  [userId, categoryId]
+);
+
+// ❌ Vulnérable
+const result = await db.get(
+  `SELECT * FROM posts WHERE user_id = ${userId}`
+);
+```
 
 ## Configuration Docker
 
@@ -81,13 +113,68 @@
 ### Debugging
 - Chrome DevTools (F12) pour l'inspection et le debugging
 
-## Debug et Système de Vote
+## 🐛 Debug et Système de Vote Avancé
 
-- Le système de vote côté serveur (votes.js) inclut des logs détaillés pour le debug (affichage des paramètres, calculs de score, décisions prises).
-- La logique côté client (modules/posts/index.js) gère :
-  - Le toggle du vote (clic répété supprime le vote)
-  - Le changement de vote (upvote <-> downvote)
-  - L'affichage dynamique du score et de l'état des boutons
-- La gestion des erreurs API côté client utilise `safeApiCall` pour afficher un feedback immédiat à l'utilisateur (ex : impossibilité de descendre sous zéro, non connecté, etc).
+### Architecture du Système de Vote
+Le système de vote est divisé en **deux couches** avec debugging intégré :
+
+#### **Côté Serveur (`votes.js`)**
+```javascript
+export async function votePost(postId, userId, voteType) {
+  console.log("=== DÉBUT DU VOTE ===");
+  console.log("Paramètres reçus:", { postId, userId, voteType });
+  
+  // Logique avec logs détaillés pour chaque décision
+  // Toggle, changement, protection anti-négatif
+  
+  console.log("=== FIN DU VOTE ===");
+}
+```
+
+**Fonctionnalités de debug :**
+- 🔍 **Logs détaillés** : Affichage des paramètres et calculs
+- 📊 **Traçabilité** : Chaque décision est documentée
+- ⚠️ **Validation** : Protection anti-négatif avec logs
+- 🔄 **Toggle intelligent** : Clic répété = suppression
+
+#### **Côté Client (`modules/posts/postsVoting.js`)**
+```javascript
+import { safeApiCall } from "../../core/api.js";
+
+// UI réactive avec feedback immédiat
+export function setupPostVoting(postElement, postId) {
+  // Gestion des états visuels
+  // Synchronisation serveur
+  // Gestion des erreurs avec feedback
+}
+```
+
+**Fonctionnalités client :**
+- ⚡ **Feedback immédiat** : UI responsive
+- 🔄 **Synchronisation** : État serveur ↔ client
+- 🛡️ **Gestion d'erreurs** : `safeApiCall` avec messages utilisateur
+- 🎨 **États visuels** : Boutons actifs/inactifs
+
+### Patterns de Debug Modernes
+```javascript
+// 🔍 Debug avec contexte
+console.log("Vote decision:", {
+  existingVote: existingVote?.vote_type,
+  newVote: voteType,
+  calculation: `${currentTotal} + ${voteType} = ${newTotal}`
+});
+
+// ⚠️ Validation avec feedback
+if (newTotal < 0) {
+  console.log("❌ Vote rejected: negative score");
+  return { success: false, message: "Score cannot be negative" };
+}
+```
+
+### Outils de Debug Recommandés
+- **Chrome DevTools** : F12 pour inspection réseau
+- **Console logs** : Système intégré dans `votes.js`
+- **API testing** : Postman/Thunder Client
+- **Docker logs** : `docker compose logs -f`
 
 [Retour au README principal](../README.md) 

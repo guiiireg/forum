@@ -145,9 +145,35 @@ node server/js/startServer.js
 2. Accéder au forum
 Ouvrir votre navigateur et aller à `http://localhost:3000`
 
-## Dépendances Principales
-- express: ^5.1.0
-- sqlite3: ^5.1.7
-- dotenv: ^16.5.0
+## 🛠️ Dépendances Principales
+
+### Backend Core
+```json
+{
+  "express": "^5.1.0",        // Framework web moderne
+  "sqlite3": "^5.1.7",       // Base de données intégrée
+  "sqlite": "^5.1.1",        // Interface SQLite moderne
+  "dotenv": "^16.5.0"        // Variables d'environnement
+}
+```
+
+### Sécurité
+```json
+{
+  "bcrypt": "^6.0.0",        // Hachage mots de passe
+  "jsonwebtoken": "^9.0.2",  // Authentification JWT
+  "helmet": "^7.1.0",        // Protection HTTP
+  "cors": "^2.8.5",          // Cross-Origin Resource Sharing
+  "cookie-parser": "^1.4.7"  // Gestion cookies sécurisée
+}
+```
+
+### Utilitaires
+```json
+{
+  "path": "^0.12.7",         // Gestion des chemins
+  "url": "^0.11.4"           // Manipulation des URLs
+}
+```
 
 [Retour au README principal](../README.md) 
