@@ -1,6 +1,9 @@
 import { apiService } from "../apiService.js";
 import { PostRenderer } from "../../modules/ui/postRenderer.js";
 
+/**
+ * Post Manager Service - Handles post loading and display
+ */
 export class PostManagerService {
   constructor() {
     this.postRenderer = new PostRenderer("posts-container");
@@ -8,6 +11,10 @@ export class PostManagerService {
     this.currentFilter = null;
   }
 
+  /**
+   * Load posts with optional category filter
+   * @param {string|null} categoryId - Category ID to filter by
+   */
   async loadPosts(categoryId = null) {
     this.currentFilter = categoryId;
     this.postRenderer.showLoading();
@@ -29,18 +36,33 @@ export class PostManagerService {
     }
   }
 
+  /**
+   * Reload posts with current filter
+   */
   async reloadPosts() {
     await this.loadPosts(this.currentFilter);
   }
 
+  /**
+   * Get current posts
+   * @returns {Array} Current posts array
+   */
   getCurrentPosts() {
     return this.currentPosts;
   }
 
+  /**
+   * Get current filter
+   * @returns {string|null} Current category filter
+   */
   getCurrentFilter() {
     return this.currentFilter;
   }
 
+  /**
+   * Search posts by title or content
+   * @param {string} searchTerm - Search term
+   */
   searchPosts(searchTerm) {
     if (!searchTerm.trim()) {
       this.postRenderer.renderPosts(this.currentPosts);
@@ -56,6 +78,11 @@ export class PostManagerService {
     this.postRenderer.renderPosts(filteredPosts);
   }
 
+  /**
+   * Sort posts by different criteria
+   * @param {string} sortBy - Sort criteria (date, title, author)
+   * @param {string} order - Sort order (asc, desc)
+   */
   sortPosts(sortBy = "date", order = "desc") {
     const sortedPosts = [...this.currentPosts].sort((a, b) => {
       let valueA, valueB;
@@ -86,10 +113,17 @@ export class PostManagerService {
     this.postRenderer.renderPosts(sortedPosts);
   }
 
+  /**
+   * Get post count
+   * @returns {number} Number of current posts
+   */
   getPostCount() {
     return this.currentPosts.length;
   }
 
+  /**
+   * Clear posts display
+   */
   clearPosts() {
     this.currentPosts = [];
     this.postRenderer.renderPosts([]);

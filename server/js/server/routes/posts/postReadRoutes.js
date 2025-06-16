@@ -5,11 +5,17 @@ import {
   getPostsByCategory,
 } from "../../../posts.js";
 
+/**
+ * Post Read Routes Handler
+ */
 export class PostReadRoutes {
   constructor(app) {
     this.app = app;
   }
 
+  /**
+   * Setup all read routes
+   */
   setupRoutes() {
     this.setupGetAllPosts();
     this.setupGetPostsByUser();
@@ -17,6 +23,9 @@ export class PostReadRoutes {
     this.setupGetPostsByCategory();
   }
 
+  /**
+   * Setup get all posts route
+   */
   setupGetAllPosts() {
     this.app.get("/api/posts", async (req, res) => {
       const result = await getAllPosts();
@@ -29,6 +38,9 @@ export class PostReadRoutes {
     });
   }
 
+  /**
+   * Setup get posts by user route
+   */
   setupGetPostsByUser() {
     this.app.get("/api/posts/user/:userId", async (req, res) => {
       const userId = req.params.userId;
@@ -42,6 +54,9 @@ export class PostReadRoutes {
     });
   }
 
+  /**
+   * Setup get single post by ID route
+   */
   setupGetPostById() {
     this.app.get("/api/posts/:postId", async (req, res) => {
       const postId = req.params.postId;
@@ -55,6 +70,9 @@ export class PostReadRoutes {
     });
   }
 
+  /**
+   * Setup get posts by category route
+   */
   setupGetPostsByCategory() {
     this.app.get("/api/posts/category/:categoryId", async (req, res) => {
       const categoryId = req.params.categoryId;

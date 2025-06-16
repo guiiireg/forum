@@ -1,11 +1,19 @@
 import { apiService } from "../apiService.js";
 import { MessageHandler } from "../../modules/ui/messageHandler.js";
 
+/**
+ * Form Handler Service - Manages form interactions and submissions
+ */
 export class FormHandlerService {
   constructor() {
     this.messageHandler = new MessageHandler("post-message");
   }
 
+  /**
+   * Setup create post form event listeners
+   * @param {Object} currentUser - Current authenticated user
+   * @param {Function} onSuccess - Callback for successful submission
+   */
   setupCreatePostForm(currentUser, onSuccess) {
     const form = document.getElementById("create-post-form");
     if (!form) return;
@@ -16,6 +24,11 @@ export class FormHandlerService {
     });
   }
 
+  /**
+   * Handle post creation form submission
+   * @param {Object} currentUser - Current authenticated user
+   * @param {Function} onSuccess - Callback for successful submission
+   */
   async handleCreatePost(currentUser, onSuccess) {
     if (!currentUser) {
       this.messageHandler.error("Vous devez être connecté pour créer un post.");
@@ -40,6 +53,10 @@ export class FormHandlerService {
     }
   }
 
+  /**
+   * Get form data from create post form
+   * @returns {Object} Form data
+   */
   getFormData() {
     return {
       title: document.getElementById("title")?.value || "",
@@ -48,6 +65,9 @@ export class FormHandlerService {
     };
   }
 
+  /**
+   * Reset the create post form
+   */
   resetForm() {
     const form = document.getElementById("create-post-form");
     if (form) {
@@ -55,6 +75,11 @@ export class FormHandlerService {
     }
   }
 
+  /**
+   * Validate form data before submission
+   * @param {Object} formData - Form data to validate
+   * @returns {Object} Validation result
+   */
   validateForm(formData) {
     const errors = [];
 

@@ -1,15 +1,24 @@
 import { registerUser, loginUser } from "../../users.js";
 
+/**
+ * Authentication Routes Handler
+ */
 export class AuthRoutes {
   constructor(app) {
     this.app = app;
   }
 
+  /**
+   * Setup all authentication routes
+   */
   setupRoutes() {
     this.setupRegisterRoute();
     this.setupLoginRoute();
   }
 
+  /**
+   * Setup register route
+   */
   setupRegisterRoute() {
     this.app.post("/register", async (req, res) => {
       const { username, password } = req.body;
@@ -30,6 +39,9 @@ export class AuthRoutes {
     });
   }
 
+  /**
+   * Setup login route
+   */
   setupLoginRoute() {
     this.app.post("/login", async (req, res) => {
       const { username, password } = req.body;

@@ -2,6 +2,10 @@ import { createElementFromHTML } from "../../core/dom.js";
 import { getCurrentUser } from "./postsState.js";
 import { loadVotesForPost } from "./postsVoting.js";
 
+/**
+ * Display posts in the container
+ * @param {Array} posts - Posts to display
+ */
 export async function displayPosts(posts) {
   const container = document.getElementById("posts-container");
   if (!container) return;
@@ -19,6 +23,11 @@ export async function displayPosts(posts) {
   }
 }
 
+/**
+ * Create a post element with votes
+ * @param {Object} post - Post data
+ * @returns {HTMLElement} Post element
+ */
 export async function createPostElement(post) {
   const currentUser = getCurrentUser();
   const votes = currentUser
@@ -31,6 +40,13 @@ export async function createPostElement(post) {
   return createElementFromHTML(postHTML);
 }
 
+/**
+ * Generate HTML for a post
+ * @param {Object} post - Post data
+ * @param {boolean} isOwner - Whether current user owns the post
+ * @param {Object} votes - Vote data
+ * @returns {string} HTML string
+ */
 export function generatePostHTML(post, isOwner, votes) {
   const actionsHtml = isOwner
     ? `
@@ -74,6 +90,9 @@ export function generatePostHTML(post, isOwner, votes) {
   `;
 }
 
+/**
+ * Setup UI based on authentication state
+ */
 export function setupUI() {
   const createPostContainer = document.getElementById("create-post-container");
   const currentUser = getCurrentUser();
@@ -88,6 +107,10 @@ export function setupUI() {
   }
 }
 
+/**
+ * Generate create post form HTML
+ * @returns {string} HTML string
+ */
 export function createPostFormHTML() {
   return `
     <h3>Créer un nouveau post</h3>
