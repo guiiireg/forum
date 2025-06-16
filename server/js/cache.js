@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_jwt_tres_securise';
+const JWT_SECRET = process.env.JWT_SECRET || 'osef';
 const JWT_EXPIRES_IN = '7d';
 
 export function createSession(userId, userData) {

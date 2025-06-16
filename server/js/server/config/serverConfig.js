@@ -50,7 +50,7 @@ export class ServerConfig {
 
     this.app.use(
       cookieParser(
-        process.env.COOKIE_SECRET || "votre_secret_cookie_tres_securise"
+        process.env.COOKIE_SECRET || "osef"
       )
     );
 
