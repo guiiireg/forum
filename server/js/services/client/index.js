@@ -3,17 +3,11 @@ import { formHandlerService } from "./formHandlerService.js";
 import { categoryManagerService } from "./categoryManagerService.js";
 import { postManagerService } from "./postManagerService.js";
 
-/**
- * Simplified Post Page Orchestrator
- */
 export class PostPageOrchestrator {
   constructor() {
     this.currentUser = null;
   }
 
-  /**
-   * Initialize the post page with all services
-   */
   async initialize() {
     this.currentUser = AuthGuard.setupAuthUI({
       containerIds: ["create-post-container"],
@@ -32,27 +26,18 @@ export class PostPageOrchestrator {
     ]);
   }
 
-  /**
-   * Setup form handler
-   */
   async setupFormHandler() {
     formHandlerService.setupCreatePostForm(this.currentUser, () =>
       postManagerService.reloadPosts()
     );
   }
 
-  /**
-   * Setup category manager
-   */
   async setupCategoryManager() {
     categoryManagerService.setupCategoryFilter((categoryId) =>
       postManagerService.loadPosts(categoryId)
     );
   }
 
-  /**
-   * Load initial data
-   */
   async loadInitialData() {
     await Promise.all([
       categoryManagerService.loadAndPopulateCategories(),
@@ -60,9 +45,6 @@ export class PostPageOrchestrator {
     ]);
   }
 
-  /**
-   * Initialize filters (delegate to existing module)
-   */
   async initializeFilters() {
     const { initializeFilters } = await import(
       "../../modules/posts/postsActions.js"

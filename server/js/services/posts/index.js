@@ -2,9 +2,7 @@ import { postCrudService } from "./postCrudService.js";
 import { postOwnershipService } from "./postOwnershipService.js";
 import { postQueryService } from "./postQueryService.js";
 
-/**
- * Unified Post Service - Combines all post-related services
- */
+
 export class PostService {
   constructor() {
     this.crud = postCrudService;

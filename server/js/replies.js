@@ -1,12 +1,5 @@
 import db from "./database.js";
 
-/**
- * Create a reply to a post
- * @param {string} content - The reply content
- * @param {number} postId - The post ID
- * @param {number} userId - The user ID
- * @returns {Promise<Object>} The result of the creation
- */
 export async function createReply(content, postId, userId) {
   try {
     const result = await db.run(
@@ -27,11 +20,6 @@ export async function createReply(content, postId, userId) {
   }
 }
 
-/**
- * Get all replies for a post
- * @param {number} postId - The post ID
- * @returns {Promise<Object>} The replies
- */
 export async function getRepliesByPost(postId) {
   try {
     const replies = await db.all(

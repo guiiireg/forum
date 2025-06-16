@@ -1,26 +1,17 @@
 import { updatePost, deletePost } from "../../../posts.js";
 import { PostAuthHelper } from "./postAuthHelper.js";
 
-/**
- * Post Update Routes Handler
- */
 export class PostUpdateRoutes {
   constructor(app) {
     this.app = app;
     this.authHelper = new PostAuthHelper();
   }
 
-  /**
-   * Setup update and delete routes
-   */
   setupRoutes() {
     this.setupUpdatePost();
     this.setupDeletePost();
   }
 
-  /**
-   * Setup update post route
-   */
   setupUpdatePost() {
     this.app.put("/posts/:postId", async (req, res) => {
       const postId = parseInt(req.params.postId);
@@ -61,9 +52,6 @@ export class PostUpdateRoutes {
     });
   }
 
-  /**
-   * Setup delete post route
-   */
   setupDeletePost() {
     this.app.delete("/posts/:postId", async (req, res) => {
       const postId = parseInt(req.params.postId);

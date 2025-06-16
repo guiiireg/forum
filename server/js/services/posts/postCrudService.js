@@ -6,19 +6,11 @@ import {
 } from "../../models/queries/postQueries.js";
 import { categoryService } from "../categoryService.js";
 
-/**
- * Post CRUD Service - Basic Create, Read, Update, Delete operations
- */
 export class PostCrudService extends BaseModel {
   constructor() {
     super("posts");
   }
 
-  /**
-   * Get posts with optional filtering
-   * @param {Object} filters - Filtering options
-   * @returns {Promise<Object>} The posts
-   */
   async getPosts(filters = {}) {
     return this.executeQuery(async () => {
       let whereClause = "";
@@ -39,11 +31,6 @@ export class PostCrudService extends BaseModel {
     }, "la récupération des posts");
   }
 
-  /**
-   * Get a post by ID
-   * @param {number} postId - The post ID
-   * @returns {Promise<Object>} The post
-   */
   async getById(postId) {
     return this.executeQuery(async () => {
       const query = buildPostQuery(
@@ -61,11 +48,6 @@ export class PostCrudService extends BaseModel {
     }, "la récupération du post");
   }
 
-  /**
-   * Create a post
-   * @param {Object} postData - Post data
-   * @returns {Promise<Object>} The result of the creation
-   */
   async create({ title, content, userId, categoryId = null }) {
     return this.executeQuery(async () => {
       const finalCategoryId = await categoryService.validateCategoryId(
@@ -84,12 +66,6 @@ export class PostCrudService extends BaseModel {
     }, "la création du post");
   }
 
-  /**
-   * Update a post (without ownership check - use PostOwnershipService for that)
-   * @param {number} postId - The post ID
-   * @param {Object} updateData - Update data
-   * @returns {Promise<Object>} The result of the update
-   */
   async updatePost(postId, { title, content, categoryId = null }) {
     return this.executeQuery(async () => {
       let query, params;
@@ -117,11 +93,6 @@ export class PostCrudService extends BaseModel {
     }, "la modification du post");
   }
 
-  /**
-   * Delete a post (without ownership check and related data cleanup)
-   * @param {number} postId - The post ID
-   * @returns {Promise<Object>} The result of the deletion
-   */
   async deletePost(postId) {
     return this.executeQuery(async () => {
       const result = await db.run("DELETE FROM posts WHERE id = ?", [postId]);

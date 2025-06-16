@@ -7,9 +7,6 @@ import { ReplyRoutes } from "./routes/replyRoutes.js";
 import { CategoryRoutes } from "./routes/categoryRoutes.js";
 import { ErrorRoutes } from "./routes/errorRoutes.js";
 
-/**
- * Server Orchestrator - Manages all server components
- */
 class ServerOrchestrator {
   constructor() {
     this.config = new ServerConfig();
@@ -18,9 +15,6 @@ class ServerOrchestrator {
     this.htmlDir = this.config.getHtmlDir();
   }
 
-  /**
-   * Initialize the complete server
-   */
   async initialize() {
     this.setupConfiguration();
     this.setupAllRoutes();
@@ -28,17 +22,11 @@ class ServerOrchestrator {
     this.startServer();
   }
 
-  /**
-   * Setup server configuration
-   */
   setupConfiguration() {
     this.config.setupMiddleware();
     this.config.setupStaticFiles();
   }
 
-  /**
-   * Setup all route handlers
-   */
   setupAllRoutes() {
     const pageRoutes = new PageRoutes(this.app, this.htmlDir);
     const authRoutes = new AuthRoutes(this.app);
@@ -55,17 +43,11 @@ class ServerOrchestrator {
     categoryRoutes.setupRoutes();
   }
 
-  /**
-   * Setup error handling (must be last)
-   */
   async setupErrorHandling() {
     const errorRoutes = new ErrorRoutes(this.app, this.htmlDir);
     await errorRoutes.setupErrorHandling();
   }
 
-  /**
-   * Start the server
-   */
   startServer() {
     this.app.listen(this.port, () => {
       console.log(

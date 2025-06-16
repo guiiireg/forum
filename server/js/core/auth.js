@@ -1,23 +1,9 @@
-/**
- * Authentication Module - Consolidated authentication logic
- */
-
-// ==================== AUTHENTICATION STATE ====================
-
-/**
- * Check if the user is authenticated
- * @returns {boolean} True if the user is authenticated, false otherwise
- */
 export function isAuthenticated() {
   const userId = localStorage.getItem("userId");
   const username = localStorage.getItem("username");
   return userId && username;
 }
 
-/**
- * Get current user data
- * @returns {Object|null} User data or null if not authenticated
- */
 export function getCurrentUser() {
   if (!isAuthenticated()) return null;
 
@@ -27,29 +13,16 @@ export function getCurrentUser() {
   };
 }
 
-/**
- * Set authentication data
- * @param {Object} userData - User data from login/registration
- */
 export function setAuthData(userData) {
   localStorage.setItem("userId", userData.userId);
   localStorage.setItem("username", userData.username);
 }
 
-/**
- * Clear authentication data
- */
 export function clearAuthData() {
   localStorage.removeItem("userId");
   localStorage.removeItem("username");
 }
 
-// ==================== PAGE AUTHORIZATION ====================
-
-/**
- * Check if the current page requires authentication
- * @returns {boolean} True if the page requires authentication, false otherwise
- */
 export function requiresAuth() {
   const fullPath = window.location.pathname;
   const currentPage = fullPath.split("/").pop() || "index.html";
@@ -57,20 +30,12 @@ export function requiresAuth() {
   return !publicPages.includes(currentPage);
 }
 
-/**
- * Check authentication and redirect if necessary
- */
 export function checkAuth() {
   if (requiresAuth() && !isAuthenticated()) {
     window.location.href = "/login.html";
   }
 }
 
-// ==================== UI MANAGEMENT ====================
-
-/**
- * Update the UI based on authentication status
- */
 export function updateAuthUI() {
   const logoutLink = document.getElementById("logout-link");
   const loginLink = document.getElementById("login-link");
@@ -97,20 +62,11 @@ export function updateAuthUI() {
   }
 }
 
-/**
- * Logout user and redirect
- */
 export function logout() {
   clearAuthData();
   window.location.href = "/login.html";
 }
 
-// ==================== FORM HANDLING ====================
-
-/**
- * Handle login form submission
- * @param {Event} e - Form submission event
- */
 export async function handleLogin(e) {
   e.preventDefault();
 
@@ -145,10 +101,6 @@ export async function handleLogin(e) {
   }
 }
 
-/**
- * Handle registration form submission
- * @param {Event} e - Form submission event
- */
 export async function handleRegistration(e) {
   e.preventDefault();
 
@@ -195,11 +147,6 @@ export async function handleRegistration(e) {
   }
 }
 
-// ==================== INITIALIZATION ====================
-
-/**
- * Initialize authentication for a page
- */
 export function initAuth() {
   checkAuth();
   updateAuthUI();
@@ -216,9 +163,6 @@ export function initAuth() {
   }
 }
 
-/**
- * Show welcome message for authenticated users on login page
- */
 export function showWelcomeMessage() {
   const user = getCurrentUser();
   if (user && document.getElementById("login-form")) {

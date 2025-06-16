@@ -1,6 +1,3 @@
-/**
- * Central export for all services
- */
 export { categoryService } from "./categoryService.js";
 export { postService } from "./postService.js";
 
