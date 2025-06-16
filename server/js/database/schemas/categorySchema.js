@@ -1,14 +1,9 @@
-/**
- * Category Schema Operations
- */
+
 export class CategorySchema {
   constructor(db) {
     this.db = db;
   }
 
-  /**
-   * Create categories table
-   */
   async createTable() {
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS categories (
@@ -20,10 +15,6 @@ export class CategorySchema {
     `);
   }
 
-  /**
-   * Check if categories exist
-   * @returns {Promise<boolean>} True if categories exist
-   */
   async categoriesExist() {
     const categoriesCount = await this.db.get(
       "SELECT COUNT(*) as count FROM categories"
@@ -31,9 +22,6 @@ export class CategorySchema {
     return categoriesCount.count > 0;
   }
 
-  /**
-   * Insert default categories
-   */
   async insertDefaultCategories() {
     await this.db.exec(`
       INSERT INTO categories (name, description) VALUES 
@@ -49,10 +37,6 @@ export class CategorySchema {
     `);
   }
 
-  /**
-   * Get "Autres" category ID
-   * @returns {Promise<Object|null>} The "Autres" category or null
-   */
   async getAutresCategory() {
     return await this.db.get("SELECT id FROM categories WHERE name = 'Autres'");
   }

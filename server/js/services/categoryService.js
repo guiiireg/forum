@@ -6,10 +6,6 @@ class CategoryService extends BaseModel {
     super("categories");
   }
 
-  /**
-   * Get the "Autres" category ID (fallback category)
-   * @returns {Promise<number|null>} The "Autres" category ID
-   */
   async getAutresCategoryId() {
     try {
       const category = await db.get(
@@ -25,11 +21,6 @@ class CategoryService extends BaseModel {
     }
   }
 
-  /**
-   * Validate category ID and return valid category or fallback
-   * @param {number|null} categoryId - The category ID to validate
-   * @returns {Promise<number>} Valid category ID
-   */
   async validateCategoryId(categoryId) {
     if (!categoryId) {
       return await this.getAutresCategoryId();
@@ -39,10 +30,6 @@ class CategoryService extends BaseModel {
     return exists ? categoryId : await this.getAutresCategoryId();
   }
 
-  /**
-   * Get all categories
-   * @returns {Promise<Object>} The categories
-   */
   async getAll() {
     return this.executeQuery(async () => {
       const categories = await db.all(
@@ -52,11 +39,6 @@ class CategoryService extends BaseModel {
     }, "la récupération des catégories");
   }
 
-  /**
-   * Get category by ID
-   * @param {number} categoryId - The category ID
-   * @returns {Promise<Object>} The category
-   */
   async getById(categoryId) {
     return this.findById(categoryId);
   }

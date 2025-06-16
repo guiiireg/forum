@@ -1,10 +1,3 @@
-/**
- * Middleware de gestion d'erreurs global
- * @param {Error} err - L'erreur
- * @param {import('express').Request} req - La requête
- * @param {import('express').Response} res - La réponse
- * @param {import('express').NextFunction} next - La fonction next
- */
 export function errorHandler(err, req, res, next) {
   console.error(err.stack);
 

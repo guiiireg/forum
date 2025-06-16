@@ -1,33 +1,21 @@
 import { createReply, getRepliesByPost } from "../../replies.js";
 import db from "../../database.js";
 
-/**
- * Reply Routes Handler
- */
 export class ReplyRoutes {
   constructor(app) {
     this.app = app;
   }
 
-  /**
-   * Setup all reply routes
-   */
   setupRoutes() {
     this.setupGetReplies();
     this.setupCreateReply();
   }
 
-  /**
-   * Verify user authentication
-   */
   async verifyUser(userId) {
     const user = await db.get("SELECT id FROM users WHERE id = ?", [userId]);
     return !!user;
   }
 
-  /**
-   * Setup get replies for a post route
-   */
   setupGetReplies() {
     this.app.get("/api/replies/:postId", async (req, res) => {
       const postId = req.params.postId;
@@ -41,9 +29,6 @@ export class ReplyRoutes {
     });
   }
 
-  /**
-   * Setup create a reply route
-   */
   setupCreateReply() {
     this.app.post("/api/replies", async (req, res) => {
       const { content, postId, userId } = req.body;

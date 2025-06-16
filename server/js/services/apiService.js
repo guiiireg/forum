@@ -1,13 +1,4 @@
-/**
- * API Service for handling HTTP requests
- */
 class ApiService {
-  /**
-   * Generic fetch wrapper with error handling
-   * @param {string} url - API endpoint
-   * @param {Object} options - Fetch options
-   * @returns {Promise<Object>} API response
-   */
   async request(url, options = {}) {
     try {
       const response = await fetch(url, {
@@ -30,21 +21,10 @@ class ApiService {
     }
   }
 
-  /**
-   * GET request
-   * @param {string} url - API endpoint
-   * @returns {Promise<Object>} API response
-   */
   async get(url) {
     return this.request(url, { method: "GET" });
   }
 
-  /**
-   * POST request
-   * @param {string} url - API endpoint
-   * @param {Object} body - Request body
-   * @returns {Promise<Object>} API response
-   */
   async post(url, body) {
     return this.request(url, {
       method: "POST",

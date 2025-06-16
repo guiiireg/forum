@@ -2,9 +2,6 @@ import { fetchCategories, fetchPosts, safeApiCall } from "../../core/api.js";
 import { populateSelect } from "../../core/dom.js";
 import { updateCategoriesState, updatePostsState } from "./postsState.js";
 
-/**
- * Load categories and populate selects
- */
 export async function loadCategories() {
   try {
     const result = await fetchCategories();
@@ -50,9 +47,6 @@ export async function loadCategories() {
   }
 }
 
-/**
- * Handle category loading error
- */
 function handleCategoryLoadError() {
   const selects = ["category", "category-filter-select"];
   selects.forEach((selectId) => {
@@ -63,9 +57,6 @@ function handleCategoryLoadError() {
   });
 }
 
-/**
- * Load posts with current filters
- */
 export async function loadPosts() {
   const result = await safeApiCall(() => fetchPosts(), "chargement des posts");
 

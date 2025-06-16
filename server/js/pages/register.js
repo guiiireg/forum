@@ -1,13 +1,6 @@
-/**
- * Register Page - JavaScript functionality for the registration page
- */
-
 import { initAuth } from "../core/auth.js";
 import { initSidebarToggle } from "../core/dom.js";
 
-/**
- * Initialize register form validation
- */
 function initRegisterFormValidation() {
   const registerForm = document.getElementById("register-form");
   const errorMessage = document.getElementById("error-message");
@@ -24,10 +17,8 @@ function initRegisterFormValidation() {
     const confirmPassword = document.getElementById("confirm-password").value;
     const termsAccepted = document.getElementById("terms").checked;
 
-    // Clear previous messages
     clearMessages();
 
-    // Validation
     if (!username || !password || !confirmPassword) {
       e.preventDefault();
       showError("Veuillez remplir tous les champs obligatoires.");
@@ -48,7 +39,9 @@ function initRegisterFormValidation() {
 
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
       e.preventDefault();
-      showError("Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscores.");
+      showError(
+        "Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscores."
+      );
       return;
     }
 
@@ -71,10 +64,12 @@ function initRegisterFormValidation() {
     }
   });
 
-  // Real-time password confirmation check
   if (confirmPasswordField && passwordField) {
     confirmPasswordField.addEventListener("input", () => {
-      if (confirmPasswordField.value && passwordField.value !== confirmPasswordField.value) {
+      if (
+        confirmPasswordField.value &&
+        passwordField.value !== confirmPasswordField.value
+      ) {
         confirmPasswordField.style.borderColor = "var(--error-color)";
       } else {
         confirmPasswordField.style.borderColor = "var(--border-color)";
@@ -107,19 +102,15 @@ function initRegisterFormValidation() {
     }
   }
 
-  // Auto-focus on username field
   if (usernameField) {
     usernameField.focus();
   }
 }
 
-/**
- * Initialize the register page
- */
 function initRegisterPage() {
   initAuth();
   initSidebarToggle();
   initRegisterFormValidation();
 }
 
-document.addEventListener("DOMContentLoaded", initRegisterPage); 
+document.addEventListener("DOMContentLoaded", initRegisterPage);

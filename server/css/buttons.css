@@ -151,7 +151,6 @@
   box-shadow: var(--shadow-medium);
 }
 
-/* Modal Buttons */
 .cancel-btn,
 .save-btn {
   padding: 12px 24px;
@@ -221,7 +220,6 @@
   box-shadow: none;
 }
 
-/* Tab Buttons */
 .tab-btn {
   flex: 1;
   padding: 12px 20px;

@@ -1,6 +1,3 @@
-/**
- * Posts Module - Main posts functionality orchestrator
- */
 import { getCurrentUser } from "../../core/auth.js";
 import {
   updateCurrentUserState,
@@ -14,9 +11,6 @@ import { setupPostVoting } from "./postsVoting.js";
 import { setupEventListeners } from "./postsEventHandlers.js";
 import { editPost, deletePostHandler } from "./postsActions.js";
 
-/**
- * Initialize posts module
- */
 export async function initializePosts() {
   const currentUser = getCurrentUser();
   updateCurrentUserState(currentUser);
@@ -29,9 +23,6 @@ export async function initializePosts() {
   setupEventListeners(refreshPosts, refreshPosts);
 }
 
-/**
- * Refresh posts display with current filters
- */
 async function refreshPosts() {
   const posts = await loadPosts();
   const filters = getCurrentFilters();
@@ -39,10 +30,6 @@ async function refreshPosts() {
   await displayPostsWithVoting(filteredPosts);
 }
 
-/**
- * Display posts with voting setup
- * @param {Array} posts - Posts to display
- */
 async function displayPostsWithVoting(posts) {
   await displayPosts(posts);
 

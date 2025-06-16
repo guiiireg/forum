@@ -1,4 +1,3 @@
-// Re-export the modular server initialization
 export { default } from "./server/index.js";
 
 export { ServerConfig } from "./server/config/serverConfig.js";

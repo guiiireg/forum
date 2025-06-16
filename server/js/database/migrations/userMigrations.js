@@ -1,17 +1,11 @@
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 
-/**
- * User Migrations Service
- */
 export class UserMigrations {
   constructor(userSchema) {
     this.userSchema = userSchema;
   }
 
-  /**
-   * Generate UUIDs for existing users
-   */
   async generateUuidsForExistingUsers() {
     try {
       const usersWithoutUuid = await this.userSchema.getUsersWithoutUuid();
@@ -33,9 +27,6 @@ export class UserMigrations {
     }
   }
 
-  /**
-   * Migrate plain text passwords to hashed passwords
-   */
   async migratePasswordsToHashed() {
     try {
       console.log("Vérification des mots de passe à migrer...");
@@ -65,9 +56,6 @@ export class UserMigrations {
     }
   }
 
-  /**
-   * Run all user migrations
-   */
   async runAllMigrations() {
     await this.userSchema.addUuidColumn();
     await this.generateUuidsForExistingUsers();

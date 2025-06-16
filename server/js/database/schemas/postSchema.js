@@ -1,14 +1,8 @@
-/**
- * Post-related Schema Operations
- */
 export class PostSchema {
   constructor(db) {
     this.db = db;
   }
 
-  /**
-   * Create posts table
-   */
   async createTable() {
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS posts (
@@ -24,9 +18,6 @@ export class PostSchema {
     `);
   }
 
-  /**
-   * Add category_id column if it doesn't exist
-   */
   async addCategoryColumn() {
     const pragma = await this.db.all("PRAGMA table_info(posts)");
     const hasCategoryId = pragma.some((col) => col.name === "category_id");
@@ -42,10 +33,6 @@ export class PostSchema {
     }
   }
 
-  /**
-   * Update posts without category to use "Autres" category
-   * @param {number} autresCategoryId - The "Autres" category ID
-   */
   async updatePostsWithoutCategory(autresCategoryId) {
     await this.db.run(
       "UPDATE posts SET category_id = ? WHERE category_id IS NULL",
@@ -53,9 +40,6 @@ export class PostSchema {
     );
   }
 
-  /**
-   * Create replies table
-   */
   async createRepliesTable() {
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS replies (
@@ -70,9 +54,6 @@ export class PostSchema {
     `);
   }
 
-  /**
-   * Create votes table
-   */
   async createVotesTable() {
     await this.db.exec(`
       CREATE TABLE IF NOT EXISTS votes (
@@ -88,9 +69,6 @@ export class PostSchema {
     `);
   }
 
-  /**
-   * Create all post-related tables
-   */
   async createAllTables() {
     await this.createTable();
     await this.createRepliesTable();

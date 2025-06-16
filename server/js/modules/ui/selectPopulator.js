@@ -1,13 +1,4 @@
-/**
- * Select Populator for handling dropdown menus
- */
 export class SelectPopulator {
-  /**
-   * Populate a select element with options
-   * @param {string} selectId - ID of the select element
-   * @param {Array} items - Array of items to populate
-   * @param {Object} config - Configuration options
-   */
   static populate(selectId, items, config = {}) {
     const select = document.getElementById(selectId);
     if (!select) return;
@@ -38,12 +29,6 @@ export class SelectPopulator {
     });
   }
 
-  /**
-   * Populate categories select
-   * @param {string} selectId - ID of the select element
-   * @param {Array} categories - Array of categories
-   * @param {string} defaultText - Default option text
-   */
   static populateCategories(
     selectId,
     categories,
@@ -54,11 +39,6 @@ export class SelectPopulator {
     });
   }
 
-  /**
-   * Populate category filter select
-   * @param {string} selectId - ID of the select element
-   * @param {Array} categories - Array of categories
-   */
   static populateCategoryFilter(selectId, categories) {
     this.populate(selectId, categories, {
       defaultOption: { value: "", text: "Toutes les catégories" },

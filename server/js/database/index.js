@@ -4,9 +4,6 @@ import { CategorySchema } from "./schemas/categorySchema.js";
 import { PostSchema } from "./schemas/postSchema.js";
 import { UserMigrations } from "./migrations/userMigrations.js";
 
-/**
- * Database Initializer - Orchestrates all database setup
- */
 class DatabaseInitializer {
   constructor() {
     this.db = null;
@@ -16,9 +13,6 @@ class DatabaseInitializer {
     this.userMigrations = null;
   }
 
-  /**
-   * Initialize all database components
-   */
   async initialize() {
     this.db = await dbConnection.initialize();
 
@@ -32,9 +26,6 @@ class DatabaseInitializer {
     return this.db;
   }
 
-  /**
-   * Setup complete database structure
-   */
   async setupDatabase() {
     await this.createTables();
 
@@ -43,27 +34,18 @@ class DatabaseInitializer {
     await this.seedData();
   }
 
-  /**
-   * Create all database tables
-   */
   async createTables() {
     await this.userSchema.createTable();
     await this.categorySchema.createTable();
     await this.postSchema.createAllTables();
   }
 
-  /**
-   * Run all migrations
-   */
   async runMigrations() {
     await this.userMigrations.runAllMigrations();
     await this.postSchema.addCategoryColumn();
     await this.updatePostsWithoutCategory();
   }
 
-  /**
-   * Seed default data
-   */
   async seedData() {
     const categoriesExist = await this.categorySchema.categoriesExist();
     if (!categoriesExist) {
@@ -71,9 +53,6 @@ class DatabaseInitializer {
     }
   }
 
-  /**
-   * Update posts without category to use "Autres" category
-   */
   async updatePostsWithoutCategory() {
     const autresCategory = await this.categorySchema.getAutresCategory();
     if (autresCategory) {

@@ -1,51 +1,52 @@
-/**
- * Authentication Guard for handling user authentication checks
- */
 export class AuthGuard {
-  /**
-   * Get current user data from localStorage
-   * @returns {Object|null} User data or null if not authenticated
-   */
-  static getCurrentUser() {
-    const userId = localStorage.getItem("userId");
-    const username = localStorage.getItem("username");
+  static currentUser = null;
+  static authChecked = false;
 
-    if (!userId || !username) {
-      return null;
+  static async getCurrentUser() {
+    if (this.authChecked && this.currentUser) {
+      return this.currentUser;
     }
 
-    return {
-      id: userId,
-      username: username,
-    };
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        this.currentUser = data.user;
+        this.authChecked = true;
+        return this.currentUser;
+      } else {
+        this.currentUser = null;
+        this.authChecked = true;
+        return null;
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de la vérification de l'authentification:",
+        error
+      );
+      this.currentUser = null;
+      this.authChecked = true;
+      return null;
+    }
   }
 
-  /**
-   * Check if user is authenticated
-   * @returns {boolean} True if authenticated
-   */
-  static isAuthenticated() {
-    return this.getCurrentUser() !== null;
+  static async isAuthenticated() {
+    const user = await this.getCurrentUser();
+    return user !== null;
   }
 
-  /**
-   * Redirect to login if not authenticated
-   * @param {string} redirectUrl - URL to redirect to (default: /login)
-   * @returns {boolean} True if user is authenticated, false if redirected
-   */
-  static requireAuth(redirectUrl = "/login") {
-    if (!this.isAuthenticated()) {
+  static async requireAuth(redirectUrl = "/login") {
+    if (!(await this.isAuthenticated())) {
       window.location.href = redirectUrl;
       return false;
     }
     return true;
   }
 
-  /**
-   * Show authentication required message and hide elements
-   * @param {string} elementId - ID of element to modify
-   * @param {string} message - Message to show
-   */
   static showAuthRequired(
     elementId,
     message = 'Vous devez être <a href="login.html">connecté</a> pour cette action.'
@@ -56,12 +57,8 @@ export class AuthGuard {
     }
   }
 
-  /**
-   * Hide form if user is not authenticated
-   * @param {string} formId - ID of form to hide
-   */
-  static hideFormIfNotAuth(formId) {
-    if (!this.isAuthenticated()) {
+  static async hideFormIfNotAuth(formId) {
+    if (!(await this.isAuthenticated())) {
       const form = document.getElementById(formId);
       if (form) {
         form.style.display = "none";
@@ -69,21 +66,43 @@ export class AuthGuard {
     }
   }
 
-  /**
-   * Setup authentication-based UI
-   * @param {Object} config - Configuration for auth-based UI
-   */
-  static setupAuthUI(config = {}) {
-    const user = this.getCurrentUser();
+  static async setupAuthUI(config = {}) {
+    const user = await this.getCurrentUser();
     const { containerIds = [], formIds = [], authRequiredMessage } = config;
 
     if (!user) {
-      formIds.forEach((formId) => this.hideFormIfNotAuth(formId));
+      for (const formId of formIds) {
+        await this.hideFormIfNotAuth(formId);
+      }
       containerIds.forEach((containerId) =>
         this.showAuthRequired(containerId, authRequiredMessage)
       );
     }
 
     return user;
+  }
+
+  static async logout() {
+    try {
+      const response = await fetch("/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        this.currentUser = null;
+        this.authChecked = false;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+      return false;
+    }
+  }
+
+  static clearCache() {
+    this.currentUser = null;
+    this.authChecked = false;
   }
 }

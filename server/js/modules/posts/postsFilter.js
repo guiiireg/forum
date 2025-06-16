@@ -1,11 +1,5 @@
 import { updateFiltersState, getCurrentFilters } from "./postsState.js";
 
-/**
- * Apply filters and sorting to posts
- * @param {Array} posts - Posts to filter
- * @param {Object} filters - Filter criteria
- * @returns {Array} Filtered posts
- */
 export function applyFilters(posts, filters) {
   let filteredPosts = [...posts];
 
@@ -46,11 +40,6 @@ export function applyFilters(posts, filters) {
   return filteredPosts;
 }
 
-/**
- * Update filters
- * @param {Object} newFilters - New filter values
- * @returns {Object} Updated filters
- */
 export function updateFilters(newFilters) {
   updateFiltersState(newFilters);
   return getCurrentFilters();

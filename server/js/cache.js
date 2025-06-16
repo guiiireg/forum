@@ -1,50 +1,42 @@
-const sessions = new Map();
+import jwt from 'jsonwebtoken';
 
-/**
- * Store a user session in cache
- * @param {string} userId - The user ID
- * @param {Object} userData - The user data to store
- * @returns {string} The session ID
- */
+const JWT_SECRET = process.env.JWT_SECRET || 'votre_secret_jwt_tres_securise';
+const JWT_EXPIRES_IN = '7d';
+
 export function createSession(userId, userData) {
-  const sessionId = Math.random().toString(36).substring(2, 15);
-  sessions.set(sessionId, {
+  const payload = {
     userId,
     userData,
-    createdAt: Date.now(),
-  });
-  return sessionId;
+    iat: Date.now()
+  };
+  
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
 
-/**
- * Get a user session from cache
- * @param {string} sessionId - The session ID
- * @returns {Object|null} The session data or null if not found
- */
-export function getSession(sessionId) {
-  return sessions.get(sessionId) || null;
-}
-
-/**
- * Remove a user session from cache
- * @param {string} sessionId - The session ID
- */
-export function removeSession(sessionId) {
-  sessions.delete(sessionId);
-}
-
-/**
- * Clean up expired sessions (older than 24 hours)
- */
-export function cleanupSessions() {
-  const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  for (const [sessionId, session] of sessions.entries()) {
-    if (now - session.createdAt > oneDay) {
-      sessions.delete(sessionId);
-    }
+export function getSession(token) {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return decoded;
+  } catch (error) {
+    console.log('Token JWT invalide:', error.message);
+    return null;
   }
+}
+
+export const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: '/'
+};
+
+export function removeSession(token) {
+  return true;
+}
+
+export function cleanupSessions() {
+  console.log('Nettoyage des sessions : non nécessaire avec JWT');
 }
 
 setInterval(cleanupSessions, 60 * 60 * 1000);

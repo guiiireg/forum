@@ -1,11 +1,9 @@
-/**
- * Middleware de vérification d'authentification
- * @param {import('express').Request} req - La requête
- * @param {import('express').Response} res - La réponse
- * @param {import('express').NextFunction} next - La fonction next
- */
+import { getSession } from "../cache.js";
+
 export function requireAuth(req, res, next) {
-  if (!req.session || !req.session.userId) {
+  const token = req.cookies.authToken;
+
+  if (!token) {
     if (req.xhr || req.path.startsWith("/api/")) {
       return res.status(401).json({
         success: false,
@@ -14,19 +12,38 @@ export function requireAuth(req, res, next) {
     }
     return res.redirect("/login");
   }
+
+  const sessionData = getSession(token);
+  if (!sessionData || !sessionData.userId) {
+    res.clearCookie("authToken");
+
+    if (req.xhr || req.path.startsWith("/api/")) {
+      return res.status(401).json({
+        success: false,
+        message: "Session expirée, veuillez vous reconnecter",
+      });
+    }
+    return res.redirect("/login");
+  }
+
+  req.user = {
+    userId: sessionData.userId,
+    userData: sessionData.userData,
+  };
+
   next();
 }
 
-/**
- * Middleware pour vérifier si l'utilisateur n'est PAS connecté
- * (utile pour les pages de login/register)
- * @param {import('express').Request} req - La requête
- * @param {import('express').Response} res - La réponse
- * @param {import('express').NextFunction} next - La fonction next
- */
 export function requireGuest(req, res, next) {
-  if (req.session && req.session.userId) {
-    return res.redirect("/");
+  const token = req.cookies.authToken;
+
+  if (token) {
+    const sessionData = getSession(token);
+    if (sessionData && sessionData.userId) {
+      return res.redirect("/");
+    }
+    res.clearCookie("authToken");
   }
+
   next();
 }
